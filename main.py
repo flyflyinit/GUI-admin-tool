@@ -1,185 +1,108 @@
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import Qt
-from PyQt5.uic.Compiler.qtproxies import QtCore
+from PyQt5.QtCore import Qt , QTimer,QModelIndex
+from PyQt5.QtGui import QPixmap
+from qtpy import QtWidgets, QtCore
+import qtmodern.styles
+import qtmodern.windows
 
-import user
-import network
-import firewall
-import share
-import preferences
-import backup
+from system import mainsystem
 
-
-
-class Window(QMainWindow):
+class networkConfig(QWidget):
     def __init__(self):
         super().__init__()
-        self.setGeometry(250,250,800, 600)
-        self.setWindowTitle("ADMIN-TOOL")
-        #self.setWindowIcon(QIcon('icons/admin-tool3.png'))
-        #self.setFixedSize(self.size())
-
-
+        self.setGeometry(0, 0, 1500, 1000)
+        self.setWindowTitle("Tool Name")
+        # self.setWindowIcon(QIcon('icons/admin-tool3.png'))
         self.UI()
         self.show()
 
-
     def UI(self):
-        self.createMenu()
-        self.toolBar()
+        self.layouts()
         self.widgets()
-        self.initialWidget()
 
-    def initialWidget(self):
+    def layouts(self):
+        self.mainLayout=QVBoxLayout()
+        self.topLayout=QHBoxLayout()
+        self.bottomLayout=QHBoxLayout()
 
-        self.titelInfo = QPushButton('information',self)
-        self.titelInfo.move(350, 90)
+        self.bottomLeftLayout=QHBoxLayout()
+        self.bottomRightLayout=QVBoxLayout()
 
+        logo = QLabel(self)
+        pixmap = QPixmap('icons/admin.png')
+        pixmap5 = pixmap.scaled(50, 50)
+        logo.setPixmap(pixmap5)
 
-    def createMenu(self):
+        self.topLayout.addWidget(logo)
+        self.topLayout.addStretch()
 
-        #CREATEING MENU
-        menubar=self.menuBar()
-        file=menubar.addMenu("File")
-        edite=menubar.addMenu("Edit")
-        code=menubar.addMenu("Preferences")
-        help_menu=menubar.addMenu("help")
+        self.bottomLayout.addLayout(self.bottomLeftLayout)
+        self.bottomLayout.addStretch()
+        self.bottomLayout.addLayout(self.bottomRightLayout)
+        #self.bottomLayout.addStretch()
 
-        #CREATING SUB MENU
-        new=QAction("New Project",self)
-        new.setShortcut("Ctrl+O")
-        file.addAction(new)
+        self.mainLayout.addLayout(self.topLayout)
+        self.mainLayout.addLayout(self.bottomLayout)
 
-        open=QAction("Open",self)
-        file.addAction(open)
-
-        exit=QAction("Exit",self)
-        #exit.setIcon(QIcon("icons/exit"))
-        exit.triggered.connect(self.exitFunc)
-        file.addAction(exit)
-
-        #ADDING MENU TO TOP LAYOUT
-
-    def toolBar(self):
-
-        self.tb=self.addToolBar("tool bar")
-        self.tb.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
-
-        # ICONS
-
-        self.userTB=QAction(QIcon('icons/icon_user2.png'),"User Management",self)
-        self.tb.addAction(self.userTB)
-        self.userTB.triggered.connect(self.userSection)
-         #self.tb.addSeparator()
-
-        self.networkingTB=QAction(QIcon('icons/networking2.png'),"Networking",self)
-        self.tb.addAction(self.networkingTB)
-        self.networkingTB.triggered.connect(self.networkSection)
-
-        self.firewallTB = QAction(QIcon('icons/firewall.png'), "Firewall", self)
-        self.tb.addAction(self.firewallTB )
-        self.firewallTB.triggered.connect(self.firewallSection)
-
-        self.backupTB = QAction(QIcon('icons/backup1.png'), "Backup Management", self)
-        self.tb.addAction(self.backupTB)
-        self.backupTB.triggered.connect(self.backupSection)
-
-        self.shareTB = QAction(QIcon('icons/share2.png'), "Share", self)
-        self.tb.addAction(self.shareTB)
-        self.shareTB.triggered.connect(self.shareSection)
-
-        self.preferencesTB = QAction(QIcon('icons/preferences1.png'), "Preferences", self)
-        self.tb.addAction(self.preferencesTB)
-        self.preferencesTB.triggered.connect(self.preferencesSection)
-
-
-        #TAB ACTION TIGRED
-        #self.tb.actionTriggered.connect(self.toolFunction)
+        self.setLayout(self.mainLayout)
+        self.setLayout(self.bottomLayout)
+        self.setLayout(self.topLayout)
 
 
     def widgets(self):
-
         self.listWidget = QListWidget(self)
-        self.listWidget.resize(300,800)
+        self.listWidget.setSelectionMode(QAbstractItemView.SingleSelection)
 
+        #self.listWidget.resize(50,50)
 
-        self.listWidget.move(5,90)
-        line='-'*74
-        self.listWidget.addItem("            USER    ")
-        self.listWidget.addItem("1-Create a user ")
-        self.listWidget.addItem("2-Add user to a group ")
-        self.listWidget.addItem("3-Remove user ")
-        self.listWidget.addItem("4-Create a group ")
-        self.listWidget.addItem(line)
-        self.listWidget.addItem("            NetWork    ")
-        self.listWidget.addItem("1-Show ip informaton ")
-        self.listWidget.addItem(line)
-        self.listWidget.addItem("            Firewall")
-        self.listWidget.addItem("1-Show Default  Zone")
-        self.listWidget.addItem(line)
-        self.listWidget.addItem("            share")
-        self.listWidget.addItem(" 1-Show Default share Subnet ")
-        self.listWidget.addItem(line)
-        self.listWidget.addItem("            Backup")
-        self.listWidget.addItem("1-Show Number Of Backups               ")
-        self.listWidget.addItem(line)
-        self.listWidget.addItem("            General Preferences")
-        self.listWidget.addItem("1-Show name of server  ")
-        self.listWidget.addItem("1-Show name of Distrubition ")
+        self.item1 = QtWidgets.QListWidgetItem("System Information")
+        self.item1.setSizeHint(QtCore.QSize(50, 50))
+        self.listWidget.addItem(self.item1)
+        self.item2 = QtWidgets.QListWidgetItem("Users Statistics")
+        self.item2.setSizeHint(QtCore.QSize(50, 50))
+        self.listWidget.addItem(self.item2)
+        self.item3 = QtWidgets.QListWidgetItem("Network Statistics")
+        self.item3.setSizeHint(QtCore.QSize(50, 50))
+        self.listWidget.addItem(self.item3)
+        self.item4 = QtWidgets.QListWidgetItem("Firewall")
+        self.item4.setSizeHint(QtCore.QSize(50, 50))
+        self.listWidget.addItem(self.item4)
+        self.listWidget.itemSelectionChanged.connect(self.getContentTrigger)
+        self.bottomLeftLayout.addWidget(self.listWidget)
 
-        self.listWidget.itemClicked.connect(self.clickingEvent)
+        self.listWidget.setCurrentItem(self.item1)
 
-    def userSection(self):
-        self.userconfig=user.UserConfig()
-
-    def networkSection(self):
-        self.networkconfig=network.networkConfig()
-
-    def firewallSection(self):
-        self.firewallconfig=firewall.firewallConfig()
-
-    def backupSection(self):
-        self.backupconfig=backup.backupConfig()
-
-    def shareSection(self):
-        self.shareconfig=share.shareConfig()
-
-    def preferencesSection(self):
-        self.preferencesconfig=preferences.preferencesConfig()
-
-
-
-    def clickingEvent(self):
-        try:
-         item= self.listWidget.currentItem().text()
-         itemNumber=item.split('-')[0]
-         itemText=item.split('-')[1]
-
-         print(itemNumber,itemText)
-        except IndexError:
-            return None
-
-        if itemNumber==1:
-            self.infoTitel=QLabel(itemText)
-            self.infoTitel.move(400,120)
-    def exitFunc(self):
-        mbox=QMessageBox.information(self,"Warrings","Are you sure to exit ",QMessageBox.Yes|QMessageBox.No,QMessageBox.No)
-        if mbox==QMessageBox.Yes:
-            sys.exit()
-    def btnFunction(self,btn):
-        if(btn.text()=='New'):
-            print("You cliked new button ")
-        elif(btn.text()=='Open'):
-            print("You cliked open ")
+    def getContentTrigger(self):
+        si = self.listWidget.selectedItems()[0]
+        if si==self.item1:
+            self.clearLayout(self.bottomRightLayout)
+            mainsystem.getContentSystem(self)
+        elif si==self.item2:
+            self.clearLayout(self.bottomRightLayout)
+        elif si==self.item3:
+            self.clearLayout(self.bottomRightLayout)
+        elif si==self.item4:
+            self.clearLayout(self.bottomRightLayout)
         else:
-            print("You cliked exit button  ")
+            QMessageBox.warning(self,"warning","no section selected, please selecet a section")
+
+    def clearLayout(self,layout):
+        while layout.count():
+            child = layout.takeAt(0)
+            if child.widget() is not None:
+                child.widget().deleteLater()
+            elif child.layout() is not None:
+                self.clearLayout(child.layout())
 
 def main():
     App = QApplication(sys.argv)
-    window = Window()
+    window = networkConfig()
+    qtmodern.styles.light(App)
+    mw = qtmodern.windows.ModernWindow(window)
+    mw.show()
     sys.exit(App.exec_())
 
-if __name__=='__main__':
+if __name__ == '__main__':
     main()
