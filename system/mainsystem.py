@@ -1,54 +1,78 @@
 from datetime import datetime
-from system.system import MemoryCanvas
+import qtmodern.styles
+import qtmodern.windows
+from system.configuresystem import ConfigureSystemWindow
+from system.system import MemoryCanvas, IooCanvas
 from system.system import CpuCanvas
 from system.system import IoCanvas
 from system.system import PolygonCPUs
 from system.system import UsageResume
-from PyQt5.QtWidgets import QGridLayout ,QFormLayout ,QLabel,QGroupBox,QScrollArea,QVBoxLayout
+
+from PyQt5.QtWidgets import QGridLayout, QFormLayout, QLabel, QGroupBox, QScrollArea, QPushButton, QVBoxLayout, QHBoxLayout, QApplication
 from PyQt5.QtCore import QTimer
 import psutil
 import platform
 import subprocess
 
+
 def getContentSystem(self):
-    self.grid = QGridLayout()
+    self.gridSystem = QGridLayout()
+
+    self.memoryC = MemoryCanvas(width=4.5, height=3, dpi=80)
+    self.cpuC = CpuCanvas(width=4.5, height=3, dpi=80)
+    self.cpusC = PolygonCPUs(width=4.5, height=3, dpi=80)
+    self.usg = UsageResume(width=4.5, height=3, dpi=80)
+    self.ioC = IoCanvas(width=4.5, height=3, dpi=80)
+    #self.iooC = IooCanvas(width=4.5, height=3, dpi=80)
+    self.gridSystem.addWidget(self.memoryC, 0, 0)
+    self.gridSystem.addWidget(self.cpuC, 0, 1)
+    self.gridSystem.addWidget(self.cpusC, 0, 2)
+    self.gridSystem.addWidget(self.usg, 1, 0)
+    self.gridSystem.addWidget(self.ioC, 1, 1)
+    #self.gridSystem.addWidget(self.iooC, 1, 2)
 
     systemInformation(self)
 
-    memoryC = MemoryCanvas(width=4.5, height=3, dpi=80)
-    cpuC = CpuCanvas(width=4.5, height=3, dpi=80)
-    ioC = IoCanvas(width=4.5, height=3, dpi=80)
-    #iooC = IooCanvas(width=4.5, height=3, dpi=80)
-    cpusC = PolygonCPUs(width=4.5, height=3, dpi=80)
-    usg = UsageResume(width=4.5, height=3, dpi=80)
+    self.groupBox = QGroupBox()
+    self.containerSystem=QVBoxLayout()
+    self.containerSystem.addLayout(self.gridSystem)
+    self.containerSystem.addLayout(self.form)
+    self.containerSystem.addStretch()
+    self.groupBox.setLayout(self.containerSystem)
+    self.scrollSystem = QScrollArea()
+    self.scrollSystem.setFixedWidth(1150)
+    self.groupBox.setAutoFillBackground(True)
+    #self.scrollSystem.QAbstractScrollArea.sizeAdjustPolicy()
+    #self.scrollSystem.setWidgetResizable(True)
+    self.scrollSystem.setWidget(self.groupBox)
+    #self.scrollSystem.setFixedHeight(1000)
+    self.scrollSystem.setAutoFillBackground(True)
+    #self.scrollSystem.setFixedWidth(1000)
+    #self.bottomRightLayout.addLayout(self.gridSystem)
+    #self.bottomLayout.setCentralWidget(self.scrollSystem)
+    self.bottomRightLayout.addWidget(self.scrollSystem)
 
-    self.grid.addWidget(memoryC, 0, 0)
-    self.grid.addWidget(cpuC, 0, 1)
-    self.grid.addWidget(cpusC, 0, 2)
-    self.grid.addWidget(usg, 1, 0)
-    self.grid.addWidget(ioC, 1, 1)
-    #self.grid.addWidget(iooC, 1, 1)
-
-    updateUpTimeAndLoadAvgLabel(self)
+    updateHostnameUpTimeAndLoadAvgLabel(self)
     updateCpuLabel(self)
     updateMemoryLabels(self)
     updateLabels(self)
 
-def updateUpTimeAndLoadAvgLabel(self):
+def updateHostnameUpTimeAndLoadAvgLabel(self):
     with open("/proc/uptime", "r") as f:
         uptime = f.read().split(" ")[0].strip()
     uptime = int(float(uptime))
     uptime_hours = uptime // 3600
     uptime_minutes = (uptime % 3600) // 60
-
+    hst = subprocess.Popen("hostname", shell=True, stdout=subprocess.PIPE).communicate()[0].decode('utf-8')
     loadavg = subprocess.Popen("cat /proc/loadavg | awk {'print $1, $2, $3'}",shell=True,stdout=subprocess.PIPE).communicate()[0].decode('utf-8')
     loadavgg = loadavg.split(" ")
     try:
         self.la.setText(f"last one minute:{loadavgg[0]},   5 minutes:{loadavgg[1]},   15 minutes:{loadavgg[2]}")
         self.ut.setText(str(uptime_hours) + ":" + str(uptime_minutes) + " hours")
+        self.hs.setText(str(hst))
     except Exception:
         return None
-    QTimer.singleShot(3000, lambda: updateUpTimeAndLoadAvgLabel(self))
+    QTimer.singleShot(3000, lambda: updateHostnameUpTimeAndLoadAvgLabel(self))
 
 
 def updateCpuLabel(self):
@@ -113,7 +137,6 @@ def updateLabels(self):
 
 def systemInformation(self):
     self.form = QFormLayout()
-    self.groupBox = QGroupBox()
 
     formright = []
     formleft = []
@@ -133,8 +156,19 @@ def systemInformation(self):
     formleft.append(QLabel('General Informations :'))
     formright.append(QLabel(''))
 
+    hst = subprocess.Popen("hostname",shell=True,stdout=subprocess.PIPE).communicate()[0].decode('utf-8')
+    self.hbox=QHBoxLayout()
+    self.chngHstBtn=QPushButton('Edit hostname')
+    self.chngHstBtn.setFixedHeight(30)
+    self.chngHstBtn.setFixedWidth(120)
+    self.chngHstBtn.clicked.connect(lambda: configureSystemInformationWindow(self))
+    self.chngHstBtn.setStyleSheet("color: #95a5a6; background-color: #2c3e50 ; border: 0px solid #2c3e50")
+    self.hs=QLabel(str(hst))
+    self.hbox.addWidget(self.hs)
+    self.hbox.addStretch()
+    self.hbox.addWidget(self.chngHstBtn)
     formleft.append(QLabel('Hostname :'))
-    formright.append(QLabel(platform.node()))
+    formright.append(self.hbox)
 
     formleft.append(QLabel('Platform :'))
     formright.append(QLabel(platform.platform()))
@@ -299,20 +333,16 @@ def systemInformation(self):
     formleft.append(QLabel('Total Write :'))
     formright.append(self.tw)
 
-
-
     for i in range(len(formleft)):
         self.form.addRow(formleft[i], formright[i])
 
     self.form.setContentsMargins(50, 50, 30, 30)  # left ,#top ,#right , #bottom
-    self.groupBox.setLayout(self.form)
-    self.scroll = QScrollArea()
-    self.scroll.setWidget(self.groupBox)
-    self.scroll.setWidgetResizable(True)
-    #scroll.setFixedHeight(250)
 
-    self.bottomRightLayout.addLayout(self.grid)
-    self.bottomRightLayout.addWidget(self.scroll)
+
+def configureSystemInformationWindow(self):
+    self.secondwindow = ConfigureSystemWindow()
+    self.sw = qtmodern.windows.ModernWindow(self.secondwindow)
+    self.sw.show()
 
 
 def get_size(bytes, suffix="B"):
@@ -321,4 +351,5 @@ def get_size(bytes, suffix="B"):
         if bytes < factor:
             return f"{bytes:.2f}{unit}{suffix}"
         bytes /= factor
+
 

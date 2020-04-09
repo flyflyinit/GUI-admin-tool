@@ -348,7 +348,7 @@ class UsageResume(MyMplCanvas):
         MyMplCanvas.__init__(self, *args, **kwargs)
         timer = QtCore.QTimer(self)
         timer.timeout.connect(self.resume_update_figure)
-        timer.start(500)
+        timer.start(1000)
 
     def compute_initial_figure(self):
         global Axes
