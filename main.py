@@ -9,6 +9,7 @@ import qtmodern.windows
 from system import mainsystem
 from users import mainusers
 from backup import mainbackup
+from terminal import mainterminal
 
 
 class mainWindow(QWidget):
@@ -71,7 +72,7 @@ class mainWindow(QWidget):
         self.item3 = QtWidgets.QListWidgetItem("Backup")
         self.item3.setSizeHint(QtCore.QSize(50, 50))
         self.listWidget.addItem(self.item3)
-        self.item4 = QtWidgets.QListWidgetItem("Libvirt")
+        self.item4 = QtWidgets.QListWidgetItem("Terminal")
         self.item4.setSizeHint(QtCore.QSize(50, 50))
         self.listWidget.addItem(self.item4)
         self.listWidget.itemSelectionChanged.connect(self.getContentTrigger)
@@ -98,6 +99,7 @@ class mainWindow(QWidget):
             mainbackup.getContentBackup(self)
         elif si==self.item4:
             self.clearLayout(self.bottomRightLayout)
+            mainterminal.main(self)
 
         else:
             QMessageBox.warning(self,"warning","no section selected, please selecet a section")
