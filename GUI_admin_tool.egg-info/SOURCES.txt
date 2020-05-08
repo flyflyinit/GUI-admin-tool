@@ -1,0 +1,10 @@
+README.rst
+setup.py
+GUI_admin_tool.egg-info/PKG-INFO
+GUI_admin_tool.egg-info/SOURCES.txt
+GUI_admin_tool.egg-info/dependency_links.txt
+GUI_admin_tool.egg-info/requires.txt
+GUI_admin_tool.egg-info/top_level.txt
+project/__init__.py
+project/main.py
+project/tests.py
