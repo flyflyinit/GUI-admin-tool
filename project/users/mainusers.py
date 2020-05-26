@@ -35,7 +35,8 @@ def getContentUsers(self):
     ############################### last bad logins pie plot
     outtt = subprocess.Popen('lastb --time-format short', stderr=subprocess.PIPE, stdout=subprocess.PIPE,shell=True).communicate()[0].decode('utf-8')
     pp = outtt.split('\n')
-    self.lastBadLoginsText=QLabel(str(pp[-2]))
+    #
+    self.lastBadLoginsText=QLabel(str(pp[-1]))
     self.lastBadLoginsText.setStyleSheet("color:#2c3e50")
     self.lastbadlogins = lastBadLogins(self,width=4.5, height=3, dpi=80)
     self.gridUsers.addWidget(self.lastBadLoginsText, 0, 1)
@@ -160,6 +161,7 @@ def createTableUsers(self):
     self.tableUsers.setEditTriggers(QAbstractItemView.NoEditTriggers)
     showmyuserslist(self)
 
+
 def retrievedatafrompasswdfile():
     list_of_users = []
     with open("/etc/passwd", mode='r') as passwd_content:
@@ -182,6 +184,7 @@ def retrievedatafrompasswdfile():
             b3 = subprocess.Popen(c3, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].decode('utf-8').split(":",1)[1].strip(" ")
             list_of_users_adapted.append([i[0],i[2],b[:-1:],b2[:-1:],i[4],i[5],A[:-1:],b3[:-1:]])
     return list_of_users_adapted
+
 
 class SelectCellInTableUsers(QWidget):
     def __init__(self, parent=None):

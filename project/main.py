@@ -1,9 +1,14 @@
 #!/bin/python3
 
 import sys
+from project.networking.mainnetworking import getContentNetwork
+from project.firewall import mainFirewall
+from project.services import mainServices
+
 try:
     from PyQt5 import QtCore, QtWidgets
-    from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel, QDockWidget, QVBoxLayout, QListWidget, QAbstractItemView, QMessageBox, QApplication
+    from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel, QDockWidget, QVBoxLayout, QListWidget, QAbstractItemView, \
+    QMessageBox, QApplication, QSizePolicy
     from PyQt5.QtGui import QIcon
     from PyQt5.QtGui import QPixmap
 except ImportError as e:
@@ -20,6 +25,7 @@ try:
     from users import mainusers
     from backup import mainbackup
     from terminal import mainterminal
+
 except ImportError as e:
     print(f'package not found\n{e}\n')
 
@@ -45,6 +51,8 @@ class mainWindow(QWidget):
 
         self.bottomLeftLayout=QHBoxLayout()
         self.bottomRightLayout=QVBoxLayout()
+        #self.bottomRightLayout.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
         logo = QLabel(self)
         pixmap = QPixmap('icons/admin.png')
         pixmap = pixmap.scaled(50, 50)
@@ -74,20 +82,35 @@ class mainWindow(QWidget):
         self.listWidget.addItem(self.item1)
         self.item2 = QtWidgets.QListWidgetItem("Users Statistics")
         self.item2.setSizeHint(QtCore.QSize(50, 50))
+
         self.listWidget.addItem(self.item2)
         self.item3 = QtWidgets.QListWidgetItem("Backup")
         self.item3.setSizeHint(QtCore.QSize(50, 50))
         self.listWidget.addItem(self.item3)
-        self.item4 = QtWidgets.QListWidgetItem("Terminal")
+
+        self.item4 = QtWidgets.QListWidgetItem("Networking")
         self.item4.setSizeHint(QtCore.QSize(50, 50))
         self.listWidget.addItem(self.item4)
+
+        self.item5 = QtWidgets.QListWidgetItem("Firewall")
+        self.item5.setSizeHint(QtCore.QSize(50, 50))
+        self.listWidget.addItem(self.item5)
+
+        self.item6 = QtWidgets.QListWidgetItem("Services")
+        self.item6.setSizeHint(QtCore.QSize(50, 50))
+        self.listWidget.addItem(self.item6)
+
+        self.item7 = QtWidgets.QListWidgetItem("Terminal")
+        self.item7.setSizeHint(QtCore.QSize(50, 50))
+        self.listWidget.addItem(self.item7)
+
         self.listWidget.itemSelectionChanged.connect(self.getContentTrigger)
 
         self.dockWidget.setWidget(self.listWidget)
         self.dockWidget.setFloating(False)
 
         self.bottomLeftLayout.addWidget(self.dockWidget)
-        self.listWidget.setCurrentItem(self.item3)
+        self.listWidget.setCurrentItem(self.item1)
 
 
     def getContentTrigger(self):
@@ -102,6 +125,15 @@ class mainWindow(QWidget):
             self.clearLayout(self.bottomRightLayout)
             mainbackup.getContentBackup(self)
         elif si==self.item4:
+            self.clearLayout(self.bottomRightLayout)
+            getContentNetwork(self)
+        elif si==self.item5:
+            self.clearLayout(self.bottomRightLayout)
+            mainFirewall.getContentFirewall(self)
+        elif si==self.item6:
+            self.clearLayout(self.bottomRightLayout)
+            mainServices.getContentServices(self)
+        elif si==self.item7:
             self.clearLayout(self.bottomRightLayout)
             mainterminal.main(self)
 

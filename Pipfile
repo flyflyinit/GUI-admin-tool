@@ -12,6 +12,7 @@ pyqt5 = "==5.14.2"
 pyqt5-stubs = "*"
 rxvt-unicode = "*"
 psutil = "*"
+form = "*"
 
 [requires]
 python_version = "3.6"

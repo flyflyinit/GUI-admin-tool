@@ -1,6 +1,6 @@
 try:
     from PyQt5.QtCore import QProcess
-    from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTabWidget, QLabel
+    from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTabWidget, QLabel,QHBoxLayout
 except ImportError as e:
     print(f'package PyQt5 Not Found\n{e}\ntry :\npip3 install --user pyqt5\nOR\ndnf install python3-pyqt5, yum install python3-pyqt5\n')
 
@@ -38,4 +38,5 @@ def main(self):
     subprocess.run("cp terminal/Xresources ~/.Xresources",shell=True)
     subprocess.run("xrdb ~/.Xresources",shell=True)
     self.sw = embterminal()
+
     self.bottomRightLayout.addWidget(self.sw)
