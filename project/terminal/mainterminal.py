@@ -1,6 +1,6 @@
 try:
     from PyQt5.QtCore import QProcess
-    from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTabWidget, QLabel,QHBoxLayout
+    from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTabWidget, QLabel, QHBoxLayout, QSizePolicy
 except ImportError as e:
     print(f'package PyQt5 Not Found\n{e}\ntry :\npip3 install --user pyqt5\nOR\ndnf install python3-pyqt5, yum install python3-pyqt5\n')
 
@@ -11,8 +11,6 @@ class embterminal(QWidget):
         QWidget.__init__(self)
         self.process = QProcess(self)
         self.terminal = QWidget(self)
-        self.terminal.setFixedSize(1100,550)
-        #self.terminal.setFixedSize(300,300)
         layout = QVBoxLayout(self)
         layout.addWidget(self.terminal)
         self.process.start(f'urxvt -embed {str(int(self.winId()))}')
@@ -35,13 +33,21 @@ def main(self):
 
     self.bottomRightLayout.addWidget(self.tabs)
     '''
+    self.tabs = QTabWidget(self)
+    self.tabs.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+    self.tabs.setAutoFillBackground(True)
+
+    self.sw = embterminal()
+    self.sw2 = embterminal()
+    self.tabs.addTab(self.sw, "Tab 2")
+    self.tabs.addTab(self.sw2, "Tab 1")
+
     subprocess.run("cp terminal/Xresources ~/.Xresources",shell=True)
     subprocess.run("xrdb ~/.Xresources",shell=True)
-    self.sw = embterminal()
-    self.sw.setContentsMargins(20,20,25,20)
+    #self.sw.setContentsMargins(20,20,25,20)
 
-    box = QHBoxLayout()
-    box.addWidget(self.sw)
-    box.setContentsMargins(0,20,0,0)
+    #box = QHBoxLayout()
+    #box.addWidget(tabs)
+    #box.setContentsMargins(0,20,0,0)
 
-    self.bottomRightLayout.addLayout(box)
+    self.bottomRightLayout.addWidget(self.tabs)

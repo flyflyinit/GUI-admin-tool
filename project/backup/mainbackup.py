@@ -52,7 +52,6 @@ def getContentBackup(self):
     createFullBackupButtons(self)
     createIncBackupButtons(self)
 
-    self.groupBox = QGroupBox()
     self.containerBackup=QVBoxLayout()
 
     self.containerBackup.addLayout(self.gridBackup)
@@ -60,14 +59,8 @@ def getContentBackup(self):
     self.containerBackup.addWidget(self.tableFullBackup)
     self.containerBackup.addLayout(self.hboxincbackupbtn)
     self.containerBackup.addWidget(self.tableIncBackup)
-    self.containerBackup.addStretch()
 
-    self.groupBox.setLayout(self.containerBackup)
-    self.scroll = QScrollArea()
-    self.scroll.setFixedWidth(1150)
-    self.scroll.setWidget(self.groupBox)
-    self.scroll.setAutoFillBackground(True)
-    self.bottomRightLayout.addWidget(self.scroll)
+    self.bottomRightLayout.addLayout(self.containerBackup)
 
 def createTableFullBackup(self):
     self.tableFullBackup=QTableWidget()
@@ -253,8 +246,6 @@ def createTableIncBackup(self):
     self.tableIncBackup=QTreeWidget()
     labels = ['Meta Name','Backup ID','Backup Level','Backup Date','Backup Name','Backup Path','Destination Path','Excluded Items','More','Select']
     self.tableIncBackup.setHeaderLabels(labels)
-    self.tableIncBackup.setFixedHeight(270)
-    self.tableIncBackup.setFixedWidth(1130)
 
     self.tableIncBackup.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
     self.tableIncBackup.setEditTriggers(QAbstractItemView.NoEditTriggers)

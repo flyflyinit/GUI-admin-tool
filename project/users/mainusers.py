@@ -59,21 +59,13 @@ def getContentUsers(self):
 
     #################### creating buttons under pie plots
     createUsersButtons(self)
-
-    self.groupBox = QGroupBox()
     self.containerUsers=QVBoxLayout()
-
+    self.containerUsers.setContentsMargins(0,20,0,0)
     self.containerUsers.addLayout(self.gridUsers)
     self.containerUsers.addLayout(self.hboxbtn)
     self.containerUsers.addWidget(self.tableUsers)
-    self.containerUsers.addStretch()
 
-    self.groupBox.setLayout(self.containerUsers)
-    self.scroll = QScrollArea()
-    self.scroll.setFixedWidth(1150)
-    self.scroll.setWidget(self.groupBox)
-    self.scroll.setAutoFillBackground(True)
-    self.bottomRightLayout.addWidget(self.scroll)
+    self.bottomRightLayout.addLayout(self.containerUsers)
 
 def updateTableUsers(self):
     try:
@@ -136,9 +128,8 @@ def createTableUsers(self):
     self.tableUsers.setRowCount(0)
     self.tableUsers.setColumnCount(12)
 
-    self.tableUsers.setFixedHeight(350)
-    self.tableUsers.setFixedWidth(1130)
     self.tableUsers.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+    self.tableUsers.setAutoFillBackground(True)
     '''
     self.tableUsers.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
     self.tableUsers.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)

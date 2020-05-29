@@ -1,6 +1,6 @@
 try:
     from PyQt5.QtWidgets import QGridLayout, QFormLayout, QLabel, QGroupBox, QScrollArea, QPushButton, QVBoxLayout, \
-    QHBoxLayout, QComboBox, QMessageBox
+    QHBoxLayout, QComboBox, QMessageBox, QSizePolicy
     from PyQt5.QtCore import QTimer
 except ImportError as e:
     print(f'package PyQt5 Not Found\n{e}\ntry :\npip3 install --user pyqt5\nOR\ndnf install python3-pyqt5, yum install python3-pyqt5\n')
@@ -26,8 +26,6 @@ except ImportError as e:
 def getContentDashboard(self):
     self.all = All(width=7, height=3.6, dpi=80)
     self.all2 = All2(width=7, height=3.6, dpi=80)
-    #self.all.setContentsMargins(50,10,10,10)
-    #self.gridSystem.addWidget(self.all, 0, 0)
 
     systemInformationn(self)
 
@@ -42,18 +40,15 @@ def getContentDashboard(self):
     self.containerSystemm.addLayout(grid)
     self.containerSystemm.addLayout(self.vbox1)
     self.containerSystemm.addLayout(self.vbox2)
-    self.containerSystemm.addStretch()
-    self.groupBoxx.setLayout(self.containerSystemm)
-    self.scrollSystemm = QScrollArea()
-    self.scrollSystemm.setFixedWidth(1150)
-    self.groupBoxx.setAutoFillBackground(True)
-    #self.scrollSystem.QAbstractScrollArea.sizeAdjustPolicy()
-    #self.scrollSystem.setWidgetResizable(True)
-    self.scrollSystemm.setWidget(self.groupBoxx)
-    #self.scrollSystem.setFixedHeight(1000)
-    self.scrollSystemm.setAutoFillBackground(True)
-    self.bottomRightLayout.addWidget(self.scrollSystemm)
 
+    self.scrollSystemm = QScrollArea()
+    self.scrollSystemm.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+    self.groupBoxx.setAutoFillBackground(True)
+    self.scrollSystemm.setWidget(self.groupBoxx)
+    self.scrollSystemm.setAutoFillBackground(True)
+
+    self.bottomRightLayout.addLayout(self.containerSystemm)
     updateHostnameUpTimeAndLoadAvgLabell(self)
 
 def updateHostnameUpTimeAndLoadAvgLabell(self):
@@ -89,7 +84,6 @@ def systemInformationn(self):
     shutdownreboot.addWidget(ok)
     ok.setFixedHeight(30)
     ok.setFixedWidth(30)
-    #ok.clicked.connect(lambda: configureSystemInformationWindow(self))
     ok.setStyleSheet("color: #95a5a6; background-color: #303a46 ; border: 0px solid #303a46")
 
     with open("/proc/uptime", "r") as f:
@@ -101,7 +95,6 @@ def systemInformationn(self):
     loadavg = str(psutil.getloadavg())
 
     self.hss=QLabel(platform.node())
-    #self.hs.setStyleSheet("color: #303a46 ;border: 2px solid #303a46")
     self.hss.setStyleSheet("color: #303a46;font: bold 14px;")
 
     self.utt = QLabel(str(uptime_hours) + ":" + str(uptime_minutes) + " hours")
@@ -148,7 +141,6 @@ def systemInformationn(self):
 
     hbox3 =QHBoxLayout()
     ut = QLabel('Uptime :')
-    #hbox3.addStretch()
     hbox3.addWidget(ut)
     hbox3.addWidget(self.utt)
     hbox3.addStretch()
@@ -157,7 +149,6 @@ def systemInformationn(self):
     loa = QLabel('Load Average :')
     self.laa = QLabel(loadavg)
     self.laa.setStyleSheet("color: #303a46;font: bold 14px;")
-    #hbox4.addStretch()
     hbox4.addWidget(loa)
     hbox4.addWidget(self.laa)
     hbox4.addStretch()

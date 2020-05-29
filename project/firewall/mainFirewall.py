@@ -15,28 +15,13 @@ def getContentFirewall(self):
     #################### creating buttons under pie plots
     createFwButtons(self)
 
-    self.groupBox = QGroupBox()
-    #self.groupBox.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-    #self.groupBox.setAutoFillBackground(True)
-    #self.groupBox.setFixedWidth(1150)
-
     self.containerFw=QVBoxLayout()
 
     self.containerFw.addLayout(self.gridFw)
     self.containerFw.addLayout(self.hboxbtn)
     self.containerFw.addWidget(self.tableFw)
-    self.containerFw.addStretch()
 
-    self.groupBox.setLayout(self.containerFw)
-    self.scroll = QScrollArea()
-    self.scroll.setFixedWidth(1150)
-    #self.scroll.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-    self.scroll.setWidget(self.groupBox)
-    #self.scroll.setFixedHeight(1000)
-    #self.scroll.setAutoFillBackground(True)
-    #self.bottomRightLayout.addLayout(self.gridUsers)
-    #self.bottomLayout.setCentralWidget(self.scroll)
-    self.bottomRightLayout.addWidget(self.scroll)
+    self.bottomRightLayout.addLayout(self.containerFw)
 
 def createFwButtons(self):
     self.hboxbtn=QHBoxLayout()
@@ -66,10 +51,9 @@ def createTableFw(self):
     self.tableFw.setRowCount(0)
     self.tableFw.setColumnCount(14)
 
-    self.tableFw.setFixedHeight(570)
-    self.tableFw.setFixedWidth(1130)
-
     self.tableFw.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+    self.tableFw.setAutoFillBackground(True)
+
     self.tableFw.setHorizontalHeaderItem(0, QTableWidgetItem("zone"))
     self.tableFw.setHorizontalHeaderItem(1, QTableWidgetItem("target"))
     self.tableFw.setHorizontalHeaderItem(2, QTableWidgetItem("icmp-block-inversion"))
@@ -112,7 +96,6 @@ class DefaultZoneCellInTableFw(QWidget):
         self.hbox.addWidget(self.slider)
         self.hbox.addWidget(self.text)
         self.hbox.addStretch()
-        self.hbox.setContentsMargins(0,0,0,0)
         self.hbox.setSpacing(8)
         self.setLayout(self.hbox)
 

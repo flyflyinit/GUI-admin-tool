@@ -112,8 +112,8 @@ class mainWindow(QWidget):
         self.topLayout.addLayout(b)
 
         self.bottomLayout.addLayout(self.bottomLeftLayout)
-        self.bottomLayout.addLayout(self.bottomRightLayout)
-        self.bottomLayout.addStretch()
+        self.bottomLayout.addLayout(self.bottomRightLayout,1)
+        #self.bottomLayout.addStretch()
 
         self.mainLayout.addLayout(self.topLayout)
         self.mainLayout.addLayout(self.bottomLayout)

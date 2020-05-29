@@ -43,23 +43,13 @@ def getContentNetwork(self):
     #################### creating buttons under pie plots
     createUsersButtons(self)
 
-    self.groupBox = QGroupBox()
     self.containerUsers=QVBoxLayout()
-
+    self.containerUsers.setContentsMargins(0,20,0,0)
     self.containerUsers.addLayout(self.gridNetwork)
     self.containerUsers.addLayout(self.hboxbtn)
     self.containerUsers.addWidget(self.tableNet)
-    self.containerUsers.addStretch()
 
-    self.groupBox.setLayout(self.containerUsers)
-    self.scroll = QScrollArea()
-    self.scroll.setFixedWidth(1150)
-    self.scroll.setWidget(self.groupBox)
-    #self.scroll.setFixedHeight(1000)
-    self.scroll.setAutoFillBackground(True)
-    #self.bottomRightLayout.addLayout(self.gridUsers)
-    #self.bottomLayout.setCentralWidget(self.scroll)
-    self.bottomRightLayout.addWidget(self.scroll)
+    self.bottomRightLayout.addLayout(self.containerUsers)
 
 def createGrid(self):
     ############################### last logins pie plot
@@ -186,8 +176,8 @@ def createTableNet(self):
     self.tableNet.setRowCount(0)
     self.tableNet.setColumnCount(9)
 
-    self.tableNet.setFixedHeight(335)
     self.tableNet.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+    self.tableNet.setAutoFillBackground(True)
     '''
     self.tableUsers.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
     self.tableUsers.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -221,9 +211,6 @@ class SelectCellInTableNet(QWidget):
         self.hbox = QHBoxLayout()
         self.checkb = QCheckBox(self)
         self.checkb.stateChanged.connect(self.checkBoxChangedAction)
-        #self.slider.setStyleSheet("color: #2c3e50; selection-background-color: #e74c3c ;background-color: white ; selection-color: #ecf0f1 ;border: 2px solid #95a5a6")
-        #self.text.setAlignment(Qt.AlignCenter)  # move to the center
-        #self.checkb.stateChanged.connect(self.changed())
         self.hbox.addStretch()
         self.hbox.addWidget(self.checkb)
         self.hbox.addStretch()
@@ -244,9 +231,6 @@ class SelectAllButton(QWidget):
         self.hbox = QHBoxLayout()
         self.selectall = QCheckBox('Select/Deselect All',self)
         self.selectall.stateChanged.connect(self.selectAllChangedAction)
-        #self.slider.setStyleSheet("color: #2c3e50; selection-background-color: #e74c3c ;background-color: white ; selection-color: #ecf0f1 ;border: 2px solid #95a5a6")
-        #self.text.setAlignment(Qt.AlignCenter)  # move to the center
-        #self.checkb.stateChanged.connect(self.changed())
         self.hbox.addWidget(self.selectall)
         self.hbox.setContentsMargins(0,0,0,0)
         self.hbox.setSpacing(8)

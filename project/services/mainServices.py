@@ -13,23 +13,13 @@ def getContentServices(self):
     #################### creating and triggerting update for services's table
     createTableServices(self)
 
-    #################### creating buttons under pie plots
-    #createServicesButtons(self)
 
-    self.groupBox = QGroupBox()
     self.containerServices=QVBoxLayout()
 
     self.containerServices.addLayout(self.gridServices)
-    #self.containerServices.addLayout(self.hboxbtn)
     self.containerServices.addWidget(self.tableServices)
-    self.containerServices.addStretch()
 
-    self.groupBox.setLayout(self.containerServices)
-    self.scroll = QScrollArea()
-    self.scroll.setFixedWidth(1150)
-    self.scroll.setWidget(self.groupBox)
-    self.scroll.setAutoFillBackground(True)
-    self.bottomRightLayout.addWidget(self.scroll)
+    self.bottomRightLayout.addLayout(self.containerServices)
 
 '''
 def createServicesButtons(self):
@@ -63,10 +53,8 @@ def createTableServices(self):
     self.tableServices.setRowCount(0)
     self.tableServices.setColumnCount(7)
 
-    self.tableServices.setFixedHeight(600)
-    self.tableServices.setFixedWidth(1110)
-
     self.tableServices.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+    self.tableServices.setAutoFillBackground(True)
 
     self.tableServices.setHorizontalHeaderItem(0, QTableWidgetItem("UNIT Name"))
     self.tableServices.setHorizontalHeaderItem(1, QTableWidgetItem("LOAD"))
