@@ -28,17 +28,16 @@ def getContentUsers(self):
     p = outt.split('\n')
     self.lastLoginsText=QLabel(str(p[-2]))
     self.lastLoginsText.setStyleSheet("color:#2c3e50")
-    self.lastlogins = lastLogins(self,width=4.5, height=3, dpi=80)
+    self.lastlogins = lastLogins(self,width=6, height=3.3, dpi=60)
     self.gridUsers.addWidget(self.lastLoginsText, 0, 0)
     self.gridUsers.addWidget(self.lastlogins, 1, 0)
 
     ############################### last bad logins pie plot
     outtt = subprocess.Popen('lastb --time-format short', stderr=subprocess.PIPE, stdout=subprocess.PIPE,shell=True).communicate()[0].decode('utf-8')
     pp = outtt.split('\n')
-    #
-    self.lastBadLoginsText=QLabel(str(pp[-1]))
+    self.lastBadLoginsText=QLabel(str(pp[-2]))
     self.lastBadLoginsText.setStyleSheet("color:#2c3e50")
-    self.lastbadlogins = lastBadLogins(self,width=4.5, height=3, dpi=80)
+    self.lastbadlogins = lastBadLogins(self,width=6, height=3.3, dpi=60)
     self.gridUsers.addWidget(self.lastBadLoginsText, 0, 1)
     self.gridUsers.addWidget(self.lastbadlogins, 1, 1)
 
@@ -137,7 +136,8 @@ def createTableUsers(self):
     self.tableUsers.setRowCount(0)
     self.tableUsers.setColumnCount(12)
 
-    self.tableUsers.setFixedHeight(500)
+    self.tableUsers.setFixedHeight(350)
+    self.tableUsers.setFixedWidth(1130)
     self.tableUsers.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
     '''
     self.tableUsers.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)

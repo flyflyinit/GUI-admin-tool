@@ -38,5 +38,10 @@ def main(self):
     subprocess.run("cp terminal/Xresources ~/.Xresources",shell=True)
     subprocess.run("xrdb ~/.Xresources",shell=True)
     self.sw = embterminal()
+    self.sw.setContentsMargins(20,20,25,20)
 
-    self.bottomRightLayout.addWidget(self.sw)
+    box = QHBoxLayout()
+    box.addWidget(self.sw)
+    box.setContentsMargins(0,20,0,0)
+
+    self.bottomRightLayout.addLayout(box)

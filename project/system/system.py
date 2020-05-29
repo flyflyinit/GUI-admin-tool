@@ -19,8 +19,8 @@ except ImportError as e:
 class MyMplCanvas(FigureCanvas):
     def __init__(self, parent=None, width=5, height=5, dpi=50):
         fig = Figure(figsize=(width, height), dpi=dpi)
-        #plt.style.use('Solarize_Light2')
-        plt.style.use('seaborn')
+        plt.style.use('Solarize_Light2')
+        #plt.style.use('seaborn')
         #fig.patch.set_facecolor('black')
         self.Axes = fig.add_subplot()
         self.compute_initial_figure()
@@ -37,9 +37,9 @@ class MemoryCanvas(MyMplCanvas):
     """A canvas that updates itself every second with a new plot."""
     def __init__(self, *args, **kwargs):
         MyMplCanvas.__init__(self, *args, **kwargs)
-        timer = QtCore.QTimer(self)
-        timer.timeout.connect(self.mem_update_figure)
-        timer.start(1000)
+        self.timer = QtCore.QTimer(self)
+        self.timer.timeout.connect(self.mem_update_figure)
+        self.timer.start(1000)
     def compute_initial_figure(self):
         global memava
         global memused
@@ -74,8 +74,10 @@ class MemoryCanvas(MyMplCanvas):
         self.Axes.set_xlabel("Seconds")
         self.Axes.set_ylabel("Bytes")
         self.Axes.set_title("Memory Usage")
+        self.Axes.set_xlim(0, 60)
         self.Axes.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
         self.Axes.grid(True)
+        self.Axes.get_xaxis().set_visible(False)
         self.Axes.legend(loc='upper left')
 
     def mem_update_figure(self):
@@ -104,7 +106,7 @@ class MemoryCanvas(MyMplCanvas):
         memcurrenttime=memcurrenttime+1
         memtime.append(str(memcurrenttime))
 
-        if len(memtime) == 20:
+        if len(memtime) == 60:
             memava.pop(0)
             memused.pop(0)
             memfree.pop(0)
@@ -124,10 +126,10 @@ class MemoryCanvas(MyMplCanvas):
         self.Axes.plot(memtime, memshared, label='shared')
         self.Axes.plot(memtime, swapused, label='used swap',color='black')
         self.Axes.plot(memtime, swapfree, label='free swap',color='gray')
-        #self.Axes.get_xaxis().set_visible(False)
         self.Axes.set_xlabel("Seconds")
         self.Axes.set_ylabel("Bytes")
         self.Axes.set_title("Memory Usage")
+        self.Axes.set_xlim(0, 60)
         self.Axes.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
         self.Axes.grid(True)
         self.Axes.legend(loc='upper left')
@@ -136,9 +138,9 @@ class MemoryCanvas(MyMplCanvas):
 class CpuCanvas(MyMplCanvas):
     def __init__(self, *args, **kwargs):
         MyMplCanvas.__init__(self, *args, **kwargs)
-        timer = QtCore.QTimer(self)
-        timer.timeout.connect(self.cpu_update_figure)
-        timer.start(1000)
+        self.timer = QtCore.QTimer(self)
+        self.timer.timeout.connect(self.cpu_update_figure)
+        self.timer.start(1000)
     def compute_initial_figure(self):
         global cpuuser
         global cpusystem
@@ -168,8 +170,10 @@ class CpuCanvas(MyMplCanvas):
         self.Axes.set_xlabel("Seconds")
         self.Axes.set_ylabel("Cpu Times")
         self.Axes.set_title("CPU Statistics")
+        self.Axes.set_xlim(0, 60)
         self.Axes.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
         self.Axes.grid(True)
+        self.Axes.get_xaxis().set_visible(False)
         self.Axes.legend(loc='upper left')
 
     def cpu_update_figure(self):
@@ -193,7 +197,7 @@ class CpuCanvas(MyMplCanvas):
         cpucurrenttime=cpucurrenttime+1
         cputimee.append(str(cpucurrenttime))
 
-        if len(cputimee) == 20:
+        if len(cputimee) == 60:
             cpuuser.pop(0)
             cpusystem.pop(0)
             cpuidle.pop(0)
@@ -212,76 +216,144 @@ class CpuCanvas(MyMplCanvas):
         self.Axes.set_xlabel("Seconds")
         self.Axes.set_ylabel("Cpu Times")
         self.Axes.set_title("CPU Statistics")
+        self.Axes.set_xlim(0, 60)
         self.Axes.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
         self.Axes.grid(True)
+        self.Axes.get_xaxis().set_visible(False)
         self.Axes.legend(loc='upper left')
         self.draw()
 
 
-class IoCanvas(MyMplCanvas):
+class ReadCanvas(MyMplCanvas):
     def __init__(self, *args, **kwargs):
         MyMplCanvas.__init__(self, *args, **kwargs)
-        timer = QtCore.QTimer(self)
-        timer.timeout.connect(self.io_update_figure)
-        timer.start(1000)
+        self.timer = QtCore.QTimer(self)
+        self.timer.timeout.connect(self.read_update_figure)
+        self.timer.start(1000)
 
     def compute_initial_figure(self):
-        global ioread
-        global iowrite
-        global iotime
-        global iocurrenttime
+        global read
+        global rtime
+        global rcurrenttime
         global Axes
+        global readval
 
-        ioread = []
-        iowrite = []
-        iotime = []
-        iocurrenttime = 0
-        self.Axes.plot(iotime, ioread, label='read bytes')
-        self.Axes.plot(iotime, iowrite, label='write bytes')
+        readval = psutil.disk_io_counters()[2]
+        read = []
+        rtime = []
+        rcurrenttime = 0
+
+        self.Axes.plot(rtime, read, label='read bytes')
         self.Axes.set_xlabel("Seconds")
         self.Axes.set_ylabel("Bytes")
-        self.Axes.set_title("Disk IO Usage")
+        self.Axes.set_title("Disk Read")
+        self.Axes.set_xlim(0, 60)
         self.Axes.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
         self.Axes.grid(True)
+        self.Axes.get_xaxis().set_visible(False)
         self.Axes.legend(loc='upper left')
 
-    def io_update_figure(self):
-        global ioread
-        global iowrite
-        global iotime
-        global iocurrenttime
+    def read_update_figure(self):
+        global read
+        global rtime
+        global rcurrenttime
         global Axes
+        global readval
 
-        io = psutil.disk_io_counters()
-        ioread.append(io[1])
-        iowrite.append(io[2])
-        iocurrenttime=iocurrenttime+1
-        iotime.append(str(iocurrenttime))
+        readpreval = readval
+        readval = psutil.disk_io_counters()[2]
+        read.append(readval - readpreval)
 
-        if len(iotime) == 20:
-            ioread.pop(0)
-            iowrite.pop(0)
-            iotime.pop(0)
+        print(psutil.disk_io_counters())
+        rcurrenttime=rcurrenttime+1
+        rtime.append(str(rcurrenttime))
+
+        if len(rtime) == 60:
+            read.pop(0)
+            rtime.pop(0)
 
         self.Axes.cla()
-        self.Axes.plot(iotime, ioread, label='read bytes')
-        self.Axes.plot(iotime, iowrite, label='write bytes')
+        self.Axes.plot(rtime, read, label='read bytes')
         self.Axes.set_xlabel("Seconds")
         self.Axes.set_ylabel("Bytes")
-        self.Axes.set_title("Disk IO Usage")
+        self.Axes.set_title("Disk Read")
+        self.Axes.set_xlim(0, 60)
         self.Axes.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
         self.Axes.grid(True)
+        self.Axes.get_xaxis().set_visible(False)
+        self.Axes.legend(loc='upper left')
+        self.draw()
+
+class WriteCanvas(MyMplCanvas):
+    def __init__(self, *args, **kwargs):
+        MyMplCanvas.__init__(self, *args, **kwargs)
+        self.timer = QtCore.QTimer(self)
+        self.timer.timeout.connect(self.write_update_figure)
+        self.timer.start(1000)
+
+    def compute_initial_figure(self):
+        global write
+        global wtime
+        global wcurrenttime
+        global Axes
+        global writeval
+
+        writeval = psutil.disk_io_counters()[1]
+        write = []
+        wtime = []
+        wcurrenttime = 0
+
+        self.Axes.plot(wtime, write, label='write bytes')
+        self.Axes.set_xlabel("Seconds")
+        self.Axes.set_ylabel("Bytes")
+        self.Axes.set_title("Disk Write")
+        self.Axes.set_xlim(0, 60)
+        self.Axes.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
+        self.Axes.grid(True)
+        self.Axes.get_xaxis().set_visible(False)
+        self.Axes.legend(loc='upper left')
+
+    def write_update_figure(self):
+        global write
+        global wtime
+        global wcurrenttime
+        global Axes
+        global writeval
+
+        writepreval = writeval
+        writeval = psutil.disk_io_counters()[1]
+
+        write.append( writeval - writepreval)
+        wcurrenttime=wcurrenttime+1
+        wtime.append(str(wcurrenttime))
+
+        if len(wtime) == 60:
+            write.pop(0)
+            wtime.pop(0)
+
+        self.Axes.cla()
+        self.Axes.plot(wtime, write, label='write bytes')
+        self.Axes.set_xlabel("Seconds")
+        self.Axes.set_ylabel("Bytes")
+        self.Axes.set_title("Disk Write")
+        self.Axes.set_xlim(0, 60)
+        self.Axes.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
+        self.Axes.grid(True)
+        self.Axes.get_xaxis().set_visible(False)
         self.Axes.legend(loc='upper left')
         self.draw()
 
 
+
+
+'''
 class IooCanvas(MyMplCanvas):
     """A canvas that updates itself every second with a new plot."""
     def __init__(self, *args, **kwargs):
         MyMplCanvas.__init__(self, *args, **kwargs)
-        timer = QtCore.QTimer(self)
-        timer.timeout.connect(self.io_update_figure)
-        timer.start(1000)
+        self.timer = QtCore.QTimer(self)
+        self.timer.timeout.connect(self.io_update_figure)
+        self.timer.start(1000)
 
     def compute_initial_figure(self):
         global ioread
@@ -307,8 +379,10 @@ class IooCanvas(MyMplCanvas):
         self.Axes.set_xlabel("Seconds")
         self.Axes.set_ylabel("Bytes")
         self.Axes.set_title("Disk IO Usage")
+        self.Axes.set_xlim(0, 60)
         self.Axes.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
         self.Axes.grid(True)
+        self.Axes.get_xaxis().set_visible(False)
         self.Axes.legend()
 
     def io_update_figure(self):
@@ -331,7 +405,7 @@ class IooCanvas(MyMplCanvas):
         iocurrenttime=iocurrenttime+1
         iotime.append(str(iocurrenttime))
 
-        if len(iotime) == 10:
+        if len(iotime) == 60:
             ioread.pop(0)
             iowrite.pop(0)
             iotime.pop(0)
@@ -342,18 +416,20 @@ class IooCanvas(MyMplCanvas):
         self.Axes.set_xlabel("Seconds")
         self.Axes.set_ylabel("Bytes")
         self.Axes.set_title("Disk IO Usage")
+        self.Axes.set_xlim(0, 60)
         self.Axes.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
         self.Axes.grid(True)
+        self.Axes.get_xaxis().set_visible(False)
         self.Axes.legend()
         self.draw()
-
+'''
 
 class UsageResume(MyMplCanvas):
     def __init__(self, *args, **kwargs):
         MyMplCanvas.__init__(self, *args, **kwargs)
-        timer = QtCore.QTimer(self)
-        timer.timeout.connect(self.resume_update_figure)
-        timer.start(1000)
+        self.timer = QtCore.QTimer(self)
+        self.timer.timeout.connect(self.resume_update_figure)
+        self.timer.start(1000)
 
     def compute_initial_figure(self):
         global Axes
@@ -371,7 +447,7 @@ class UsageResume(MyMplCanvas):
         self.Axes.set_yticks(y_pos)
         self.Axes.set_yticklabels(people)
         self.Axes.invert_yaxis()
-        self.Axes.set_xlabel('Usage 100$')
+        self.Axes.set_xlabel('Usage 100%')
         self.Axes.set_xlim(0, 100)
         self.Axes.set_title("System Usage")
         self.Axes.grid(True)
@@ -437,12 +513,13 @@ class PolygonCPUs(MyMplCanvas):
         self.Axes.plot(cputime, cpu2,label='cpu2')
         self.Axes.plot(cputime, cpu3,label='cpu3')
         self.Axes.plot(cputime, cpus,label='All CPUs', color='black')
-        self.Axes.set_xlim(0, 20)
+        self.Axes.set_xlim(0, 60)
         self.Axes.set_ylim(0, 100)
         self.Axes.set_xlabel('Seconds')
         self.Axes.set_ylabel('CPUs')
         self.Axes.set_title("CPUs Usage")
         self.Axes.grid(True)
+        self.Axes.get_xaxis().set_visible(False)
         self.Axes.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
         self.Axes.legend(loc='upper left')
 
@@ -464,7 +541,7 @@ class PolygonCPUs(MyMplCanvas):
         cputime.append(str(cpucurrenttime))
         cpus.append(psutil.cpu_percent())
 
-        if len(cputime) == 20:
+        if len(cputime) == 60:
             cpu0.pop(0)
             cpu1.pop(0)
             cpu2.pop(0)
@@ -479,10 +556,11 @@ class PolygonCPUs(MyMplCanvas):
         self.Axes.plot(cputime, cpu3,label='cpu3')
         self.Axes.plot(cputime, cpus,label='All CPUs', color='black')
         self.Axes.set_title("CPUs Usage")
-        self.Axes.set_xlim(0, 20)
+        self.Axes.set_xlim(0, 60)
         self.Axes.set_ylim(0, 100)
         self.Axes.set_xlabel('Seconds')
         self.Axes.set_ylabel('CPUs')
         self.Axes.grid(True)
+        self.Axes.get_xaxis().set_visible(False)
         self.Axes.legend(loc='upper left')
         self.draw()

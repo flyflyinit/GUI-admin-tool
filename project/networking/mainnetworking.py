@@ -9,7 +9,7 @@ from project.networking.networkingScripts import currentlyActiveConnectionNow,up
 from project.networking.netScript import takeIpFromDHCP
 from project.networking.displayIP import DisplayIP
 from project.networking.globalInfo import globalInfoTwo
-from project.users.usersplots import lastLogins,lastBadLogins
+from project.networking.networkingplots import NetSentCanvas, NetRecCanvas
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import QTimer, Qt
@@ -18,33 +18,18 @@ import platform
 import subprocess
 
 
-
 def getContentNetwork(self):
-    self.gridUsers = QGridLayout()
-    ############################### last logins pie plot
-    outt = subprocess.Popen('last --time-format short', stderr=subprocess.PIPE, stdout=subprocess.PIPE,shell=True).communicate()[0].decode('utf-8')
-    p = outt.split('\n')
-    self.lastLoginsText=QLabel(str(p[-2]))
-    self.lastLoginsText.setStyleSheet("color:#2c3e50")
-    self.lastlogins = lastLogins(self,width=4.5, height=3, dpi=80)
-    self.gridUsers.addWidget(self.lastLoginsText, 0, 0)
-    self.gridUsers.addWidget(self.lastlogins, 1, 0)
+    self.gridNetwork = QGridLayout()
+    createGrid(self)
+    self.netSent = NetSentCanvas(self,interface="All",width=6, height=3.3, dpi=60)
+    self.gridNetwork.addWidget(self.netSent, 1, 0)
 
     ############################### last bad logins pie plot
-    outtt = subprocess.Popen('lastb --time-format short', stderr=subprocess.PIPE, stdout=subprocess.PIPE,shell=True).communicate()[0].decode('utf-8')
-    pp = outtt.split('\n')
-    self.lastBadLoginsText=QLabel(str(pp[-1]))
-    self.lastBadLoginsText.setStyleSheet("color:#2c3e50")
-    self.lastbadlogins = lastBadLogins(self,width=4.5, height=3, dpi=80)
-    self.gridUsers.addWidget(self.lastBadLoginsText, 0, 1)
-    self.gridUsers.addWidget(self.lastbadlogins, 1, 1)
-
-    #################### creating and triggerting update for list logged in usesrs
-    createLoggedInList(self)
-    updateLoggedInList(self)
+    self.netRec = NetRecCanvas(self,interface="All",width=6, height=3.3, dpi=60)
+    self.gridNetwork.addWidget(self.netRec, 1, 1)
 
     #################### creating and triggerting update for user's table
-    createTableUsers(self)
+    createTableNet(self)
     # updating table still has some issues
     '''
     try:
@@ -61,9 +46,9 @@ def getContentNetwork(self):
     self.groupBox = QGroupBox()
     self.containerUsers=QVBoxLayout()
 
-    self.containerUsers.addLayout(self.gridUsers)
+    self.containerUsers.addLayout(self.gridNetwork)
     self.containerUsers.addLayout(self.hboxbtn)
-    self.containerUsers.addWidget(self.tableUsers)
+    self.containerUsers.addWidget(self.tableNet)
     self.containerUsers.addStretch()
 
     self.groupBox.setLayout(self.containerUsers)
@@ -76,37 +61,98 @@ def getContentNetwork(self):
     #self.bottomLayout.setCentralWidget(self.scroll)
     self.bottomRightLayout.addWidget(self.scroll)
 
-def updateTableUsers(self):
+def createGrid(self):
+    ############################### last logins pie plot
+    self.hboxxx = QHBoxLayout()
+    self.listnet = QComboBox(self)
+    self.selectBtn = QPushButton("Select")
+    self.selectBtn.clicked.connect(lambda :selectclicked(self))
+    self.selectBtn.setStyleSheet("color: #95a5a6; background-color: #303a46 ; border: 0px solid #303a46")
+    self.listnet.setStyleSheet("color: #95a5a6; background-color: #303a46 ; border: 0px solid #303a46")
+    self.listnet.setFixedHeight(25)
+    self.listnet.setFixedWidth(110)
+    self.selectBtn.setFixedHeight(25)
+    self.selectBtn.setFixedWidth(80)
+    self.hboxxx.addWidget(self.listnet)
+    self.hboxxx.addWidget(self.selectBtn)
+    self.hboxxx.addStretch()
+
+    out = psutil.net_io_counters(pernic=True)
+    self.listnet.addItem("All")
+    self.listnet.setCurrentIndex(0)
+    for i in out:
+        self.listnet.addItem(str(i))
+
+    self.gridNetwork.addLayout(self.hboxxx, 0, 0)
+    #################### creating and triggerting update for list logged in usesrs
+    createtcpudpsocketsList(self)
+    updatetcpudpsocketsList(self)
+
+
+def selectclicked(self):
+    current = self.listnet.currentIndex()
+    currenttext = self.listnet.currentText()
+    clearLayoutt(self,self.gridNetwork)
+    createGrid(self)
+
+    self.listnet.setCurrentIndex(current)
+
+    self.netSent = NetSentCanvas(self,interface=currenttext,width=4.5, height=3, dpi=80)
+    self.gridNetwork.addWidget(self.netSent, 1, 0)
+
+    self.netRec = NetRecCanvas(self,interface=currenttext,width=4.5, height=3, dpi=80)
+    self.gridNetwork.addWidget(self.netRec, 1, 1)
+
+
+def clearLayoutt(self,layout):
     try:
-        self.tableUsers.setRowCount(0)
+        del self.netSent
+    except Exception:
+        pass
+    try:
+        del self.netRec
+    except Exception:
+        pass
+    while layout.count():
+        child = layout.takeAt(0)
+        if child.widget() is not None:
+            child.widget().deleteLater()
+        elif child.layout() is not None:
+            self.clearLayout(child.layout())
+
+def updateTableNet(self):
+    try:
+        self.tableNet.setRowCount(0)
         self.rowposition=0
         showmyuserslist(self)
     except Exception as e:
         return None
 
-def updateLoggedInList(self):
+def updatetcpudpsocketsList(self):
     try:
-        self.listLoggedOn.clear()
-        o = subprocess.Popen('who -uH', stderr=subprocess.PIPE, stdout=subprocess.PIPE,shell=True).communicate()[0].decode()
+        self.listtcpudpsockets.clear()
+        o = subprocess.Popen('ss -ta', stderr=subprocess.PIPE, stdout=subprocess.PIPE,shell=True).communicate()[0].decode()
         l = o.split('\n')
         for i in l:
-            self.listLoggedOn.addItem(i)
+            i.replace("   ", "")
+            self.listtcpudpsockets.addItem(i)
     except Exception:
         return None
-    QTimer.singleShot(10000, lambda: updateLoggedInList(self))
+    QTimer.singleShot(10000, lambda: updatetcpudpsocketsList(self))
 
-def createLoggedInList(self):
-    self.listLoggedOn=QListWidget()
-    self.listLoggedOn.setFixedWidth(380)
-    self.listLoggedOn.setStyleSheet("color: #2c3e50; selection-background-color: #e74c3c ;background-color: white ; selection-color: #ecf0f1 ;border: 0px solid #95a5a6")
-    o = subprocess.Popen('who -uH', stderr=subprocess.PIPE, stdout=subprocess.PIPE,shell=True).communicate()[0].decode()
+def createtcpudpsocketsList(self):
+    self.listtcpudpsockets=QListWidget()
+    self.listtcpudpsockets.setFixedWidth(390)
+    self.listtcpudpsockets.setStyleSheet("color: #2c3e50; selection-background-color: #e74c3c ;background-color: white ; selection-color: #ecf0f1 ;border: 0px solid #95a5a6")
+    o = subprocess.Popen('ss -ta', stderr=subprocess.PIPE, stdout=subprocess.PIPE,shell=True).communicate()[0].decode()
     l = o.split('\n')
     for i in l:
-        self.listLoggedOn.addItem(i)
-    usersLoginsText = QLabel('Logged In Users : ')
-    usersLoginsText.setStyleSheet("color:#2c3e50")
-    self.gridUsers.addWidget(usersLoginsText, 0, 2)
-    self.gridUsers.addWidget(self.listLoggedOn, 1, 2)
+        i.replace("     ", "")
+        self.listtcpudpsockets.addItem(i)
+    tcpudpsocketsText = QLabel('TCP UDP Sockets : ')
+    tcpudpsocketsText.setStyleSheet("color:#2c3e50")
+    self.gridNetwork.addWidget(tcpudpsocketsText, 0, 2)
+    self.gridNetwork.addWidget(self.listtcpudpsockets, 1, 2)
 
 
 def createUsersButtons(self):
@@ -135,13 +181,13 @@ def createUsersButtons(self):
     self.hboxbtn.addWidget(self.deleteBtn)
 
 
-def createTableUsers(self):
-    self.tableUsers=QTableWidget()
-    self.tableUsers.setRowCount(0)
-    self.tableUsers.setColumnCount(9)
+def createTableNet(self):
+    self.tableNet=QTableWidget()
+    self.tableNet.setRowCount(0)
+    self.tableNet.setColumnCount(9)
 
-    self.tableUsers.setFixedHeight(500)
-    self.tableUsers.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+    self.tableNet.setFixedHeight(335)
+    self.tableNet.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
     '''
     self.tableUsers.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
     self.tableUsers.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -149,16 +195,16 @@ def createTableUsers(self):
     self.tableUsers.resizeColumnsToContents()
     self.tableUsers.setFixedSize(self.tableUsers.horizontalHeader().length()+self.tableUsers.verticalHeader().width(),self.tableUsers.verticalHeader().length() +self.tableUsers.horizontalHeader().height())
     '''
-    self.tableUsers.setHorizontalHeaderItem(0, QTableWidgetItem("Connection Name"))
-    self.tableUsers.setHorizontalHeaderItem(1, QTableWidgetItem("Connection Type"))
-    self.tableUsers.setHorizontalHeaderItem(2, QTableWidgetItem("IP Informaion"))
-    self.tableUsers.setHorizontalHeaderItem(3, QTableWidgetItem("IP Assing Method"))
-    self.tableUsers.setHorizontalHeaderItem(4, QTableWidgetItem("Auto Connect "))
-    self.tableUsers.setHorizontalHeaderItem(5, QTableWidgetItem("Up-Down Control"))
-    self.tableUsers.setHorizontalHeaderItem(6, QTableWidgetItem("DHCP Control"))
-    self.tableUsers.setHorizontalHeaderItem(7, QTableWidgetItem("AutoConnect Control"))
-    self.tableUsers.setHorizontalHeaderItem(8, QTableWidgetItem("Select"))
-    self.tableUsers.setEditTriggers(QAbstractItemView.NoEditTriggers)
+    self.tableNet.setHorizontalHeaderItem(0, QTableWidgetItem("Connection Name"))
+    self.tableNet.setHorizontalHeaderItem(1, QTableWidgetItem("Connection Type"))
+    self.tableNet.setHorizontalHeaderItem(2, QTableWidgetItem("IP Informaion"))
+    self.tableNet.setHorizontalHeaderItem(3, QTableWidgetItem("IP Assing Method"))
+    self.tableNet.setHorizontalHeaderItem(4, QTableWidgetItem("Auto Connect "))
+    self.tableNet.setHorizontalHeaderItem(5, QTableWidgetItem("Up-Down Control"))
+    self.tableNet.setHorizontalHeaderItem(6, QTableWidgetItem("DHCP Control"))
+    self.tableNet.setHorizontalHeaderItem(7, QTableWidgetItem("AutoConnect Control"))
+    self.tableNet.setHorizontalHeaderItem(8, QTableWidgetItem("Select"))
+    self.tableNet.setEditTriggers(QAbstractItemView.NoEditTriggers)
     #self.tableUsers.doubleClicked.connect(self.doubleClick)
     showmyuserslist(self)
 
@@ -168,9 +214,9 @@ def retrievedatafrompasswdfile():
     return list_of_units
 
 ############################ NEW CODE  #############################################"""
-class SelectCellInTableUsers(QWidget):
+class SelectCellInTableNet(QWidget):
     def __init__(self, parent=None):
-        super(SelectCellInTableUsers,self).__init__(parent)
+        super(SelectCellInTableNet,self).__init__(parent)
         self.isSelected = False
         self.hbox = QHBoxLayout()
         self.checkb = QCheckBox(self)
@@ -446,9 +492,9 @@ class DHCPCellInTable(QWidget):
             self.userIsAdmin = False
 
 
-class IPCellInTableUsers(QWidget):
+class IPCellInTableNet(QWidget):
     def __init__(self,username, parent=None):
-        super(IPCellInTableUsers,self).__init__(parent)
+        super(IPCellInTableNet,self).__init__(parent)
         self.username = username
         self.hbox = QHBoxLayout()
         self.showmoreBtn=QPushButton('more')
@@ -479,23 +525,22 @@ def showmyuserslist(self):
     self.dic6={}
     self.rowposition = 0
     for i in self.usersList:
-        self.rowPosition = self.tableUsers.rowCount()
-        self.tableUsers.insertRow(self.rowPosition)
-        self.tableUsers.setItem(self.rowPosition, 0, QTableWidgetItem(i[0]))
-        self.tableUsers.setItem(self.rowPosition, 1, QTableWidgetItem(i[1]))
-        self.tableUsers.setItem(self.rowPosition, 3, QTableWidgetItem(i[2]))
-        self.tableUsers.setItem(self.rowPosition, 4, QTableWidgetItem(i[3]))
+        self.rowPosition = self.tableNet.rowCount()
+        self.tableNet.insertRow(self.rowPosition)
+        self.tableNet.setItem(self.rowPosition, 0, QTableWidgetItem(i[0]))
+        self.tableNet.setItem(self.rowPosition, 1, QTableWidgetItem(i[1]))
+        self.dic6[i[0]] = IPCellInTableNet(i[0])
+        self.tableNet.setCellWidget(self.rowPosition,2,self.dic6[i[0]])
+        self.tableNet.setItem(self.rowPosition, 3, QTableWidgetItem(i[2]))
+        self.tableNet.setItem(self.rowPosition, 4, QTableWidgetItem(i[3]))
         self.dic3[i[0]] = UpDownCellInTable(i[0],i[2])
-        self.dic2[i[0]] = SelectCellInTableUsers()
-        #new
+        self.tableNet.setCellWidget(self.rowPosition,5,self.dic3[i[0]])
+        self.dic2[i[0]] = SelectCellInTableNet()
+        self.tableNet.setCellWidget(self.rowPosition,8,self.dic2[i[0]])
         self.dic4[i[0]] = DHCPCellInTable(i[0],i[2])
+        self.tableNet.setCellWidget(self.rowPosition,6,self.dic4[i[0]])
         self.dic5[i[0]] = AutoConnectCellInTable(i[0],i[3])
-        self.dic6[i[0]] = IPCellInTableUsers(i[0])
-        self.tableUsers.setCellWidget(self.rowPosition,5,self.dic3[i[0]])
-        self.tableUsers.setCellWidget(self.rowPosition,8,self.dic2[i[0]])
-        self.tableUsers.setCellWidget(self.rowPosition,6,self.dic4[i[0]])
-        self.tableUsers.setCellWidget(self.rowPosition,7,self.dic5[i[0]])
-        self.tableUsers.setCellWidget(self.rowPosition,2,self.dic6[i[0]])
+        self.tableNet.setCellWidget(self.rowPosition,7,self.dic5[i[0]])
 
 
 def createUsersWindow(self):

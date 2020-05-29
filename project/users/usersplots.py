@@ -23,7 +23,7 @@ enddate = 'now'
 class MyMplCanvas(FigureCanvas):
     def __init__(self,parent=None, width=5, height=5, dpi=50):
         fig = Figure(figsize=(width, height), dpi=dpi)
-        plt.style.use('seaborn')
+        plt.style.use('Solarize_Light2')
         self.Axes = fig.add_subplot()
         self.compute_initial_figure()
 

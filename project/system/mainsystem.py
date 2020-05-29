@@ -19,7 +19,8 @@ try:
     from system.configuresystem import ConfigureSystemWindow
     from system.system import MemoryCanvas
     from system.system import CpuCanvas
-    from system.system import IoCanvas
+    from system.system import ReadCanvas
+    from system.system import WriteCanvas
     from system.system import PolygonCPUs
     from system.system import UsageResume
 except ImportError as e:
@@ -30,16 +31,18 @@ except ImportError as e:
 def getContentSystem(self):
     self.gridSystem = QGridLayout()
 
-    self.memoryC = MemoryCanvas(width=4.5, height=3, dpi=80)
-    self.cpuC = CpuCanvas(width=4.5, height=3, dpi=80)
-    self.cpusC = PolygonCPUs(width=4.5, height=3, dpi=80)
-    self.usg = UsageResume(width=4.5, height=3, dpi=80)
-    self.ioC = IoCanvas(width=4.5, height=3, dpi=80)
+    self.memoryC = MemoryCanvas(width=6.1, height=3.3, dpi=60)
+    self.cpuC = CpuCanvas(width=6.1, height=3.3, dpi=60)
+    self.cpusC = PolygonCPUs(width=6.1, height=3.3, dpi=60)
+    self.usg = UsageResume(width=6.1, height=3.3, dpi=60)
+    self.read = ReadCanvas(width=6.1, height=3.3, dpi=60)
+    self.write = WriteCanvas(width=6.1, height=3.3, dpi=60)
     self.gridSystem.addWidget(self.memoryC, 0, 0)
     self.gridSystem.addWidget(self.cpuC, 0, 1)
     self.gridSystem.addWidget(self.cpusC, 0, 2)
     self.gridSystem.addWidget(self.usg, 1, 0)
-    self.gridSystem.addWidget(self.ioC, 1, 1)
+    self.gridSystem.addWidget(self.read, 1, 1)
+    self.gridSystem.addWidget(self.write, 1, 2)
 
     systemInformation(self)
 
@@ -170,7 +173,7 @@ def systemInformation(self):
     self.chngHstBtn.setFixedHeight(30)
     self.chngHstBtn.setFixedWidth(120)
     self.chngHstBtn.clicked.connect(lambda: configureSystemInformationWindow(self))
-    self.chngHstBtn.setStyleSheet("color: #95a5a6; background-color: #2c3e50 ; border: 0px solid #2c3e50")
+    self.chngHstBtn.setStyleSheet("color: #95a5a6; background-color: #303a46 ; border: 0px solid #303a46")
     self.hs=QLabel(str(hst))
     self.hbox.addWidget(self.hs)
     self.hbox.addStretch()

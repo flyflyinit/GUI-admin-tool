@@ -64,7 +64,8 @@ def createTableServices(self):
     self.tableServices.setColumnCount(7)
 
     self.tableServices.setFixedHeight(600)
-    self.tableServices.setFixedWidth(1100)
+    self.tableServices.setFixedWidth(1110)
+
     self.tableServices.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
     self.tableServices.setHorizontalHeaderItem(0, QTableWidgetItem("UNIT Name"))

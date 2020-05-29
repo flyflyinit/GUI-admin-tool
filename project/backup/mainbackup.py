@@ -74,7 +74,7 @@ def createTableFullBackup(self):
     self.tableFullBackup.setRowCount(0)
     self.tableFullBackup.setColumnCount(8)
 
-    self.tableFullBackup.setFixedHeight(250)
+    self.tableFullBackup.setFixedHeight(260)
     self.tableFullBackup.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
     '''
     self.tableUsers.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
@@ -253,7 +253,8 @@ def createTableIncBackup(self):
     self.tableIncBackup=QTreeWidget()
     labels = ['Meta Name','Backup ID','Backup Level','Backup Date','Backup Name','Backup Path','Destination Path','Excluded Items','More','Select']
     self.tableIncBackup.setHeaderLabels(labels)
-    self.tableIncBackup.setFixedHeight(250)
+    self.tableIncBackup.setFixedHeight(270)
+    self.tableIncBackup.setFixedWidth(1130)
 
     self.tableIncBackup.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
     self.tableIncBackup.setEditTriggers(QAbstractItemView.NoEditTriggers)

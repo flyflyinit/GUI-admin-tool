@@ -66,8 +66,9 @@ def createTableFw(self):
     self.tableFw.setRowCount(0)
     self.tableFw.setColumnCount(14)
 
-    self.tableFw.setFixedHeight(600)
-    self.tableFw.setFixedWidth(1100)
+    self.tableFw.setFixedHeight(570)
+    self.tableFw.setFixedWidth(1130)
+
     self.tableFw.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
     self.tableFw.setHorizontalHeaderItem(0, QTableWidgetItem("zone"))
     self.tableFw.setHorizontalHeaderItem(1, QTableWidgetItem("target"))

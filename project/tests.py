@@ -1,3 +1,4 @@
+'''
 import sys
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -78,4 +79,47 @@ class MyTableWidget(QWidget):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = App()
+    sys.exit(app.exec_())
+'''
+
+
+from PyQt5 import QtGui, QtCore
+from PyQt5.QtWidgets import QWidget, QApplication, QStyle, QStyleOptionTitleBar, QPushButton, QVBoxLayout
+
+
+class MyWindow(QWidget):
+    def __init__(self, parent=None):
+        super(MyWindow, self).__init__(parent)
+
+        self.pushButtonClose = QPushButton(self)
+        self.pushButtonClose.setText("Close")
+        self.pushButtonClose.clicked.connect(self.on_pushButtonClose_clicked)
+
+        self.layoutVertical = QVBoxLayout(self)
+        self.layoutVertical.addWidget(self.pushButtonClose)
+
+        titleBarHeight = self.style().pixelMetric(
+            QStyle.PM_TitleBarHeight,
+            QStyleOptionTitleBar(),
+            self
+        )
+
+        geometry = app.desktop().availableGeometry()
+        geometry.setHeight(geometry.height() - (titleBarHeight*2))
+
+        self.setGeometry(geometry)
+
+    @QtCore.pyqtSlot()
+    def on_pushButtonClose_clicked(self):
+        QApplication.instance().quit()
+
+if __name__ == "__main__":
+    import sys
+
+    app = QApplication(sys.argv)
+    app.setApplicationName('MyWindow')
+
+    main = MyWindow()
+    main.show()
+
     sys.exit(app.exec_())
