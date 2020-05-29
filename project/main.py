@@ -93,6 +93,14 @@ class mainWindow(QWidget):
         '''
         #self.topLayout.addWidget(logo)
 
+        refresh = QPushButton("🔁")
+        refresh.clicked.connect(self.getContentTrigger)
+        refresh.setStyleSheet("color: #95a5a6; background-color: #303a46 ; border: 0px solid #303a46")
+        refresh.setFixedHeight(30)
+        refresh.setFixedWidth(30)
+        b = QHBoxLayout()
+        b.addWidget(refresh)
+        b.setContentsMargins(0,0,13,0)
 
         logotext = QLabel("GUI Admin Tool")
         logotext.setStyleSheet("color: #303a46;font: bold 25px;")
@@ -101,6 +109,7 @@ class mainWindow(QWidget):
         #self.topLayout.addStretch()
         self.topLayout.addLayout(menuLayout)
         self.topLayout.addStretch()
+        self.topLayout.addLayout(b)
 
         self.bottomLayout.addLayout(self.bottomLeftLayout)
         self.bottomLayout.addLayout(self.bottomRightLayout)
@@ -186,7 +195,6 @@ class mainWindow(QWidget):
         elif si==self.item7:
             self.clearLayout(self.bottomRightLayout)
             mainterminal.main(self)
-
         else:
             QMessageBox.warning(self,"warning","no section selected, please selecet a section")
 
@@ -329,12 +337,17 @@ def suspendPlots(self):
         pass
     try:
         self.all2.timer.stop()
-        plotstostart.append(self.all.timer)
+        plotstostart.append(self.all2.timer)
     except:
         pass
     try:
-        self.ioC.timer.stop()
-        plotstostart.append(self.ioC.timer)
+        self.read.timer.stop()
+        plotstostart.append(self.read.timer)
+    except:
+        pass
+    try:
+        self.write.timer.stop()
+        plotstostart.append(self.write.timer)
     except:
         pass
     try:

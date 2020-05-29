@@ -132,7 +132,7 @@ def systemInformationn(self):
     hbox1.addStretch()
     hbox1.addLayout(shutdownreboot)
 
-    line = QLabel('_______________________________________________________________________________________________________________________________________________')
+    line = QLabel('______________________________________________________________________________________________________________________________________________________')
     line.setStyleSheet("color: #95a5a6;font: bold 14px;")
     line.setContentsMargins(0, 0, 0, 10)
 
@@ -185,10 +185,11 @@ def shutdownrebootAction(self):
     if mbox == QMessageBox.Yes:
         if "shutdown" == self.shre.currentText():
             try:
-                subprocess.run('shutdown',stderr=subprocess.PIPE, stdout=subprocess.PIPE,shell=True)
+                c = subprocess.run('shutdown',stderr=subprocess.PIPE, stdout=subprocess.PIPE,shell=True)
+                QMessageBox.information(self,"Shutting Down",f"{str(c.stderr.decode('utf-8').split(',')[0])}")
             except subprocess.CalledProcessError as e:
                 QMessageBox.critical(self, 'error',f'error occured during -shutdown- opperation\n{e}')
-        elif "shutdown" == self.shre.currentText():
+        elif "shutdown now" == self.shre.currentText():
             try:
                 subprocess.run('shutdown now',stderr=subprocess.PIPE, stdout=subprocess.PIPE,shell=True)
             except subprocess.CalledProcessError as e:
