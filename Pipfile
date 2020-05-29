@@ -9,10 +9,7 @@ verify_ssl = true
 qtmodern = "==0.2.0"
 matplotlib = "==3.2.0"
 pyqt5 = "==5.14.2"
-pyqt5-stubs = "*"
-rxvt-unicode = "*"
-psutil = "*"
-form = "*"
+psutil = "==5.7.0"
 
 [requires]
 python_version = "3.6"

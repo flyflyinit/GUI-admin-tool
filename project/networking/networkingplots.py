@@ -81,10 +81,8 @@ class NetSentCanvas(MyMplCanvas):
         netsentvalpre = netsentval
         if self.interface == "All" :
             netsentval = psutil.net_io_counters(pernic=False, nowrap=False)[0]
-            print(netsentval)
         else:
             netsentval = psutil.net_io_counters(pernic=True, nowrap=False)[self.interface][0]
-            print(netsentval)
 
         netsent.append(netsentval - netsentvalpre)
 

@@ -264,7 +264,6 @@ class ReadCanvas(MyMplCanvas):
         readval = psutil.disk_io_counters()[2]
         read.append(readval - readpreval)
 
-        print(psutil.disk_io_counters())
         rcurrenttime=rcurrenttime+1
         rtime.append(str(rcurrenttime))
 
