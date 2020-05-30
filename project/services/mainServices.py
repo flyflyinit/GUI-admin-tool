@@ -10,10 +10,8 @@ from project.services.servicesScripts import stopServices, startServices, listAl
 def getContentServices(self):
     self.gridServices = QGridLayout()
 
-    #################### creating and triggerting update for services's table
     createTableServices(self)
-
-
+    
     self.containerServices=QVBoxLayout()
 
     self.containerServices.addLayout(self.gridServices)
