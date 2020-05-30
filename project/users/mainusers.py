@@ -130,6 +130,10 @@ def createTableUsers(self):
 
     self.tableUsers.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
     self.tableUsers.setAutoFillBackground(True)
+
+    header = self.tableUsers.horizontalHeader()
+    header.setStretchLastSection(True)
+
     '''
     self.tableUsers.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
     self.tableUsers.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)

@@ -2,7 +2,7 @@ try:
     from PyQt5 import QtCore
     from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel, QDockWidget, QVBoxLayout, QListWidget, QAbstractItemView, \
     QMessageBox, QApplication, QGridLayout, QGroupBox, QScrollArea, QTableWidget, QSizePolicy, QTableWidgetItem, \
-    QPushButton, QCheckBox, QTreeWidget, QTreeWidgetItem
+    QPushButton, QCheckBox, QTreeWidget, QTreeWidgetItem, QHeaderView
 except ImportError as e:
     print(f'package PyQt5 Not Found\n{e}\ntry :\npip3 install --user pyqt5\nOR\ndnf install python3-pyqt5, yum install python3-pyqt5\n')
 
@@ -67,8 +67,9 @@ def createTableFullBackup(self):
     self.tableFullBackup.setRowCount(0)
     self.tableFullBackup.setColumnCount(8)
 
-    self.tableFullBackup.setFixedHeight(260)
-    self.tableFullBackup.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+    header = self.tableFullBackup.horizontalHeader()
+    header.setStretchLastSection(True)
+
     '''
     self.tableUsers.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
     self.tableUsers.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)

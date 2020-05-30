@@ -56,6 +56,9 @@ def createTableServices(self):
     self.tableServices.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
     self.tableServices.setAutoFillBackground(True)
 
+    header = self.tableServices.horizontalHeader()
+    header.setStretchLastSection(True)
+
     self.tableServices.setHorizontalHeaderItem(0, QTableWidgetItem("UNIT Name"))
     self.tableServices.setHorizontalHeaderItem(1, QTableWidgetItem("LOAD"))
     self.tableServices.setHorizontalHeaderItem(2, QTableWidgetItem("ACTIVE"))

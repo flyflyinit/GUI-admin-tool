@@ -178,6 +178,10 @@ def createTableNet(self):
 
     self.tableNet.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
     self.tableNet.setAutoFillBackground(True)
+
+    header = self.tableNet.horizontalHeader()
+    header.setStretchLastSection(True)
+
     '''
     self.tableUsers.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
     self.tableUsers.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)

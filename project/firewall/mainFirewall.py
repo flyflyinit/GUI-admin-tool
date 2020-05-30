@@ -54,6 +54,9 @@ def createTableFw(self):
     self.tableFw.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
     self.tableFw.setAutoFillBackground(True)
 
+    header = self.tableFw.horizontalHeader()
+    header.setStretchLastSection(True)
+
     self.tableFw.setHorizontalHeaderItem(0, QTableWidgetItem("zone"))
     self.tableFw.setHorizontalHeaderItem(1, QTableWidgetItem("target"))
     self.tableFw.setHorizontalHeaderItem(2, QTableWidgetItem("icmp-block-inversion"))
