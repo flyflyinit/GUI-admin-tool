@@ -21,33 +21,6 @@ def getContentServices(self):
 
     self.bottomRightLayout.addLayout(self.containerServices)
 
-'''
-def createServicesButtons(self):
-    self.hboxbtn=QHBoxLayout()
-    #self.selectall=QCheckBox('Select All',self)
-    self.addBtn=QPushButton('Something Here')
-    self.editBtn=QPushButton('Something here')
-    self.deleteBtn=QPushButton('Something here')
-    self.addBtn.setFixedHeight(30)
-    self.addBtn.setFixedWidth(120)
-    self.editBtn.setFixedHeight(30)
-    self.editBtn.setFixedWidth(120)
-    self.deleteBtn.setFixedHeight(30)
-    self.deleteBtn.setFixedWidth(120)
-    self.addBtn.clicked.connect(lambda: createServicesWindow(self))
-    self.addBtn.setStyleSheet("color: #ecf0f1; background-color: #2ecc71 ; border: 0px solid #2c3e50")
-    self.editBtn.clicked.connect(lambda: editServicesWindow(self,self.dic2))
-    self.editBtn.setStyleSheet("color: #ecf0f1; background-color: #34495e ; border: 0px solid #2c3e50")
-    self.deleteBtn.clicked.connect(lambda: deleteServicesWindow(self,self.dic2))
-    self.deleteBtn.setStyleSheet("color: #ecf0f1; background-color: #e74c3c; border: 0px solid #2c3e50")
-    #self.selectall = SelectAllButton(self.dic2)
-    self.hboxbtn.addWidget(self.selectall)
-    self.hboxbtn.addStretch()
-    self.hboxbtn.addWidget(self.addBtn)
-    self.hboxbtn.addWidget(self.editBtn)
-    self.hboxbtn.addWidget(self.deleteBtn)
-'''
-
 def createTableServices(self):
     self.tableServices=QTableWidget()
     self.tableServices.setRowCount(0)
