@@ -100,7 +100,6 @@ class mainWindow(QWidget):
         refresh.setFixedWidth(30)
         b = QHBoxLayout()
         b.addWidget(refresh)
-        b.setContentsMargins(0,0,13,0)
 
         logotext = QLabel("GUI Admin Tool")
         logotext.setStyleSheet("color: #303a46;font: bold 25px;")
