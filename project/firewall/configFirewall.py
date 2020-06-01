@@ -102,20 +102,54 @@ class CreateFwWindow(QWidget):
             self.middelLayout.addRow(QLabel('Select a Service :'), self.selectProtocol)
             self.middelLayout.addRow(QLabel('Select a Port :'), self.selectPort)
 
+    def clearMiddel(self):
+
+        for i in reversed(range(self.middelLayout.count())):
+                self.middelLayout.itemAt(i).widget().setParent(None)
+
     def submitAction(self):
 
         self.mbox = QMessageBox.question(self, "Warningg!", f"Are you sure to Apply :\n {self.task} ?",QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if self.mbox == QMessageBox.Yes:
 
             try:
-                self.takeAction()
+
+                par1 = Par2 = ''
+                if self.task == 'Add Service To A Specific Zone':
+                    par1 = self.servies.currentText()
+                    par2 = self.zones.currentText()
+                    addServiceToSpecificZone(par1, par2)
+
+                elif self.task in 'Add Interface To Zone':
+                    par1 = self.interfaces.currentText()
+                    par2 = self.zones.currentText()
+                    addInterfaceToZone(par1, par2)
+                elif self.task in 'Add Service To Default Zone':
+                    par1 = self.servies.currentText()
+                    addServiceToDefaultZone(par1)
+
+                elif self.task in 'Add Protocol and Port':
+
+                    try:
+                        par1 = self.selectProtocol.currentText()
+                        par2 = self.selectPort.text()
+                        int(par2)
+                    except ValueError:
+                        QMessageBox.warning(self, 'error', f'Port numnber must be an Integer')
+                        return
+                    else:
+                        addPort(par2, par1)
+
 
             except :
                 QMessageBox.critical(self, 'error', f'error occured during Applaying this \n {self.task} ')
+                self.clearMiddel()
 
             else:
                 QMessageBox.information(self, 'success',f'Task Done Succesfully')
-
+                self.clearMiddel()
+        elif self.mbox == QMessageBox.No:
+            self.clearMiddel()
 
     def clearAction(self):
         pass
@@ -128,25 +162,6 @@ class CreateFwWindow(QWidget):
         for i in reversed(range(self.middelLayout.count())):
                 self.middelLayout.itemAt(i).widget().setParent(None)
 
-    def takeAction(self):
-        par1 = Par2 =''
-        if self.task=='Add Service To A Specific Zone':
-            par1 = self.servies.currentText()
-            par2 = self.zones.currentText()
-            addServiceToSpecificZone(par1, par2)
-
-        elif self.task in 'Add Interface To Zone':
-            par1 = self.interfaces.currentText()
-            par2 = self.zones.currentText()
-            addInterfaceToZone(par1, par2)
-        elif self.task in 'Add Service To Default Zone':
-            par1 = self.servies.currentText()
-            addServiceToDefaultZone(par1)
-
-        elif self.task in 'Add Protocol and Port':
-            par1 = self.selectProtocol.currentText()
-            par2 = self.selectPort.text()
-            addPort(par2,par1)
 
 ############################################################################################################################
 class EditFwWindow(QWidget):
@@ -298,6 +313,10 @@ class EditFwWindow(QWidget):
             self.middelLayout.addRow(QLabel('Select a Service :'), self.selectProtocol)
             self.middelLayout.addRow(QLabel('Select a Port :'), self.selectPort)
 
+    def clearMiddel(self):
+        for i in reversed(range(self.middelLayout.count())):
+            self.middelLayout.itemAt(i).widget().setParent(None)
+
 
     def submitAction(self):
 
@@ -306,12 +325,92 @@ class EditFwWindow(QWidget):
         if self.mbox == QMessageBox.Yes:
 
             try:
-                self.takeAction()
-            except:
-                QMessageBox.critical(self, 'error', f'error occured during Applaying this \n {self.task} ')
+                par1 = Par2 = None
 
+                if self.task in 'Add Permanent a New zone':
+
+
+                    par1 = self.createNewZone.text()
+                    print(par1)
+                    if str(par1) == '':
+                        QMessageBox.warning(self, 'Warrnings', 'You Enter a name ')
+                        return
+                    else:
+                        addPermanentNewZone(par1)
+
+
+                elif self.task in 'Add Permanent Interface To Zone':
+                    par1 = self.interfaces.currentText()
+                    par2 = self.zones.currentText()
+                    addPermanentInterfaceToZone(par1, par2)
+
+
+                elif self.task in 'Add Service To Default Zone':
+                    par1 = self.servies.currentText()
+                    addPermanentServiceDefaultZone(par1)
+
+                elif self.task in 'Add Permanent a Service To A Specific Zone':
+                    par1 = self.servies.currentText()
+                    par2 = self.zones.currentText()
+                    addPermanentServiceToSpecificZone(par1, par2)
+
+                elif self.task in 'Add Permanent Protocol and Port':
+                    par1 = self.selectProtocol.currentText()
+                    par2 = self.selectPort.text()
+                    try:
+                        par1 = self.selectProtocol.currentText()
+                        par2 = self.selectPort.text()
+                        int(par2)
+                    except ValueError:
+                        QMessageBox.warning(self, 'error', f'Port numnber must be an Integer')
+                        return
+                    else:
+                        addPermanetProtocolPort(par2, par1)
+                # Remove
+
+                elif self.task in 'Remove Permanent a inteface From A Specific Zone':
+                    par1 = self.interfaces.currentText()
+                    par2 = self.zones.currentText()
+                    RemoveInterfaceFromZone(par2, par1)
+
+                elif self.task in 'Remove Permanent a Zone':
+                    par1 = self.zones.currentText()
+                    RemoveZone(par1)
+
+
+                elif self.task in 'Remove Permanent a Service From Default Zone':
+                    par1 = self.servies.currentText()
+                    removePermanentServiceFromDefaultZone(par1)
+
+
+                elif self.task in 'Remove Permanent a Service From Specific Zone':
+                    par1 = self.servies.currentText()
+                    par2 = self.zones.currentText()
+                    RemovePermanetServiceFromSpecificZone(par1, par2)
+
+                elif self.task in 'Remove Permanent a Protocol':
+
+                    try:
+                        par1 = self.selectProtocol.currentText()
+                        par2 = self.selectPort.text()
+                        int(par2)
+                    except ValueError:
+                        QMessageBox.warning(self, 'error', f'Port numnber must be an Integer')
+                        return
+                    else:
+                        RemovePermanetProtocolPort(par1, par2)
+
+            except:
+                QMessageBox.critical(self, 'error', f'error occured during Applaying this \n {self.task}')
+                self.clearMiddel()
             else:
+
                 QMessageBox.information(self, 'success', f'Task Done Succesfully')
+                self.clearMiddel()
+
+        elif self.mbox == QMessageBox.No:
+             self.clearMiddel()
+
 
     def clearAction(self):
         pass
@@ -322,59 +421,6 @@ class EditFwWindow(QWidget):
     def clearMiddel(self):
         for i in reversed(range(self.middelLayout.count())):
             self.middelLayout.itemAt(i).widget().setParent(None)
-    def takeAction(self):
-        par1=Par2=None
-
-        if self.task in 'Add Permanent a New zone':
-            par1 = self.createNewZone.text()
-            addPermanentNewZone(par1)
-
-        elif self.task in 'Add Permanent Interface To Zone':
-            par1 = self.interfaces.currentText()
-            par2 = self.zones.currentText()
-            addPermanentInterfaceToZone(par1, par2)
-
-
-        elif self.task in 'Add Service To Default Zone':
-            par1 = self.servies.currentText()
-            addPermanentServiceDefaultZone(par1)
-
-        elif self.task in 'Add Permanent a Service To A Specific Zone':
-            par1 = self.servies.currentText()
-            par2 = self.zones.currentText()
-            addPermanentServiceToSpecificZone(par1, par2)
-
-        elif self.task in 'Add Permanent Protocol and Port':
-            par1 = self.selectProtocol.currentText()
-            par2 = self.selectPort.text()
-            addPermanetProtocolPort(par2, par1)
-
-        #Remove
-
-        elif self.task in 'Remove Permanent a inteface From A Specific Zone':
-            par1 = self.interfaces.currentText()
-            par2 = self.zones.currentText()
-            RemoveInterfaceFromZone(par2, par1)
-
-        elif self.task in 'Remove Permanent a Zone':
-            par1 = self.zones.currentText()
-            RemoveZone(par1)
-
-
-        elif self.task in 'Remove Permanent a Service From Default Zone':
-            par1 = self.servies.currentText()
-            removePermanentServiceFromDefaultZone(par1)
-
-
-        elif self.task in 'Remove Permanent a Service From Specific Zone':
-            par1 = self.servies.currentText()
-            par2 = self.zones.currentText()
-            RemovePermanetServiceFromSpecificZone(par1, par2)
-
-        elif self.task in 'Remove Permanent a Protocol':
-            par1 = self.selectProtocol.currentText()
-            par2 = self.selectPort.currentText()
-            RemovePermanetProtocolPort(par1, par2)
 
 
 ##################################################################################################""
@@ -486,6 +532,10 @@ class DeleteFwWindow(QWidget):
             self.middelLayout.addRow(QLabel('Select a Protocol :'), self.selectProtocol)
             self.middelLayout.addRow(QLabel('Select a Port :'), self.selectPort)
 
+    def clearMiddel(self):
+
+        for i in reversed(range(self.middelLayout.count())):
+            self.middelLayout.itemAt(i).widget().setParent(None)
 
 
     def submitAction(self):
@@ -495,13 +545,46 @@ class DeleteFwWindow(QWidget):
         if self.mbox == QMessageBox.Yes:
 
             try:
-                self.takeAction()
+
+                par1 = par2 = None
+
+                if self.task in 'Remove Interface To Zone':
+
+                    par1 = self.interfaces.currentText()
+                    par2 = self.zones.currentText()
+                    RemoveInterfaceFromZone(par1, par2)
+
+                elif self.task in 'Remove a Specific Zone':
+                    par1 = self.zones.currentText()
+                    RemoveZone(par1)
+                elif self.task in 'Remove Service To Default Zone':
+                    par1 = self.servies.currentText()
+                    removeServiceFromDefaultZone(par1)
+                elif self.task in 'Remove a Service From A Specific Zone':
+                    par1 = self.servies.currentText()
+                    par2 = self.zones.currentText()
+                    RemoveServiceToZone(par1, par2)
+
+                elif self.task in 'Remove a protocol and Port':
+
+                    try:
+                        par1 = self.selectProtocol.currentText()
+                        par2 = self.selectPort.text()
+                        int(par2)
+                    except ValueError:
+                        QMessageBox.warning(self, 'error', f'Port numnber must be an Integer')
+                        return
+                    else:
+                        RemoveProtocolPort(par2, par1)
+
 
             except:
                 QMessageBox.critical(self, 'error', f'error occured during Applaying this \n {self.task} ')
+                self.clearMiddel()
 
             else:
                 QMessageBox.information(self, 'success', f'Task Done Succesfully')
+                self.clearMiddel()
 
     def clearAction(self):
         pass
@@ -509,31 +592,5 @@ class DeleteFwWindow(QWidget):
     def cancelAction(self):
         self.close()
 
-    def clearMiddel(self):
 
-        for i in reversed(range(self.middelLayout.count())):
-            self.middelLayout.itemAt(i).widget().setParent(None)
 
-    def takeAction(self):
-        par1 =par2=None
-        if self.task in 'Remove Interface To Zone':
-
-            par1 = self.interfaces.currentText()
-            par2 = self.zones.currentText()
-            RemoveInterfaceFromZone(par1, par2)
-
-        elif self.task in 'Remove a Specific Zone':
-            par1 = self.zones.currentText()
-            RemoveZone(par1)
-        elif self.task in 'Remove Service To Default Zone':
-            par1 = self.servies.currentText()
-            removeServiceFromDefaultZone(par1)
-        elif self.task in 'Remove a Service From A Specific Zone':
-            par1 = self.servies.currentText()
-            par2 = self.zones.currentText()
-            RemoveServiceToZone(par1, par2)
-
-        elif self.task in 'Remove a protocol and Port':
-            par1 = self.selectProtocol.currentText()
-            par2 = self.selectPort.text()
-            RemoveProtocolPort(par2, par1)

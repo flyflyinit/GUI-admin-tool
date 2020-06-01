@@ -81,55 +81,31 @@ def createTableFw(self):
     self.tableFw.setEditTriggers(QAbstractItemView.NoEditTriggers)
     showmyfwlist(self)
 
-class DefaultZoneCellInTableFw(QWidget):
-    def __init__(self,zone, parent=None):
-        super(DefaultZoneCellInTableFw,self).__init__(parent)
-        self.zone=zone
-        self.IsDefault = False
-        self.hbox = QHBoxLayout()
-        self.slider = QSlider(Qt.Horizontal)
-        self.slider.setMaximum(1)
-        self.slider.setMinimum(0)
-        self.slider.setFixedWidth(40)
-        self.slider.setTickInterval(1)  # change ticks interval
-        index=str(self.zone)
-        index=index.split('(')
-        index=index[0]
-        index=index.replace(' ','')
-        if index == defaultZone()[0]:
-            self.IsDefault = True
-            self.slider.setValue(1)
-        else:
-            self.IsDefault = False
-            self.slider.setValue(0)
 
-        self.slider.valueChanged.connect(self.changed)
-        self.hbox.addStretch()
-        self.hbox.addWidget(self.slider)
+
+class SetDefaultZone(QWidget):
+    def __init__(self,zone, parent=None):
+        super(SetDefaultZone,self).__init__(parent)
+        self.zone = zone
+        self.hbox = QHBoxLayout()
+        self.showmoreBtn=QPushButton('Set')
+        self.showmoreBtn.clicked.connect(self.showmoreBtnClicked)
+        self.hbox.addWidget(self.showmoreBtn)
         self.hbox.addStretch()
         self.hbox.setContentsMargins(0,0,0,0)
         self.hbox.setSpacing(8)
         self.setLayout(self.hbox)
 
-    def changed(self):
-        if self.slider.value() == 1:
-            self.setDefault()
-        elif self.slider.value() == 0:
-            self.setNonDefault()
+    def showmoreBtnClicked(self):
+        index=str(self.zone)
 
-    def setDefault(self):
         try:
-            setDefaultZone(self.username)
-        except subprocess.CalledProcessError as e :
-            QMessageBox.critical(self,'error',f'error occured during setting this  {self.username} as a Default Zone ')
-            self.slider.setValue(0)
+            setDefaultZone(index)
+        except:
+            QMessageBox.critical(self, 'warrning', f'\n can set  {index} the default zone ')
         else:
-            QMessageBox.information(self,'success',f'{self.username} has been setted the default succesfully')
-            self.slider.setValue(1)
-            self.IsDefault = True
+            QMessageBox.information(self, 'Services', f'\n {index} has been setted the default zone ')
 
-    def setNonDefault(self):
-        pass
 
 class ServiceTableFw(QWidget):
     def __init__(self,username, parent=None):
@@ -185,21 +161,7 @@ def showmyfwlist(self):
         self.rowPosition = self.tableFw.rowCount()
         self.tableFw.insertRow(self.rowPosition)
         self.tableFw.setItem(self.rowPosition, 0, QTableWidgetItem(i[0]))
-        '''
-        self.tableFw.setItem(self.rowPosition, 1, QTableWidgetItem(i[1]))
-        self.tableFw.setItem(self.rowPosition, 3, QTableWidgetItem(i[2]))
-        self.tableFw.setItem(self.rowPosition, 4, QTableWidgetItem(i[3]))
-        self.tableFw.setItem(self.rowPosition, 5, QTableWidgetItem(i[4]))
-        self.tableFw.setItem(self.rowPosition, 6, QTableWidgetItem(i[5]))
-        self.tableFw.setItem(self.rowPosition, 7, QTableWidgetItem(i[6]))
-        self.tableFw.setItem(self.rowPosition, 8, QTableWidgetItem(i[7]))
-        self.tableFw.setItem(self.rowPosition, 9, QTableWidgetItem(i[8]))
-        self.tableFw.setItem(self.rowPosition, 10, QTableWidgetItem(i[9]))
-        self.tableFw.setItem(self.rowPosition, 11, QTableWidgetItem(i[10]))
-        self.tableFw.setItem(self.rowPosition, 12, QTableWidgetItem(i[11]))
-        self.tableFw.setItem(self.rowPosition, 13, QTableWidgetItem(i[12]))
-        '''
-        self.dic[i[0]] = DefaultZoneCellInTableFw(i[0])
+        self.dic[i[0]] = SetDefaultZone(i[0])
         self.dic1[i[0]] = ServiceTableFw(i[0])
         self.dic2[i[0]] = PortsTableFw(i[0])
         self.tableFw.setCellWidget(self.rowPosition, 3, self.dic[i[0]])
