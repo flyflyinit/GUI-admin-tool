@@ -278,17 +278,13 @@ class UpDownCellInTable(QWidget):
         index2=index2.replace(' ','')
         if index1==index2:
             self.userIsAdmin = True
-            self.text = QLabel("True")
             self.slider.setValue(1)
         else:
             self.userIsAdmin = False
-            self.text = QLabel("False")
             self.slider.setValue(0)
-        # self.text.setAlignment(Qt.AlignCenter)  # move to the center
         self.slider.valueChanged.connect(self.changed)
         self.hbox.addStretch()
         self.hbox.addWidget(self.slider)
-        self.hbox.addWidget(self.text)
         self.hbox.addStretch()
         self.hbox.setContentsMargins(0, 0, 0, 0)
         self.hbox.setSpacing(8)
@@ -296,14 +292,7 @@ class UpDownCellInTable(QWidget):
 
     def changed(self):
         if self.slider.value() == 1:
-            self.mbox = QMessageBox.question(self, "Warningg!", f"Are you sure to make {self.username} UP ?",
-                                             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-            if self.mbox == QMessageBox.Yes:
-                self.setAdmin()
-            elif self.mbox == QMessageBox.No:
-                pass
-            else:
-                pass
+            self.setAdmin()
         elif self.slider.value() == 0:
             self.setNormalUser()
 
@@ -315,7 +304,6 @@ class UpDownCellInTable(QWidget):
             # self.slider.setValue(0)
         else:
             QMessageBox.information(self, 'success', f'{self.username} turned UP succesfully')
-            self.text.setText("True")
             self.slider.setValue(1)
             self.userIsAdmin = True
 
@@ -328,7 +316,6 @@ class UpDownCellInTable(QWidget):
             # self.slider.setValue(1)
         else:
             QMessageBox.information(self, 'success', f'{self.username} turned DOWN succesfully')
-            self.text.setText("False")
             self.slider.setValue(0)
             self.userIsAdmin = False
 
@@ -351,17 +338,13 @@ class AutoConnectCellInTable(QWidget):
 
         if 'yes' in self.groups:
             self.userIsAdmin = True
-            self.text = QLabel("True")
             self.slider.setValue(1)
         else:
             self.userIsAdmin = False
-            self.text = QLabel("False")
             self.slider.setValue(0)
-        # self.text.setAlignment(Qt.AlignCenter)  # move to the center
         self.slider.valueChanged.connect(self.changed)
         self.hbox.addStretch()
         self.hbox.addWidget(self.slider)
-        self.hbox.addWidget(self.text)
         self.hbox.addStretch()
         self.hbox.setContentsMargins(0, 0, 0, 0)
         self.hbox.setSpacing(8)
@@ -369,14 +352,7 @@ class AutoConnectCellInTable(QWidget):
 
     def changed(self):
         if self.slider.value() == 1:
-            self.mbox = QMessageBox.question(self, "Warningg!", f"Are you sure to make {self.username} Auto Connect ?",
-                                             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-            if self.mbox == QMessageBox.Yes:
-                self.setAdmin()
-            elif self.mbox == QMessageBox.No:
-                pass
-            else:
-                pass
+            self.setAdmin()
         elif self.slider.value() == 0:
             self.setNormalUser()
 
@@ -388,7 +364,6 @@ class AutoConnectCellInTable(QWidget):
             # self.slider.setValue(0)
         else:
             QMessageBox.information(self, 'success', f'Auto Connect Setted succesfully')
-            self.text.setText("True")
             self.slider.setValue(1)
             self.userIsAdmin = True
 
@@ -400,7 +375,6 @@ class AutoConnectCellInTable(QWidget):
             # self.slider.setValue(1)
         else:
             QMessageBox.information(self, 'success', f'Manual Connect Setted succesfully')
-            self.text.setText("False")
             self.slider.setValue(0)
             self.userIsAdmin = False
 
@@ -424,17 +398,13 @@ class DHCPCellInTable(QWidget):
 
         if 'auto' in self.groups:
             self.userIsAdmin = True
-            self.text = QLabel("True")
             self.slider.setValue(1)
         else:
             self.userIsAdmin = False
-            self.text = QLabel("False")
             self.slider.setValue(0)
-        # self.text.setAlignment(Qt.AlignCenter)  # move to the center
         self.slider.valueChanged.connect(self.changed)
         self.hbox.addStretch()
         self.hbox.addWidget(self.slider)
-        self.hbox.addWidget(self.text)
         self.hbox.addStretch()
         self.hbox.setContentsMargins(0, 0, 0, 0)
         self.hbox.setSpacing(8)
@@ -442,14 +412,7 @@ class DHCPCellInTable(QWidget):
 
     def changed(self):
         if self.slider.value() == 1:
-            self.mbox = QMessageBox.question(self, "Warningg!", f"Are you sure to make {self.username} take IP information From DHCP ?",
-                                             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-            if self.mbox == QMessageBox.Yes:
-                self.setAdmin()
-            elif self.mbox == QMessageBox.No:
-                pass
-            else:
-                pass
+            self.setAdmin()
         elif self.slider.value() == 0:
             self.setNormalUser()
 
@@ -462,7 +425,6 @@ class DHCPCellInTable(QWidget):
             # self.slider.setValue(0)
         else:
             QMessageBox.information(self, 'success', ' DHCP enabled succesfully')
-            self.text.setText("True")
             self.slider.setValue(1)
             self.userIsAdmin = True
 
@@ -475,7 +437,6 @@ class DHCPCellInTable(QWidget):
             # self.slider.setValue(1)
         else:
             QMessageBox.information(self, 'success', f'{self.username} turned DOWN succesfully')
-            self.text.setText("False")
             self.slider.setValue(0)
             self.userIsAdmin = False
 

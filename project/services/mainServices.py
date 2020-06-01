@@ -108,17 +108,13 @@ class StartStopCellInTable(QWidget):
         self.slider.setTickInterval(1)  # change ticks interval
         if ' active ' in self.groups:
             self.userIsAdmin = True
-            self.text = QLabel("True")
             self.slider.setValue(1)
         else:
             self.userIsAdmin = False
-            self.text = QLabel("False")
             self.slider.setValue(0)
-        #self.text.setAlignment(Qt.AlignCenter)  # move to the center
         self.slider.valueChanged.connect(self.changed)
         self.hbox.addStretch()
         self.hbox.addWidget(self.slider)
-        self.hbox.addWidget(self.text)
         self.hbox.addStretch()
         self.hbox.setContentsMargins(0,0,0,0)
         self.hbox.setSpacing(8)
@@ -126,14 +122,7 @@ class StartStopCellInTable(QWidget):
 
     def changed(self):
         if self.slider.value() == 1:
-            self.mbox = QMessageBox.question(self, "Warningg!", f"Are you sure to start {self.username} ?",
-                                             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-            if self.mbox == QMessageBox.Yes:
-                self.start()
-            elif self.mbox == QMessageBox.No:
-                pass
-            else:
-                pass
+            self.start()
         elif self.slider.value() == 0:
             self.stop()
 
@@ -145,7 +134,6 @@ class StartStopCellInTable(QWidget):
             #self.slider.setValue(0)
         else:
             QMessageBox.information(self, 'success', f'{self.username} has been started succesfully')
-            self.text.setText("True")
             self.slider.setValue(1)
             self.userIsAdmin = True
 
@@ -157,7 +145,6 @@ class StartStopCellInTable(QWidget):
             #self.slider.setValue(1)
         else:
             QMessageBox.information(self, 'success', f'{self.username} has been stopped succesfully')
-            self.text.setText("False")
             self.slider.setValue(0)
             self.userIsAdmin = False
 
@@ -177,17 +164,13 @@ class EnableDisableCellInTable(QWidget):
         self.slider.setTickInterval(1)  # change ticks interval
         if isEnable(self.username)==True :
             self.userIsAdmin = True
-            self.text = QLabel("True")
             self.slider.setValue(1)
         else:
             self.userIsAdmin = False
-            self.text = QLabel("False")
             self.slider.setValue(0)
-        #self.text.setAlignment(Qt.AlignCenter)  # move to the center
         self.slider.valueChanged.connect(self.changed)
         self.hbox.addStretch()
         self.hbox.addWidget(self.slider)
-        self.hbox.addWidget(self.text)
         self.hbox.addStretch()
         self.hbox.setContentsMargins(0,0,0,0)
         self.hbox.setSpacing(8)
@@ -195,14 +178,7 @@ class EnableDisableCellInTable(QWidget):
 
     def changed(self):
         if self.slider.value() == 1:
-            self.mbox = QMessageBox.question(self, "Warningg!", f"Are you sure to Enable {self.username} ?",
-                                             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-            if self.mbox == QMessageBox.Yes:
-                self.start()
-            elif self.mbox == QMessageBox.No:
-                pass
-            else:
-                pass
+            self.start()
         elif self.slider.value() == 0:
             self.stop()
 
@@ -214,7 +190,6 @@ class EnableDisableCellInTable(QWidget):
             #self.slider.setValue(0)
         else:
             QMessageBox.information(self, 'success', f'{self.username} has been Enabled succesfully')
-            self.text.setText("True")
             self.slider.setValue(1)
             self.userIsAdmin = True
 
@@ -226,7 +201,6 @@ class EnableDisableCellInTable(QWidget):
             #self.slider.setValue(1)
         else:
             QMessageBox.information(self, 'success', f'{self.username} has been Disabled succesfully')
-            self.text.setText("False")
             self.slider.setValue(0)
             self.userIsAdmin = False
 

@@ -88,29 +88,20 @@ class DefaultZoneCellInTableFw(QWidget):
         self.slider.setTickInterval(1)  # change ticks interval
         if self.username in defaultZone()[0]:
             self.IsDefault = True
-            self.text = QLabel("True")
             self.slider.setValue(1)
         else:
             self.IsDefault = False
-            self.text = QLabel("False")
             self.slider.setValue(0)
         self.slider.valueChanged.connect(self.changed)
         self.hbox.addStretch()
         self.hbox.addWidget(self.slider)
-        self.hbox.addWidget(self.text)
         self.hbox.addStretch()
         self.hbox.setSpacing(8)
         self.setLayout(self.hbox)
 
     def changed(self):
         if self.slider.value() == 1:
-            self.mbox = QMessageBox.question(self, "Warningg!", f"Are you sure to set {self.username} The Dfault Zone?",QMessageBox.Yes | QMessageBox.No , QMessageBox.No)
-            if self.mbox == QMessageBox.Yes:
-                self.setDefault()
-            elif self.mbox == QMessageBox.No:
-                pass
-            else:
-                pass
+            self.setDefault()
         elif self.slider.value() == 0:
             self.setNonDefault()
 
@@ -122,7 +113,6 @@ class DefaultZoneCellInTableFw(QWidget):
             self.slider.setValue(0)
         else:
             QMessageBox.information(self,'success',f'{self.username} has been setted the default succesfully')
-            self.text.setText("True")
             self.slider.setValue(1)
             self.IsDefault = True
 

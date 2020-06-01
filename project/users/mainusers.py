@@ -255,13 +255,7 @@ class AdministratorCellInTableUsers(QWidget):
 
     def changed(self):
         if self.slider.value() == 1:
-            self.mbox = QMessageBox.question(self, "Warningg!", f"Are you sure to set {self.username} an administrator?",QMessageBox.Yes | QMessageBox.No , QMessageBox.No)
-            if self.mbox == QMessageBox.Yes:
-                self.setAdmin()
-            elif self.mbox == QMessageBox.No:
-                self.slider.setValue(0)
-            else:
-                pass
+            self.setAdmin()
         elif self.slider.value() == 0:
             self.setNormalUser()
 
@@ -325,13 +319,7 @@ class LockCellInTableUsers(QWidget):
                 QMessageBox.warning(self, 'error', "you can't unlock a user doesn't have a password")
                 #self.slider.setValue(1)
             else:
-                self.mbox = QMessageBox.question(self, "Warningg!", f"Are you sure to lock {self.username} ",QMessageBox.Yes | QMessageBox.No , QMessageBox.No)
-                if self.mbox == QMessageBox.Yes:
-                    self.setLocked()
-                elif self.mbox == QMessageBox.No:
-                    self.slider.setValue(0)
-                else:
-                    pass
+                self.setLocked()
         elif self.slider.value() == 0:
             self.setUnlocked()
 
