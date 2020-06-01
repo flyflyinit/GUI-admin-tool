@@ -43,6 +43,9 @@ def getContentFirewall(self):
 
 def createFwButtons(self):
     self.hboxbtn=QHBoxLayout()
+    defaultzone=defaultZone()[0]
+    self.defaultZone=QLabel(f"Default Zone is : {defaultzone}")
+    self.defaultZone.move(20,20)
     self.addBtn=QPushButton('Add')
     self.editBtn=QPushButton('Edit')
     self.deleteBtn=QPushButton('Delete')
@@ -58,6 +61,12 @@ def createFwButtons(self):
     self.editBtn.setStyleSheet("color: #ecf0f1; background-color: #34495e ; border: 0px solid #2c3e50")
     self.deleteBtn.clicked.connect(lambda: deleteFwWindow(self))
     self.deleteBtn.setStyleSheet("color: #ecf0f1; background-color: #e74c3c; border: 0px solid #2c3e50")
+    self.hboxbtn.addWidget(self.defaultZone)
+    self.hboxbtn.addStretch()
+    self.hboxbtn.addStretch()
+    self.hboxbtn.addStretch()
+    self.hboxbtn.addStretch()
+    self.hboxbtn.addStretch()
     self.hboxbtn.addStretch()
     self.hboxbtn.addWidget(self.addBtn)
     self.hboxbtn.addWidget(self.editBtn)
@@ -67,16 +76,18 @@ def createFwButtons(self):
 def createTableFw(self):
     self.tableFw=QTableWidget()
     self.tableFw.setRowCount(0)
-    self.tableFw.setColumnCount(4)
+    self.tableFw.setColumnCount(5)
 
     self.tableFw.setFixedHeight(570)
     self.tableFw.setFixedWidth(1130)
 
     self.tableFw.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
     self.tableFw.setHorizontalHeaderItem(0, QTableWidgetItem("zone"))
-    self.tableFw.setHorizontalHeaderItem(1, QTableWidgetItem("Services"))
-    self.tableFw.setHorizontalHeaderItem(2, QTableWidgetItem("Ports"))
-    self.tableFw.setHorizontalHeaderItem(3, QTableWidgetItem("set-Default"))
+    self.tableFw.setHorizontalHeaderItem(1, QTableWidgetItem("interface"))
+    self.tableFw.setHorizontalHeaderItem(2, QTableWidgetItem("Services"))
+    self.tableFw.setHorizontalHeaderItem(3, QTableWidgetItem("Ports"))
+    self.tableFw.setHorizontalHeaderItem(4, QTableWidgetItem("set-Default"))
+    print(firewallGlobalInfo())
 
     self.tableFw.setEditTriggers(QAbstractItemView.NoEditTriggers)
     showmyfwlist(self)
@@ -150,23 +161,47 @@ class PortsTableFw(QWidget):
         QMessageBox.information(self, 'Ports', f'\n Ports added  in {index} Zone are:\n {outputString}')
 
 
+class interfaceTableFw(QWidget):
+    def __init__(self,zone, parent=None):
+        super(interfaceTableFw,self).__init__(parent)
+        self.zone = zone
+        self.hbox = QHBoxLayout()
+        self.showmoreBtn=QPushButton('more')
+        self.showmoreBtn.clicked.connect(self.showmoreBtnClicked)
+        self.hbox.addWidget(self.showmoreBtn)
+        self.hbox.addStretch()
+        self.hbox.setContentsMargins(0,0,0,0)
+        self.hbox.setSpacing(8)
+        self.setLayout(self.hbox)
+
+    def showmoreBtnClicked(self):
+        index=str(self.zone)
+        output = listinterfaces(index)
+        outputString = ''
+        for i in output:
+            outputString+= f'{i} '
+        QMessageBox.information(self, 'Interfaces', f'\n Interfaces added  in {index} Zone are:\n {outputString}')
+
 def showmyfwlist(self):
     list_of_fw=listZoneModified()
     self.dic={}
     self.dic1={}
     self.dic2={}
+    self.dic3={}
     self.rowposition = 0
 
     for i in list_of_fw:
         self.rowPosition = self.tableFw.rowCount()
         self.tableFw.insertRow(self.rowPosition)
         self.tableFw.setItem(self.rowPosition, 0, QTableWidgetItem(i[0]))
+        self.dic3[i[0]] = interfaceTableFw(i[0])
         self.dic[i[0]] = SetDefaultZone(i[0])
         self.dic1[i[0]] = ServiceTableFw(i[0])
         self.dic2[i[0]] = PortsTableFw(i[0])
-        self.tableFw.setCellWidget(self.rowPosition, 3, self.dic[i[0]])
-        self.tableFw.setCellWidget(self.rowPosition, 1, self.dic1[i[0]])
-        self.tableFw.setCellWidget(self.rowPosition, 2, self.dic2[i[0]])
+        self.tableFw.setCellWidget(self.rowPosition, 4, self.dic[i[0]])
+        self.tableFw.setCellWidget(self.rowPosition, 2, self.dic1[i[0]])
+        self.tableFw.setCellWidget(self.rowPosition, 3, self.dic2[i[0]])
+        self.tableFw.setCellWidget(self.rowPosition, 1, self.dic3[i[0]])
 
 
 def createFwWindow(self):

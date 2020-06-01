@@ -384,4 +384,4 @@ def firewallGlobalInfo():
 
 
 
-
+firewallGlobalInfo()
