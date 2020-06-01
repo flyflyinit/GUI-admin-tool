@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import *
-from project.firewall.firewallScripts import listZones, listAllServices, defaultZone
+from project.firewall.firewallScripts import *
 from project.networking.networkingScripts import displayNetworkInterface
 
 
@@ -49,7 +49,6 @@ class CreateFwWindow(QWidget):
         self.operation = QListWidget(self)
 
         self.operation.clicked.connect(self.addOperationsClick)
-        self.operation.addItem('Add a New Zone')
         self.operation.addItem('Add Interface To Zone')
         self.operation.addItem('Add Service To Default Zone')
         self.operation.addItem('Add Service To A Specific Zone')
@@ -81,9 +80,7 @@ class CreateFwWindow(QWidget):
         self.selectProtocol=QComboBox()
         self.selectProtocol.addItem('tcp')
         self.selectProtocol.addItem('udp')
-        self.selectPort=QComboBox()
-        self.selectPort.addItem('31')
-        self.selectPort.addItem('21')
+        self.selectPort=QLineEdit()
 
         if self.task in 'Add Service To A Specific Zone':
 
@@ -104,11 +101,6 @@ class CreateFwWindow(QWidget):
 
             self.middelLayout.addRow(QLabel('Select a Service :'), self.selectProtocol)
             self.middelLayout.addRow(QLabel('Select a Port :'), self.selectPort)
-
-        elif self.task in 'Add a New Zone':
-            self.middelLayout.addRow(QLabel(""), QLabel(""))
-            self.middelLayout.addRow(QLabel(''), self.createNewZone)
-
 
     def submitAction(self):
 
@@ -141,22 +133,20 @@ class CreateFwWindow(QWidget):
         if self.task=='Add Service To A Specific Zone':
             par1 = self.servies.currentText()
             par2 = self.zones.currentText()
-            print(par1, par2)
+            addServiceToSpecificZone(par1, par2)
 
         elif self.task in 'Add Interface To Zone':
             par1 = self.interfaces.currentText()
             par2 = self.zones.currentText()
-            print(par1, par2)
+            addInterfaceToZone(par1, par2)
         elif self.task in 'Add Service To Default Zone':
             par1 = self.servies.currentText()
-            print(par1)
+            addServiceToDefaultZone(par1)
+
         elif self.task in 'Add Protocol and Port':
             par1 = self.selectProtocol.currentText()
-            par2 = self.selectPort.currentText()
-            print(par1, par2)
-        elif self.task in 'Add a New Zone':
-            par1 = self.createNewZone.text()
-            print(par1)
+            par2 = self.selectPort.text()
+            addPort(par2,par1)
 
 ############################################################################################################################
 class EditFwWindow(QWidget):
@@ -245,20 +235,20 @@ class EditFwWindow(QWidget):
         self.selectProtocol = QComboBox()
         self.selectProtocol.addItem('tcp')
         self.selectProtocol.addItem('udp')
-        self.selectPort = QComboBox()
-        self.selectPort.addItem('31')
-        self.selectPort.addItem('21')
+        self.selectPort = QLineEdit()
 
-        if self.task in 'Add Permanent Interface To Zone':
+
+        #add new zone
+        if self.task in 'Add Permanent a New zone':
+
+            self.middelLayout.addRow(QLabel(""), QLabel(""))
+            self.middelLayout.addRow(QLabel(''), self.createNewZone)
+
+        elif self.task in 'Add Permanent Interface To Zone':
 
             self.middelLayout.addRow(QLabel('Select an Interface :'), self.interfaces)
             self.middelLayout.addRow(QLabel('Select a Zone :'), self.zones)
             self.middelLayout.addRow(QLabel(""), QLabel(""))
-
-
-        elif self.task in 'Add Permanent a New zone':
-
-            self.middelLayout.addRow(QLabel(''), self.createNewZone)
 
 
         elif self.task in 'Add Permanent a Service To Default Zone':
@@ -266,37 +256,40 @@ class EditFwWindow(QWidget):
             self.middelLayout.addRow(QLabel('Select a Service :'), self.servies)
             self.middelLayout.addRow(QLabel('Default Zone Is:'), QLabel(f'{zone}'))
 
-        elif self.task in 'Add Permanent Protocol and Port':
-
-            self.middelLayout.addRow(QLabel('Select a Service :'), self.selectProtocol)
-            self.middelLayout.addRow(QLabel('Select a Port :'), self.selectPort)
-
         elif self.task in 'Add Permanent a Service To A Specific Zone':
 
             self.middelLayout.addRow(QLabel('Select a Service :'), self.servies)
             self.middelLayout.addRow(QLabel('Select a Zone :'), self.zones)
 
+        elif self.task in 'Add Permanent Protocol and Port':
+
+            self.middelLayout.addRow(QLabel('Select a Service :'), self.selectProtocol)
+            self.middelLayout.addRow(QLabel('Select a Port :'), self.selectPort)
+
+
+        #Remove
+        elif self.task in 'Remove Permanent a inteface From A Specific Zone':
+
+            self.middelLayout.addRow(QLabel('Select an Interface :'), self.interfaces)
+            self.middelLayout.addRow(QLabel('Select a Zone :'), self.zones)
+            self.middelLayout.addRow(QLabel(""), QLabel(""))
+
         elif self.task in 'Remove Permanent a Zone':
 
+            self.middelLayout.addRow(QLabel(""), QLabel(""))
             self.middelLayout.addRow(QLabel('Select a Zone :'), self.zones)
 
-        elif self.task in 'Remove Permanent a inteface From A Specific Zone':
+
+        elif self.task in 'Remove Permanent a Service From Default Zone':
 
             self.middelLayout.addRow(QLabel(""), QLabel(""))
 
-            self.middelLayout.addRow(QLabel('Select a Zone :'), self.zones)
-            self.middelLayout.addRow(QLabel('Select an Interface :'), self.interfaces)
-
-
+            self.middelLayout.addRow(QLabel('Select a Service :'), self.servies)
+            self.middelLayout.addRow(QLabel('Default Zone Is:'), QLabel(f'{zone}'))
 
         elif self.task in 'Remove Permanent a Service From Specific Zone':
             self.middelLayout.addRow(QLabel(""), QLabel(""))
             self.middelLayout.addRow(QLabel('Select a Service :'), self.servies)
-            self.middelLayout.addRow(QLabel('Select a Zone :'), self.zones)
-
-
-        elif self.task in 'Remove Permanent a Zone':
-            self.middelLayout.addRow(QLabel(""), QLabel(""))
             self.middelLayout.addRow(QLabel('Select a Zone :'), self.zones)
 
 
@@ -305,17 +298,6 @@ class EditFwWindow(QWidget):
             self.middelLayout.addRow(QLabel('Select a Service :'), self.selectProtocol)
             self.middelLayout.addRow(QLabel('Select a Port :'), self.selectPort)
 
-
-        elif self.task in 'Remove Permanent a Service From Default Zone':
-
-            self.middelLayout.addRow(QLabel('Select a Service :'), self.servies)
-            self.middelLayout.addRow(QLabel('Default Zone Is:'), QLabel(f'{zone}'))
-
-        elif self.task in 'Remove Permanent a Service From Specific Zone':
-
-            self.middelLayout.addRow(QLabel(""), QLabel(""))
-            self.middelLayout.addRow(QLabel('Select a Service :'), self.servies)
-            self.middelLayout.addRow(QLabel('Select a Zone :'), self.zones)
 
     def submitAction(self):
 
@@ -342,55 +324,57 @@ class EditFwWindow(QWidget):
             self.middelLayout.itemAt(i).widget().setParent(None)
     def takeAction(self):
         par1=Par2=None
-        if self.task in 'Add Permanent Interface To Zone':
+
+        if self.task in 'Add Permanent a New zone':
+            par1 = self.createNewZone.text()
+            addPermanentNewZone(par1)
+
+        elif self.task in 'Add Permanent Interface To Zone':
             par1 = self.interfaces.currentText()
             par2 = self.zones.currentText()
-            print(par1, par2)
-        elif self.task in 'Add Permanent a New zone':
-            par1 = self.createNewZone.text()
-            print(par1)
+            addPermanentInterfaceToZone(par1, par2)
+
+
         elif self.task in 'Add Service To Default Zone':
             par1 = self.servies.currentText()
-            print(par1)
+            addPermanentServiceDefaultZone(par1)
 
-        elif self.task in 'Add Permanent Protocol and Port':
-            par1 = self.selectProtocol.currentText()
-            par2 = self.selectPort.currentText()
-            print(par1, par2)
         elif self.task in 'Add Permanent a Service To A Specific Zone':
             par1 = self.servies.currentText()
             par2 = self.zones.currentText()
-            print(par1, par2)
+            addPermanentServiceToSpecificZone(par1, par2)
 
-        elif self.task in 'Remove Permanent a Zone':
-            par1 = self.zones.currentText()
-            print(par1)
-        elif self.task in 'Remove Permanent a Service From Specific Zone':
-            par1 = self.servies.currentText()
-            par2 = self.zones.currentText()
-            print(par1, par2)
-        elif self.task in 'Remove Permanent a Zone':
-            par1 = self.zones.currentText()
-            print(par1)
-        elif self.task in 'Remove Permanent a Protocol':
+        elif self.task in 'Add Permanent Protocol and Port':
             par1 = self.selectProtocol.currentText()
-            par2 = self.selectPort.currentText()
-            print(par1, par2)
-        elif self.task in 'Remove Permanent a Service From Default Zone':
-            par1 = self.servies.currentText()
-            print(par1)
-        elif self.task in 'Remove Permanent a Service From Specific Zone':
-            par1 = self.servies.currentText()
-            par2 = self.zones.currentText()
-            print(par1, par2)
+            par2 = self.selectPort.text()
+            addPermanetProtocolPort(par2, par1)
 
-        elif self.task in 'Add Permanent a Service To Default Zone':
-            par1 = self.servies.currentText()
-            print(par1)
+        #Remove
+
         elif self.task in 'Remove Permanent a inteface From A Specific Zone':
             par1 = self.interfaces.currentText()
             par2 = self.zones.currentText()
-            print(par1, par2)
+            RemoveInterfaceFromZone(par2, par1)
+
+        elif self.task in 'Remove Permanent a Zone':
+            par1 = self.zones.currentText()
+            RemoveZone(par1)
+
+
+        elif self.task in 'Remove Permanent a Service From Default Zone':
+            par1 = self.servies.currentText()
+            removePermanentServiceFromDefaultZone(par1)
+
+
+        elif self.task in 'Remove Permanent a Service From Specific Zone':
+            par1 = self.servies.currentText()
+            par2 = self.zones.currentText()
+            RemovePermanetServiceFromSpecificZone(par1, par2)
+
+        elif self.task in 'Remove Permanent a Protocol':
+            par1 = self.selectProtocol.currentText()
+            par2 = self.selectPort.currentText()
+            RemovePermanetProtocolPort(par1, par2)
 
 
 ##################################################################################################""
@@ -472,9 +456,8 @@ class DeleteFwWindow(QWidget):
         self.selectProtocol = QComboBox()
         self.selectProtocol.addItem('tcp')
         self.selectProtocol.addItem('udp')
-        self.selectPort = QComboBox()
-        self.selectPort.addItem('31')
-        self.selectPort.addItem('21')
+        self.selectPort = QLineEdit()
+
 
         if self.task in 'Remove Interface To Zone':
 
@@ -504,10 +487,6 @@ class DeleteFwWindow(QWidget):
             self.middelLayout.addRow(QLabel('Select a Port :'), self.selectPort)
 
 
-        elif self.task in 'Add Permanent Protool With Port':
-            self.middelLayout.addRow(QLabel(""), QLabel(""))
-            self.middelLayout.addRow(QLabel('Select a Service :'), self.servies)
-            self.middelLayout.addRow(QLabel('Select a Port :'), self.port)
 
     def submitAction(self):
 
@@ -541,20 +520,20 @@ class DeleteFwWindow(QWidget):
 
             par1 = self.interfaces.currentText()
             par2 = self.zones.currentText()
-            print(par1, par2)
+            RemoveInterfaceFromZone(par1, par2)
 
         elif self.task in 'Remove a Specific Zone':
             par1 = self.zones.currentText()
-            print(par1)
+            RemoveZone(par1)
         elif self.task in 'Remove Service To Default Zone':
             par1 = self.servies.currentText()
-            print(par1)
+            removeServiceFromDefaultZone(par1)
         elif self.task in 'Remove a Service From A Specific Zone':
             par1 = self.servies.currentText()
             par2 = self.zones.currentText()
-            print(par1, par2)
+            RemoveServiceToZone(par1, par2)
 
         elif self.task in 'Remove a protocol and Port':
             par1 = self.selectProtocol.currentText()
-            par2 = self.selectPort.currentText()
-            print(par1, par2)
+            par2 = self.selectPort.text()
+            RemoveProtocolPort(par2, par1)

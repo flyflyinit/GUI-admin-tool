@@ -2,10 +2,13 @@ import qtmodern.styles
 import qtmodern.windows
 from project.firewall.configFirewall import CreateFwWindow,EditFwWindow,DeleteFwWindow
 from project.firewall.firewallScripts import firewallGlobalInfo,setDefaultZone,defaultZone
+from project.firewall.tableFirewall import *
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt
 import subprocess
+
+from project.firewall.tableFirewall import listservices, listZoneModified, listports
 
 
 def getContentFirewall(self):
@@ -15,13 +18,28 @@ def getContentFirewall(self):
     #################### creating buttons under pie plots
     createFwButtons(self)
 
+    self.groupBox = QGroupBox()
+    #self.groupBox.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+    #self.groupBox.setAutoFillBackground(True)
+    #self.groupBox.setFixedWidth(1150)
+
     self.containerFw=QVBoxLayout()
 
     self.containerFw.addLayout(self.gridFw)
     self.containerFw.addLayout(self.hboxbtn)
     self.containerFw.addWidget(self.tableFw)
+    self.containerFw.addStretch()
 
-    self.bottomRightLayout.addLayout(self.containerFw)
+    self.groupBox.setLayout(self.containerFw)
+    self.scroll = QScrollArea()
+    self.scroll.setFixedWidth(1150)
+    #self.scroll.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+    self.scroll.setWidget(self.groupBox)
+    #self.scroll.setFixedHeight(1000)
+    #self.scroll.setAutoFillBackground(True)
+    #self.bottomRightLayout.addLayout(self.gridUsers)
+    #self.bottomLayout.setCentralWidget(self.scroll)
+    self.bottomRightLayout.addWidget(self.scroll)
 
 def createFwButtons(self):
     self.hboxbtn=QHBoxLayout()
@@ -49,36 +67,24 @@ def createFwButtons(self):
 def createTableFw(self):
     self.tableFw=QTableWidget()
     self.tableFw.setRowCount(0)
-    self.tableFw.setColumnCount(14)
+    self.tableFw.setColumnCount(4)
+
+    self.tableFw.setFixedHeight(570)
+    self.tableFw.setFixedWidth(1130)
 
     self.tableFw.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-    self.tableFw.setAutoFillBackground(True)
-
-    header = self.tableFw.horizontalHeader()
-    header.setStretchLastSection(True)
-
     self.tableFw.setHorizontalHeaderItem(0, QTableWidgetItem("zone"))
-    self.tableFw.setHorizontalHeaderItem(1, QTableWidgetItem("target"))
-    self.tableFw.setHorizontalHeaderItem(2, QTableWidgetItem("icmp-block-inversion"))
-    self.tableFw.setHorizontalHeaderItem(3, QTableWidgetItem("interfaces"))
-    self.tableFw.setHorizontalHeaderItem(4, QTableWidgetItem("sources"))
-    self.tableFw.setHorizontalHeaderItem(5, QTableWidgetItem("servcies"))
-    self.tableFw.setHorizontalHeaderItem(6, QTableWidgetItem("Ports"))
-    self.tableFw.setHorizontalHeaderItem(7, QTableWidgetItem("protocols"))
-    self.tableFw.setHorizontalHeaderItem(8, QTableWidgetItem("masquerade"))
-    self.tableFw.setHorizontalHeaderItem(9, QTableWidgetItem("forward-ports"))
-    self.tableFw.setHorizontalHeaderItem(10, QTableWidgetItem("Source-ports"))
-    self.tableFw.setHorizontalHeaderItem(11, QTableWidgetItem("icmp-blocks"))
-    self.tableFw.setHorizontalHeaderItem(12, QTableWidgetItem("rich rules"))
-    self.tableFw.setHorizontalHeaderItem(13, QTableWidgetItem("set-Default"))
+    self.tableFw.setHorizontalHeaderItem(1, QTableWidgetItem("Services"))
+    self.tableFw.setHorizontalHeaderItem(2, QTableWidgetItem("Ports"))
+    self.tableFw.setHorizontalHeaderItem(3, QTableWidgetItem("set-Default"))
+
     self.tableFw.setEditTriggers(QAbstractItemView.NoEditTriggers)
     showmyfwlist(self)
 
 class DefaultZoneCellInTableFw(QWidget):
-    def __init__(self,username,groupnamesliststring, parent=None):
+    def __init__(self,zone, parent=None):
         super(DefaultZoneCellInTableFw,self).__init__(parent)
-        self.groups = groupnamesliststring[0:-1:].split(',')
-        self.username = username
+        self.zone=zone
         self.IsDefault = False
         self.hbox = QHBoxLayout()
         self.slider = QSlider(Qt.Horizontal)
@@ -86,16 +92,22 @@ class DefaultZoneCellInTableFw(QWidget):
         self.slider.setMinimum(0)
         self.slider.setFixedWidth(40)
         self.slider.setTickInterval(1)  # change ticks interval
-        if self.username in defaultZone()[0]:
+        index=str(self.zone)
+        index=index.split('(')
+        index=index[0]
+        index=index.replace(' ','')
+        if index == defaultZone()[0]:
             self.IsDefault = True
             self.slider.setValue(1)
         else:
             self.IsDefault = False
             self.slider.setValue(0)
+
         self.slider.valueChanged.connect(self.changed)
         self.hbox.addStretch()
         self.hbox.addWidget(self.slider)
         self.hbox.addStretch()
+        self.hbox.setContentsMargins(0,0,0,0)
         self.hbox.setSpacing(8)
         self.setLayout(self.hbox)
 
@@ -119,30 +131,80 @@ class DefaultZoneCellInTableFw(QWidget):
     def setNonDefault(self):
         pass
 
+class ServiceTableFw(QWidget):
+    def __init__(self,username, parent=None):
+        super(ServiceTableFw,self).__init__(parent)
+        self.username = username
+        self.hbox = QHBoxLayout()
+        self.showmoreBtn=QPushButton('more')
+        self.showmoreBtn.clicked.connect(self.showmoreBtnClicked)
+        self.hbox.addWidget(self.showmoreBtn)
+        self.hbox.addStretch()
+        self.hbox.setContentsMargins(0,0,0,0)
+        self.hbox.setSpacing(8)
+        self.setLayout(self.hbox)
+
+    def showmoreBtnClicked(self):
+        index=str(self.username)
+        output=listservices(index)
+        outputString=''
+        for i in output:
+            outputString+=f'{i} '
+        QMessageBox.information(self, 'Services', f'\n Services enabled in {index} Zone are:\n {outputString}')
+
+class PortsTableFw(QWidget):
+    def __init__(self,username, parent=None):
+        super(PortsTableFw,self).__init__(parent)
+        self.username = username
+        self.hbox = QHBoxLayout()
+        self.showmoreBtn=QPushButton('more')
+        self.showmoreBtn.clicked.connect(self.showmoreBtnClicked)
+        self.hbox.addWidget(self.showmoreBtn)
+        self.hbox.addStretch()
+        self.hbox.setContentsMargins(0,0,0,0)
+        self.hbox.setSpacing(8)
+        self.setLayout(self.hbox)
+
+    def showmoreBtnClicked(self):
+        index=str(self.username)
+        output = listports(index)
+        outputString = ''
+        for i in output:
+            outputString+= f'{i} '
+        QMessageBox.information(self, 'Ports', f'\n Ports added  in {index} Zone are:\n {outputString}')
+
 
 def showmyfwlist(self):
-    list_of_fw = firewallGlobalInfo()
+    list_of_fw=listZoneModified()
     self.dic={}
+    self.dic1={}
+    self.dic2={}
     self.rowposition = 0
 
     for i in list_of_fw:
         self.rowPosition = self.tableFw.rowCount()
         self.tableFw.insertRow(self.rowPosition)
         self.tableFw.setItem(self.rowPosition, 0, QTableWidgetItem(i[0]))
+        '''
         self.tableFw.setItem(self.rowPosition, 1, QTableWidgetItem(i[1]))
-        self.tableFw.setItem(self.rowPosition, 2, QTableWidgetItem(i[2]))
-        self.tableFw.setItem(self.rowPosition, 3, QTableWidgetItem(i[3]))
-        self.tableFw.setItem(self.rowPosition, 4, QTableWidgetItem(i[4]))
-        self.tableFw.setItem(self.rowPosition, 5, QTableWidgetItem(i[5]))
-        self.tableFw.setItem(self.rowPosition, 6, QTableWidgetItem(i[6]))
-        self.tableFw.setItem(self.rowPosition, 7, QTableWidgetItem(i[7]))
-        self.tableFw.setItem(self.rowPosition, 8, QTableWidgetItem(i[8]))
-        self.tableFw.setItem(self.rowPosition, 9, QTableWidgetItem(i[9]))
-        self.tableFw.setItem(self.rowPosition, 10, QTableWidgetItem(i[10]))
-        self.tableFw.setItem(self.rowPosition, 11, QTableWidgetItem(i[11]))
-        self.tableFw.setItem(self.rowPosition, 12, QTableWidgetItem(i[12]))
-        self.dic[i[0]] = DefaultZoneCellInTableFw(i[0], i[2])
-        self.tableFw.setCellWidget(self.rowPosition, 13, self.dic[i[0]])
+        self.tableFw.setItem(self.rowPosition, 3, QTableWidgetItem(i[2]))
+        self.tableFw.setItem(self.rowPosition, 4, QTableWidgetItem(i[3]))
+        self.tableFw.setItem(self.rowPosition, 5, QTableWidgetItem(i[4]))
+        self.tableFw.setItem(self.rowPosition, 6, QTableWidgetItem(i[5]))
+        self.tableFw.setItem(self.rowPosition, 7, QTableWidgetItem(i[6]))
+        self.tableFw.setItem(self.rowPosition, 8, QTableWidgetItem(i[7]))
+        self.tableFw.setItem(self.rowPosition, 9, QTableWidgetItem(i[8]))
+        self.tableFw.setItem(self.rowPosition, 10, QTableWidgetItem(i[9]))
+        self.tableFw.setItem(self.rowPosition, 11, QTableWidgetItem(i[10]))
+        self.tableFw.setItem(self.rowPosition, 12, QTableWidgetItem(i[11]))
+        self.tableFw.setItem(self.rowPosition, 13, QTableWidgetItem(i[12]))
+        '''
+        self.dic[i[0]] = DefaultZoneCellInTableFw(i[0])
+        self.dic1[i[0]] = ServiceTableFw(i[0])
+        self.dic2[i[0]] = PortsTableFw(i[0])
+        self.tableFw.setCellWidget(self.rowPosition, 3, self.dic[i[0]])
+        self.tableFw.setCellWidget(self.rowPosition, 1, self.dic1[i[0]])
+        self.tableFw.setCellWidget(self.rowPosition, 2, self.dic2[i[0]])
 
 
 def createFwWindow(self):

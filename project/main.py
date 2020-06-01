@@ -6,6 +6,14 @@ import qtmodern.windows
 
 from project import about
 from project.about import *
+from project.dashboard import mainDashboard
+from project.system import mainsystem
+from project.users import mainusers
+from project.networking import mainnetworking
+from project.firewall import mainFirewall
+from project.services import mainServices
+from project.backup import mainbackup
+from project.terminal import mainterminal
 
 '''
 from project.networking.mainnetworking import getContentNetwork
@@ -35,7 +43,7 @@ try:
     from services import mainServices
     from backup import mainbackup
     from terminal import mainterminal
-    from dashboard import mainDashboard
+    from project.dashboard import mainDashboard
 
 except ImportError as e:
     print(f'package not found\n{e}\n')
