@@ -2,7 +2,7 @@
 
 ! special
 *.foreground: #93a1a1
-*.background: #141c21
+*.background: #151515
 *.cursorColor: #afbfbf
 
 ! black
@@ -37,11 +37,6 @@
 *.color7: #bfbaac
 *.color15: #fdf6e3
 
-!! URxvt Appearance
-URxvt.font: xft:Monospace:style=Regular:size=8
-URxvt.boldFont: xft:Monospace:style=Bold:size=8
-URxvt.italicFont: xft:Monospace:style=Italic:size=8
-URxvt.boldItalicFont: xft:Monospace:style=Bold Italic:size=8
 
 URxvt.letterSpace: 0
 URxvt.lineSpace: 0
@@ -63,3 +58,4 @@ URxvt.keysym.Control-Up: \033[1;5A
 URxvt.keysym.Control-Down: \033[1;5B
 URxvt.keysym.Control-Right: \033[1;5C
 URxvt.keysym.Control-Left: \033[1;5D
+

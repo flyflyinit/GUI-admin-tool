@@ -17,11 +17,9 @@ except ImportError as e:
 
 
 class MyMplCanvas(FigureCanvas):
-    def __init__(self, parent=None, width=5, height=5, dpi=50):
+    def __init__(self, parent=None ,width=5, height=5, dpi=50):
         fig = Figure(figsize=(width, height), dpi=dpi)
         plt.style.use('Solarize_Light2')
-        #plt.style.use('seaborn')
-        #fig.patch.set_facecolor('black')
         self.Axes = fig.add_subplot()
         self.compute_initial_figure()
 
@@ -475,42 +473,46 @@ class UsageResume(MyMplCanvas):
 
 
 class PolygonCPUs(MyMplCanvas):
-    def __init__(self, *args, **kwargs):
+    def __init__(self,*args, **kwargs):
         MyMplCanvas.__init__(self, *args, **kwargs)
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.update_figure)
         self.timer.start(1000)
 
     def compute_initial_figure(self):
-        global cpu0
-        global cpu1
-        global cpu2
-        global cpu3
+        global logicalcpus
+        self.cpuLogicalCount = psutil.cpu_count(logical=True)
+
+        logicalcpus = {}
+        for c in range(self.cpuLogicalCount):
+            logicalcpus[c]=[]
+
+        print(logicalcpus)
         global cpus
         global cputime
         global cpucurrenttime
 
         cpus = []
-        cpu0 = []
-        cpu1 = []
-        cpu2 = []
-        cpu3 = []
+
         cputime = []
         cpucurrenttime = 0
 
         cpu = psutil.cpu_percent(percpu=True)
-        cpu0.append(cpu[0])
-        cpu1.append(cpu[1])
-        cpu2.append(cpu[2])
-        cpu3.append(cpu[3])
+
+        i = 0
+        for c in logicalcpus:
+            logicalcpus[c].append(cpu[i])
+            i = i + 1
+
         cpucurrenttime=cpucurrenttime+1
         cputime.append(str(cpucurrenttime))
         cpus.append(psutil.cpu_percent())
 
-        self.Axes.plot(cputime, cpu0,label='cpu0')
-        self.Axes.plot(cputime, cpu1,label='cpu1')
-        self.Axes.plot(cputime, cpu2,label='cpu2')
-        self.Axes.plot(cputime, cpu3,label='cpu3')
+        i = 0
+        for c in logicalcpus:
+            self.Axes.plot(cputime, logicalcpus[c],label=f'cpu{str(i)}')
+            i = i + 1
+
         self.Axes.plot(cputime, cpus,label='All CPUs', color='black')
         self.Axes.set_xlim(0, 60)
         self.Axes.set_ylim(0, 100)
@@ -523,36 +525,36 @@ class PolygonCPUs(MyMplCanvas):
         self.Axes.legend(loc='upper left')
 
     def update_figure(self):
-        global cpu0
-        global cpu1
-        global cpu2
-        global cpu3
+        global logicalcpus
         global cpus
         global cputime
         global cpucurrenttime
 
         cpu = psutil.cpu_percent(percpu=True)
-        cpu0.append(cpu[0])
-        cpu1.append(cpu[1])
-        cpu2.append(cpu[2])
-        cpu3.append(cpu[3])
+
+        i = 0
+        for c in logicalcpus:
+            logicalcpus[c].append(cpu[i])
+            i = i + 1
+
         cpucurrenttime=cpucurrenttime+1
         cputime.append(str(cpucurrenttime))
         cpus.append(psutil.cpu_percent())
 
         if len(cputime) == 60:
-            cpu0.pop(0)
-            cpu1.pop(0)
-            cpu2.pop(0)
-            cpu3.pop(0)
+            for c in logicalcpus:
+                logicalcpus[c].pop(0)
+
             cpus.pop(0)
             cputime.pop(0)
 
         self.Axes.cla()
-        self.Axes.plot(cputime, cpu0,label='cpu0')
-        self.Axes.plot(cputime, cpu1,label='cpu1')
-        self.Axes.plot(cputime, cpu2,label='cpu2')
-        self.Axes.plot(cputime, cpu3,label='cpu3')
+
+        i = 0
+        for c in logicalcpus:
+            self.Axes.plot(cputime, logicalcpus[c],label=f'cpu{str(i)}')
+            i = i + 1
+
         self.Axes.plot(cputime, cpus,label='All CPUs', color='black')
         self.Axes.set_title("CPUs Usage")
         self.Axes.set_xlim(0, 60)

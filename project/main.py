@@ -410,7 +410,6 @@ if __name__ == '__main__':
     sys.exit(app.exec_())
     '''
     app = QApplication(sys.argv)
-    app.setApplicationName('MyWindow')
     main = mainWindow()
     qtmodern.styles.light(app)
     mw = qtmodern.windows.ModernWindow(main)

@@ -5,6 +5,9 @@ except ImportError as e:
     print(f'package PyQt5 Not Found\n{e}\ntry :\npip3 install --user pyqt5\nOR\ndnf install python3-pyqt5, yum install python3-pyqt5\n')
 
 import subprocess
+import  os
+from pathlib import Path
+
 
 class embterminal(QWidget):
     def __init__(self):
@@ -19,27 +22,20 @@ class embterminal(QWidget):
         #-hold -geometry 298x500
         self.setLayout(layout)
 
-def main(self):
+def main(self,font="Monospace",size=10,style="Regular"):
     global i
     i = 1
 
     self.terminal = {}
-    '''
-    self.tabs = QTabWidget()
-    self.tab1 = embterminal()
-    self.tab2 = embterminal()
+    font = f"URxvt.font: xft:{font}:style={style}:size={str(size)}"
 
-    self.tabs.addTab(self.tab2, "Tab 2")
-    self.tabs.addTab(self.tab1, "Tab 1")
+    cwd = os.getcwd()
+    home = str(Path.home())
 
-    # Add tabs to widget
-    #self.layout.addWidget(self.tabs)
-    #self.setLayout(self.layout)
-
-    self.bottomRightLayout.addWidget(self.tabs)
-    '''
-    subprocess.run("cp terminal/Xresources ~/.Xresources",shell=True)
-    subprocess.run("xrdb ~/.Xresources",shell=True)
+    subprocess.run(f"cp {cwd}/terminal/Xresources {home}/.Xresources",shell=True)
+    with open(f'{home}/.Xresources', mode='a') as file:
+        file.write(f'\n\n{font}')
+    subprocess.run(f"xrdb {home}/.Xresources",shell=True)
 
     self.tabs = QTabWidget(self)
     self.tabs.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -56,11 +52,24 @@ def main(self):
     deleteTerminal.setFixedHeight(30)
     deleteTerminal.setFixedWidth(50)
 
+    increases = QPushButton("+ size")
+    increases.clicked.connect(lambda :increaseSize(self,size))
+    decreases = QPushButton("- size")
+    decreases.clicked.connect(lambda :decreaseeSize(self,size))
+    increases.setStyleSheet("color: #ecf0f1; background-color: #303a46 ; border: 0px solid #2c3e50")
+    increases.setFixedHeight(30)
+    increases.setFixedWidth(50)
+    decreases.setStyleSheet("color: #ecf0f1; background-color: #303a46; border: 0px solid #2c3e50")
+    decreases.setFixedHeight(30)
+    decreases.setFixedWidth(50)
+
     self.terminal[i] = embterminal()
     self.tabs.addTab(self.terminal[i], f"Terminal{str(i)}")
 
     box = QHBoxLayout()
     box.addStretch()
+    box.addWidget(increases)
+    box.addWidget(decreases)
     box.addWidget(addTerminal)
     box.addWidget(deleteTerminal)
 
@@ -75,3 +84,18 @@ def addTerminalClicked(self):
 
 def deleteTerminalClicked(self):
     self.tabs.removeTab(self.tabs.currentIndex())
+
+
+def increaseSize(self,size):
+    self.clearLayout(self.bottomRightLayout)
+    if size<=100:
+        main(self,size=size+5)
+    else:
+        main(self,size=size)
+
+def decreaseeSize(self,size):
+    self.clearLayout(self.bottomRightLayout)
+    if 5<=size:
+        main(self,size=size-5)
+    else:
+        main(self,size=size)
