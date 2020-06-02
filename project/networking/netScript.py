@@ -196,3 +196,20 @@ def takeIpFromDHCP(connectionName,par):
         except subprocess.CalledProcessError:
             print("Error While fetching Data ")
 
+
+def disInterfaceConnection(connetion):
+    fullCommand = f'nmcli connection  show {connetion} | grep -F connection.interface-name:   > /tmp/disInterfaceConnection'
+
+    try:
+        subprocess.run(fullCommand, check=True, shell=True)
+
+    except subprocess.CalledProcessError:
+        print("Error on disInterfaceConnection() ")
+
+    File = open('/tmp/disInterfaceConnection', 'rt')
+    txt= File.read()
+    txt=txt.replace('connection.interface-name:','')
+    txt=txt.replace(' ','')
+    txt=txt.splitlines()
+    return txt[0]
+

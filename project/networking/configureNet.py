@@ -4,6 +4,7 @@ import subprocess
 from project.networking.networkingScripts import displayNetworkInterface
 from project.networking.displayConnections import displayConnection
 from project.networking.displayIP import DisplayIP
+from project.networking.netScript import disInterfaceConnection
 
 
 class CreateNetworkWindow(QWidget):
@@ -147,7 +148,9 @@ class CreateNetworkWindow(QWidget):
                 except subprocess.CalledProcessError:
                     QMessageBox.warning(self, 'warning', f"error occured during setting this changes\n")
                 else:
-                    QMessageBox.information(self, 'success', 'Modification Applied  Succesfully.')
+                    QMessageBox.information(self, 'success', '\n a New Connection Added  Succesfully.')
+                    self.close()
+
             #DHCP
             if self.dhcp.isChecked():
 
@@ -157,8 +160,8 @@ class CreateNetworkWindow(QWidget):
                 except subprocess.CalledProcessError:
                     QMessageBox.warning(self, 'warning', f"error occured during setting this changes\n")
                 else:
-                    QMessageBox.information(self, 'success', 'Modification Applied  Succesfully.')
-
+                    QMessageBox.information(self, 'success', '\n a New Connection Added  Succesfully.')
+                    self.close()
 
     def cancelAction(self):
         self.close()
@@ -267,6 +270,7 @@ class EditNetworkWindow(QWidget):
         self.topLayout.addRow(QLabel(f'TYPE= {self.index[1]}'), QLabel(''))
         self.topLayout.addRow(QLabel(f'IP ASSIGN METHOD= {self.index[2]}'), QLabel(''))
         self.topLayout.addRow(QLabel(f'AUTO CONNECT = {self.index[3]}'), QLabel(''))
+        self.topLayout.addRow(QLabel(f'INTERFACE ASSOICIATED  = {disInterfaceConnection(index)}'), QLabel(''))
 
         # self.topLayout.addRow(QLabel(f'DNS Two= {ipInfoDns[1]}'), QLabel(''))
         self.topLayout.addRow(QLabel(''), QLabel(''))

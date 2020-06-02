@@ -418,8 +418,8 @@ class DHCPCellInTable(QWidget):
 
     def setAdmin(self):
         try:
-
             takeIpFromDHCP(self.username,True)
+
         except subprocess.CalledProcessError as e:
             QMessageBox.critical(self, 'error', 'error cannot enable DHCP  ')
             # self.slider.setValue(0)
@@ -428,15 +428,14 @@ class DHCPCellInTable(QWidget):
             self.slider.setValue(1)
             self.userIsAdmin = True
 
-
     def setNormalUser(self):
         try:
             takeIpFromDHCP(self.username,False)
         except subprocess.CalledProcessError as e:
-            QMessageBox.critical(self, 'error', f'error cannot set {self.username}  DOWN ')
+            QMessageBox.critical(self, 'error', f'error cannot Stop Manual Configuration ')
             # self.slider.setValue(1)
         else:
-            QMessageBox.information(self, 'success', f'{self.username} turned DOWN succesfully')
+            QMessageBox.information(self, 'success', f' Manual configuration Applied on {self.username}  succesfully')
             self.slider.setValue(0)
             self.userIsAdmin = False
 

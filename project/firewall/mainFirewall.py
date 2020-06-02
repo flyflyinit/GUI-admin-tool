@@ -48,6 +48,7 @@ def createFwButtons(self):
     try:
         defaultzone=defaultZone()[0]
         self.defaultZone=QLabel(f"DEFAULT ZONE : {defaultzone}")
+        self.defaultZone.move(10,10)
 
     except IndexError:
         QMessageBox.critical(self, 'error', f'Please install Firewalld or start the service ')
@@ -68,8 +69,12 @@ def createFwButtons(self):
     self.editBtn.setStyleSheet("color: #ecf0f1; background-color: #34495e ; border: 0px solid #2c3e50")
     self.deleteBtn.clicked.connect(lambda:deleteFwWindow(self, self.dic4))
     self.deleteBtn.setStyleSheet("color: #ecf0f1; background-color: #e74c3c; border: 0px solid #2c3e50")
-    self.selectall = SelectAllButton(self.dic2)
-    self.hboxbtn.addWidget(self.selectall)
+    #self.selectall = SelectAllButton(self.dic2)
+    #self.hboxbtn.addWidget(self.selectall)
+    self.hboxbtn.addWidget(self.defaultZone)
+    self.hboxbtn.addStretch()
+    self.hboxbtn.addStretch()
+    self.hboxbtn.addStretch()
     self.hboxbtn.addStretch()
     self.hboxbtn.addWidget(self.addBtn)
     self.hboxbtn.addWidget(self.editBtn)
@@ -113,33 +118,6 @@ class SelectCellInTableNet(QWidget):
             self.isSelected = True
         else:
             self.isSelected = False
-
-class SelectAllButton(QWidget):
-    def __init__(self,d, parent=None):
-        super(SelectAllButton,self).__init__(parent)
-        self.dd = d
-        self.selectAllIsSelected = False
-        self.hbox = QHBoxLayout()
-        self.selectall = QCheckBox('Select/Deselect All',self)
-        self.selectall.stateChanged.connect(self.selectAllChangedAction)
-        self.hbox.addWidget(self.selectall)
-        self.hbox.setContentsMargins(0,0,0,0)
-        self.hbox.setSpacing(8)
-        self.setLayout(self.hbox)
-
-    def selectAllChangedAction(self, state):
-        if (QtCore.Qt.Checked == state):
-            self.selectallIsSelected = True
-            print('TRUE')
-            for i in self.dd:
-                self.dd[i].isSelected = True
-                self.dd[i].checkb.setChecked(True)
-        else:
-            self.selectallIsSelected = False
-            print('FALSE')
-            for i in self.dd:
-                self.dd[i].isSelected = False
-                self.dd[i].checkb.setChecked(False)
 
 ####### TABLE  WIDGETS #############################################"
 
