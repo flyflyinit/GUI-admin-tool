@@ -167,13 +167,13 @@ class CreateFwWindow(QWidget):
 
 ############################################################################################################################
 class EditFwWindow(QWidget):
-    def __init__(self,par):
+    def __init__(self):
         super().__init__()
         self.setGeometry(200,50,300,400)
         self.setWindowTitle("Configure System Permanent Mode")
         self.layouts()
         self.widgets()
-        self.zone=par[0]
+        self.zone=''
         print(self.zone)
     def layouts(self):
         self.mainLayout = QVBoxLayout()
@@ -209,113 +209,14 @@ class EditFwWindow(QWidget):
         self.setLayout(self.mainLayout)
 
     def widgets(self):
-        self.operation = QListWidget(self)
+        self.applayNewCh = QRadioButton("Save The New Changes Permanent ")
+        self.cancelNewCh = QRadioButton("Cancel The New Changes")
 
-        self.operation.clicked.connect(self.addOperationsClick)
-        self.operation.addItem('Add Permanent a New zone')
-        self.operation.addItem('Add Permanent Interface To Zone')
-        self.operation.addItem('Add Permanent a Service To Default Zone')
-        self.operation.addItem('Add Permanent a Service To A Specific Zone')
-        self.operation.addItem('Add Permanent Protocol and Port')
-        self.operation.addItem('Remove Permanent a inteface From A Specific Zone')
-        self.operation.addItem('Remove Permanent a Zone')
-        self.operation.addItem('Remove Permanent a Service From Default Zone')
-        self.operation.addItem('Remove Permanent a Service From Specific Zone')
-        self.operation.addItem('Remove Permanent a Protocol')
-        self.topLayout.addRow(QLabel("Please Select Operations To Applay It "), QLabel())
-        self.topLayout.addRow(self.operation, QLabel())
-        self.middelLayout.addRow(QLabel(""), QLabel(""))
+        self.topLayout.addRow(QLabel(""), QLabel(""))
+        self.topLayout.addRow(self.cancelNewCh,QLabel(""))
+        self.topLayout.addRow(QLabel(""), QLabel(""))
+        self.topLayout.addRow(self.applayNewCh,QLabel(""))
 
-        # after click Widget
-
-    def addOperationsClick(self):
-
-        self.clearMiddel()
-        self.task = self.operation.currentItem().text()
-
-        itemsA = listZones()
-        itemsB = listAllServices()
-        self.zones = QComboBox(self)
-        self.zones.addItems(itemsA)
-
-        self.servies = QComboBox(self)
-        self.servies.addItems(itemsB)
-        zone = defaultZone()
-        zone = zone[0]
-
-        self.interfaces = QComboBox(self)
-        self.interfaces.addItems(displayNetworkInterface())
-
-        self.port = QComboBox(self)
-        self.createNewZone=QLineEdit()
-        self.createNewZone.setPlaceholderText('Enter name from New Zone ')
-        self.port = QComboBox(self)
-        self.selectProtocol = QComboBox()
-        self.selectProtocol.addItem('tcp')
-        self.selectProtocol.addItem('udp')
-        self.selectPort = QLineEdit()
-
-
-        #add new zone
-        if self.task in 'Add Permanent a New zone':
-
-            self.middelLayout.addRow(QLabel(""), QLabel(""))
-            self.middelLayout.addRow(QLabel(''), self.createNewZone)
-
-        elif self.task in 'Add Permanent Interface To Zone':
-
-            self.middelLayout.addRow(QLabel('Select an Interface :'), self.interfaces)
-            self.middelLayout.addRow(QLabel('Select a Zone :'), self.zones)
-            self.middelLayout.addRow(QLabel(""), QLabel(""))
-
-
-        elif self.task in 'Add Permanent a Service To Default Zone':
-
-            self.middelLayout.addRow(QLabel('Select a Service :'), self.servies)
-            self.middelLayout.addRow(QLabel('Default Zone Is:'), QLabel(f'{zone}'))
-
-        elif self.task in 'Add Permanent a Service To A Specific Zone':
-
-            self.middelLayout.addRow(QLabel('Select a Service :'), self.servies)
-            self.middelLayout.addRow(QLabel('Select a Zone :'), self.zones)
-
-        elif self.task in 'Add Permanent Protocol and Port':
-
-            self.middelLayout.addRow(QLabel('Select a Service :'), self.selectProtocol)
-            self.middelLayout.addRow(QLabel('Select a Port :'), self.selectPort)
-
-
-        #Remove
-        elif self.task in 'Remove Permanent a inteface From A Specific Zone':
-
-            self.middelLayout.addRow(QLabel('Select an Interface :'), self.interfaces)
-            self.middelLayout.addRow(QLabel('Select a Zone :'), self.zones)
-            self.middelLayout.addRow(QLabel(""), QLabel(""))
-
-        elif self.task in 'Remove Permanent a Zone':
-
-            self.middelLayout.addRow(QLabel(""), QLabel(""))
-            self.middelLayout.addRow(QLabel('Select a Zone :'), self.zones)
-
-
-        elif self.task in 'Remove Permanent a Service From Default Zone':
-
-            self.middelLayout.addRow(QLabel(""), QLabel(""))
-
-            self.middelLayout.addRow(QLabel('Select a Service :'), self.servies)
-            self.middelLayout.addRow(QLabel('Default Zone Is:'), QLabel(f'{zone}'))
-
-        elif self.task in 'Remove Permanent a Service From Specific Zone':
-            self.middelLayout.addRow(QLabel(""), QLabel(""))
-            self.middelLayout.addRow(QLabel('Select a Service :'), self.servies)
-            self.middelLayout.addRow(QLabel('Select a Zone :'), self.zones)
-
-
-        elif self.task in 'Remove Permanent a Protocol':
-            self.middelLayout.addRow(QLabel(""), QLabel(""))
-            self.middelLayout.addRow(QLabel('Select a Zone :'), self.zones)
-            self.middelLayout.addRow(QLabel('Select a Service :'), self.selectProtocol)
-            self.middelLayout.addRow(QLabel('Select a Port :'), self.selectPort)
 
     def clearMiddel(self):
         for i in reversed(range(self.middelLayout.count())):
@@ -324,96 +225,39 @@ class EditFwWindow(QWidget):
 
     def submitAction(self):
 
-        self.mbox = QMessageBox.question(self, "Warningg!", f"Are you sure to Apply :\n {self.task} ?",
-                                         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-        if self.mbox == QMessageBox.Yes:
+        if self.cancelNewCh.isChecked() :
+            self.mbox = QMessageBox.question(self, "Warningg!", "\n Are You Shure To Cancel The New Configurations ?",
+                                             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            if self.mbox == QMessageBox.Yes:
+                try:
+                    subprocess.run("firewall-cmd --reload ", check=True, shell=True)
 
-            try:
-                par1 = Par2 = None
+                except subprocess.CalledProcessError:
+                    QMessageBox.critical(self, 'Error', '\n Error Can not Cancel the New Changes  ')
+                else:
+                    QMessageBox.information(self, 'success', ' \n Configuration has been  Canceled  Succesfully.')
 
-                if self.task in 'Add Permanent a New zone':
-
-
-                    par1 = self.createNewZone.text()
-                    if str(par1) == '':
-                        QMessageBox.warning(self, 'Warrnings', 'You Enter a name ')
-                        return
-                    else:
-                        addPermanentNewZone(par1)
-
-
-                elif self.task in 'Add Permanent Interface To Zone':
-                    par1 = self.interfaces.currentText()
-                    par2 = self.zones.currentText()
-                    addPermanentInterfaceToZone(par1, par2)
-
-
-                elif self.task in 'Add Service To Default Zone':
-                    par1 = self.servies.currentText()
-                    addPermanentServiceDefaultZone(par1)
-
-                elif self.task in 'Add Permanent a Service To A Specific Zone':
-                    par1 = self.servies.currentText()
-                    par2 = self.zones.currentText()
-                    addPermanentServiceToSpecificZone(par1, par2)
-
-                elif self.task in 'Add Permanent Protocol and Port':
-
-
-                    try:
-                        par1 = self.selectProtocol.currentText()
-                        par2 = self.selectPort.text()
-                        par3 = self.self.zones.currentText()
-                        int(par2)
-                    except ValueError:
-                        QMessageBox.warning(self, 'error', f'Port numnber must be an Integer')
-                        return
-                    else:
-                        addPermanetProtocolPort(par2, par1,par3)
-                # Remove
-
-                elif self.task in 'Remove Permanent a inteface From A Specific Zone':
-                    par1 = self.interfaces.currentText()
-                    par2 = self.zones.currentText()
-                    RemoveInterfaceFromZone(par2, par1)
-
-                elif self.task in 'Remove Permanent a Zone':
-                    par1 = self.zones.currentText()
-                    RemoveZone(par1)
-
-
-                elif self.task in 'Remove Permanent a Service From Default Zone':
-                    par1 = self.servies.currentText()
-                    removePermanentServiceFromDefaultZone(par1)
-
-
-                elif self.task in 'Remove Permanent a Service From Specific Zone':
-                    par1 = self.servies.currentText()
-                    par2 = self.zones.currentText()
-                    RemovePermanetServiceFromSpecificZone(par1, par2)
-
-                elif self.task in 'Remove Permanent a Protocol':
-
-                    try:
-                        par1 = self.selectProtocol.currentText()
-                        par2 = self.selectPort.text()
-                        int(par2)
-                    except ValueError:
-                        QMessageBox.warning(self, 'error', f'Port numnber must be an Integer')
-                        return
-                    else:
-                        RemovePermanetProtocolPort(par1, par2)
-
-            except:
-                QMessageBox.critical(self, 'error', f'error occured during Applaying this \n {self.task}')
-                self.clearMiddel()
+            elif self.mbox == QMessageBox.No:
+                return
             else:
+                return
 
-                QMessageBox.information(self, 'success', f'Task Done Succesfully')
-                self.clearMiddel()
+        elif self.applayNewCh.isChecked():
+            self.mbox = QMessageBox.question(self, "Warningg!", "\n Are You Shure To Save The New Configurations Permanent ?",
+                                             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            if self.mbox == QMessageBox.Yes:
+                try:
+                    subprocess.run("firewall-cmd --runtime-to-permanent", check=True, shell=True)
+                except subprocess.CalledProcessError:
+                    QMessageBox.critical(self, 'Error', '\n Error Can not save the New Changes  ')
+                else:
+                    QMessageBox.information(self, 'success', 'New Configuration are Saved Succesfully.')
 
-        elif self.mbox == QMessageBox.No:
-             self.clearMiddel()
+            elif self.mbox == QMessageBox.No:
+                return
+            else:
+                return
+
 
 
     def clearAction(self):

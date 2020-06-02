@@ -64,7 +64,7 @@ def createFwButtons(self):
     self.deleteBtn.setFixedWidth(120)
     self.addBtn.clicked.connect(lambda:createUsersWindow(self,self.dic4))
     self.addBtn.setStyleSheet("color: #ecf0f1; background-color: #2ecc71 ; border: 0px solid #2c3e50")
-    self.editBtn.clicked.connect(lambda:editFWWindow(self, self.dic4))
+    self.editBtn.clicked.connect(lambda:editFWWindow(self))
     self.editBtn.setStyleSheet("color: #ecf0f1; background-color: #34495e ; border: 0px solid #2c3e50")
     self.deleteBtn.clicked.connect(lambda:deleteFwWindow(self, self.dic4))
     self.deleteBtn.setStyleSheet("color: #ecf0f1; background-color: #e74c3c; border: 0px solid #2c3e50")
@@ -278,21 +278,11 @@ def createUsersWindow(self,d):
 
 
 
-def editFWWindow(self,d):
-    list_users_to_edit = []
-    for i in d:
-        if d[i].isSelected == True:
-            list_users_to_edit.append(i)
-    if len(list_users_to_edit) == 0 or len(list_users_to_edit) > 1:
-        QMessageBox.warning(self, 'warning', 'Please select just one Zone')
-    else:
-        for user in self.list_of_fw :
-            if user[0] == list_users_to_edit[0]:
-                self.secondwindow = EditFwWindow(user)
-                self.sw = qtmodern.windows.ModernWindow(self.secondwindow)
-                self.sw.show()
-            else:
-                continue
+def editFWWindow(self):
+    self.secondwindow = EditFwWindow()
+    self.sw = qtmodern.windows.ModernWindow(self.secondwindow)
+    self.sw.show()
+
 
 
 def deleteFwWindow(self,d):
