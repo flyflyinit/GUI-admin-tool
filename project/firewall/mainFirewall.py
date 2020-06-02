@@ -265,7 +265,11 @@ def createUsersWindow(self,d):
         if d[i].isSelected == True:
             list_users_to_edit.append(i)
     if len(list_users_to_edit) == 0 or len(list_users_to_edit) > 1:
-        QMessageBox.warning(self, 'warning', 'Please select just one Zone')
+        user=[]
+        user.append("")
+        self.secondwindow = CreateFwWindow(user)
+        self.sw = qtmodern.windows.ModernWindow(self.secondwindow)
+        self.sw.show()
     else:
         for user in self.list_of_fw :
             if user[0] == list_users_to_edit[0]:
@@ -274,7 +278,6 @@ def createUsersWindow(self,d):
                 self.sw.show()
             else:
                 continue
-
 
 
 

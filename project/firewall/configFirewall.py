@@ -50,10 +50,12 @@ class CreateFwWindow(QWidget):
     def widgets(self):
         self.operation = QListWidget(self)
         self.operation.clicked.connect(self.addOperationsClick)
+        self.operation.addItem('Add a New Zone')
         self.operation.addItem('Add Interface To Zone')
         self.operation.addItem('Add Service To Default Zone')
         self.operation.addItem('Add Service To A Specific Zone')
         self.operation.addItem('Add Protocol and Port')
+        self.topLayout.addRow(QLabel(f"Zone Selected is : {self.parZone} "), QLabel())
         self.topLayout.addRow(QLabel("Please Select Operations To Applay It "), QLabel())
         self.topLayout.addRow(self.operation, QLabel())
         self.middelLayout.addRow(QLabel(""), QLabel(""))
@@ -104,6 +106,10 @@ class CreateFwWindow(QWidget):
             self.middelLayout.addRow(QLabel('Select a Service :'), self.selectProtocol)
             self.middelLayout.addRow(QLabel('Select a Port :'), self.selectPort)
 
+        elif self.task in 'Add a New Zone':
+            self.middelLayout.addRow(QLabel(""), QLabel(""))
+            self.middelLayout.addRow(QLabel(''), self.createNewZone)
+
     def clearMiddel(self):
 
         for i in reversed(range(self.middelLayout.count())):
@@ -142,6 +148,15 @@ class CreateFwWindow(QWidget):
                     else:
                         addPort(par2, par1)
 
+                elif self.task in 'Add a New Zone':
+                    par1 = self.createNewZone.text()
+
+                    if par1=='':
+
+                        QMessageBox.warning(self, 'error', f'\n You must enter a name ')
+                        return
+                    else:
+                        addPermanentNewZone(par1)
 
             except :
                 QMessageBox.critical(self, 'error', f'error occured during Applaying this \n {self.task} ')
@@ -318,6 +333,7 @@ class DeleteFwWindow(QWidget):
         self.operation = QListWidget(self)
 
         self.operation.clicked.connect(self.addOperationsClick)
+        self.operation.addItem('Remove a Zone')
         self.operation.addItem('Remove Interface To Zone')
         self.operation.addItem('Remove a Specific Zone')
         self.operation.addItem('Remove Service To Default Zone')
@@ -363,7 +379,7 @@ class DeleteFwWindow(QWidget):
             self.middelLayout.addRow(QLabel('Selected Zone :'), self.zones)
 
 
-        elif self.task in 'Remove a Specific Zone':
+        elif self.task in 'Remove a Zone':
             self.middelLayout.addRow(QLabel('Selected Zone :'), self.zones)
 
 
