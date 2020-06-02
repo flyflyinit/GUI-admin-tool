@@ -117,8 +117,8 @@ def addServiceToSpecificZone(service, zone):
         print("addServiceToSpecificZone(service, zone): ")
 
 
-def addPort(port, protocol):
-    command = f'firewall-cmd  --add-port={port}/{protocol}'
+def addPort(port, protocol,zone):
+    command = f'firewall-cmd --zone={zone} --add-port={port}/{protocol}'
 
     try:
         subprocess.run(command, check=True, shell=True)
@@ -183,8 +183,8 @@ def addPermanentServiceToSpecificZone(service, zone):
         print("Error on addPermanentServiceToSpecificZone ")
 
 
-def addPermanetProtocolPort(port, protocol):
-    command = f'firewall-cmd --permanent --add-port={port}/{protocol} '
+def addPermanetProtocolPort(port, protocol,zone):
+    command = f'firewall-cmd --permanent --zone={zone} --add-port={port}/{protocol} '
 
     try:
         subprocess.run(command, check=True, shell=True)
@@ -299,8 +299,8 @@ def RemoveServiceToZone(service, zone):
 
 
 
-def RemoveProtocolPort(port, protocol):
-    command = f'firewall-cmd  --remove-port={port}/{protocol}'
+def RemoveProtocolPort(port, protocol,zone):
+    command = f'firewall-cmd --zone={zone} --remove-port={port}/{protocol}'
     try:
         subprocess.run(command, check=True, shell=True)
 

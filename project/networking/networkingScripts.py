@@ -1,6 +1,7 @@
 import subprocess, os
+from project.networking.displayConnections import displayConnection
 
-from networking.displayConnections import *
+
 '''
 
 def displayConnection():

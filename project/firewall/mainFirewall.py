@@ -3,6 +3,8 @@ import qtmodern.windows
 from project.firewall.configFirewall import CreateFwWindow,EditFwWindow,DeleteFwWindow
 from project.firewall.firewallScripts import firewallGlobalInfo,setDefaultZone,defaultZone
 from project.firewall.tableFirewall import *
+from PyQt5.QtCore import QTimer, Qt
+from PyQt5 import QtGui, QtCore
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt
@@ -51,38 +53,32 @@ def createFwButtons(self):
         QMessageBox.critical(self, 'error', f'Please install Firewalld or start the service ')
         self.defaultZone=QLabel("FIREWALLD SERVICE IS NOT RUNNING")
 
-    self.defaultZone.move(20, 20)
-    self.addBtn=QPushButton('Add')
-    self.editBtn=QPushButton('Edit')
-    self.deleteBtn=QPushButton('Delete')
+    self.addBtn = QPushButton('Add')
+    self.editBtn = QPushButton('Edit')
+    self.deleteBtn = QPushButton('Delete')
     self.addBtn.setFixedHeight(30)
     self.addBtn.setFixedWidth(120)
     self.editBtn.setFixedHeight(30)
     self.editBtn.setFixedWidth(120)
     self.deleteBtn.setFixedHeight(30)
     self.deleteBtn.setFixedWidth(120)
-    self.addBtn.clicked.connect(lambda: createFwWindow(self))
+    self.addBtn.clicked.connect(lambda:createUsersWindow(self,self.dic4))
     self.addBtn.setStyleSheet("color: #ecf0f1; background-color: #2ecc71 ; border: 0px solid #2c3e50")
-    self.editBtn.clicked.connect(lambda: editFwWindow(self))
+    self.editBtn.clicked.connect(lambda:editFWWindow(self, self.dic4))
     self.editBtn.setStyleSheet("color: #ecf0f1; background-color: #34495e ; border: 0px solid #2c3e50")
-    self.deleteBtn.clicked.connect(lambda: deleteFwWindow(self))
+    self.deleteBtn.clicked.connect(lambda:deleteFwWindow(self, self.dic4))
     self.deleteBtn.setStyleSheet("color: #ecf0f1; background-color: #e74c3c; border: 0px solid #2c3e50")
-    self.hboxbtn.addWidget(self.defaultZone)
-    self.hboxbtn.addStretch()
-    self.hboxbtn.addStretch()
-    self.hboxbtn.addStretch()
-    self.hboxbtn.addStretch()
-    self.hboxbtn.addStretch()
+    self.selectall = SelectAllButton(self.dic2)
+    self.hboxbtn.addWidget(self.selectall)
     self.hboxbtn.addStretch()
     self.hboxbtn.addWidget(self.addBtn)
     self.hboxbtn.addWidget(self.editBtn)
     self.hboxbtn.addWidget(self.deleteBtn)
 
-
 def createTableFw(self):
     self.tableFw=QTableWidget()
     self.tableFw.setRowCount(0)
-    self.tableFw.setColumnCount(5)
+    self.tableFw.setColumnCount(6)
 
     self.tableFw.setFixedHeight(570)
     self.tableFw.setFixedWidth(1130)
@@ -93,10 +89,59 @@ def createTableFw(self):
     self.tableFw.setHorizontalHeaderItem(2, QTableWidgetItem("Services"))
     self.tableFw.setHorizontalHeaderItem(3, QTableWidgetItem("Ports"))
     self.tableFw.setHorizontalHeaderItem(4, QTableWidgetItem("set-Default"))
+    self.tableFw.setHorizontalHeaderItem(5, QTableWidgetItem("select"))
 
     self.tableFw.setEditTriggers(QAbstractItemView.NoEditTriggers)
     showmyfwlist(self)
 
+############################ NEW CODE  #############################################"""
+class SelectCellInTableNet(QWidget):
+    def __init__(self, parent=None):
+        super(SelectCellInTableNet,self).__init__(parent)
+        self.isSelected = False
+        self.hbox = QHBoxLayout()
+        self.checkb = QCheckBox(self)
+        self.checkb.stateChanged.connect(self.checkBoxChangedAction)
+        self.hbox.addStretch()
+        self.hbox.addWidget(self.checkb)
+        self.hbox.addStretch()
+        self.hbox.setContentsMargins(0,0,0,0)
+        self.hbox.setSpacing(8)
+        self.setLayout(self.hbox)
+    def checkBoxChangedAction(self, state):
+        if (QtCore.Qt.Checked == state):
+            self.isSelected = True
+        else:
+            self.isSelected = False
+
+class SelectAllButton(QWidget):
+    def __init__(self,d, parent=None):
+        super(SelectAllButton,self).__init__(parent)
+        self.dd = d
+        self.selectAllIsSelected = False
+        self.hbox = QHBoxLayout()
+        self.selectall = QCheckBox('Select/Deselect All',self)
+        self.selectall.stateChanged.connect(self.selectAllChangedAction)
+        self.hbox.addWidget(self.selectall)
+        self.hbox.setContentsMargins(0,0,0,0)
+        self.hbox.setSpacing(8)
+        self.setLayout(self.hbox)
+
+    def selectAllChangedAction(self, state):
+        if (QtCore.Qt.Checked == state):
+            self.selectallIsSelected = True
+            print('TRUE')
+            for i in self.dd:
+                self.dd[i].isSelected = True
+                self.dd[i].checkb.setChecked(True)
+        else:
+            self.selectallIsSelected = False
+            print('FALSE')
+            for i in self.dd:
+                self.dd[i].isSelected = False
+                self.dd[i].checkb.setChecked(False)
+
+####### TABLE  WIDGETS #############################################"
 
 
 class SetDefaultZone(QWidget):
@@ -187,15 +232,18 @@ class interfaceTableFw(QWidget):
             outputString+= f'{i} '
         QMessageBox.information(self, 'Interfaces', f'\n Interfaces added  in {index} Zone are:\n {outputString}')
 
+
 def showmyfwlist(self):
-    list_of_fw=listZoneModified()
+    self.list_of_fw=listZoneModified()
     self.dic={}
     self.dic1={}
     self.dic2={}
     self.dic3={}
+    self.dic4={}
+
     self.rowposition = 0
 
-    for i in list_of_fw:
+    for i in self.list_of_fw:
         self.rowPosition = self.tableFw.rowCount()
         self.tableFw.insertRow(self.rowPosition)
         self.tableFw.setItem(self.rowPosition, 0, QTableWidgetItem(i[0]))
@@ -203,23 +251,62 @@ def showmyfwlist(self):
         self.dic[i[0]] = SetDefaultZone(i[0])
         self.dic1[i[0]] = ServiceTableFw(i[0])
         self.dic2[i[0]] = PortsTableFw(i[0])
+        self.dic4[i[0]] = SelectCellInTableNet()
         self.tableFw.setCellWidget(self.rowPosition, 4, self.dic[i[0]])
         self.tableFw.setCellWidget(self.rowPosition, 2, self.dic1[i[0]])
         self.tableFw.setCellWidget(self.rowPosition, 3, self.dic2[i[0]])
         self.tableFw.setCellWidget(self.rowPosition, 1, self.dic3[i[0]])
+        self.tableFw.setCellWidget(self.rowPosition, 5, self.dic4[i[0]])
 
 
-def createFwWindow(self):
-    self.secondwindow = CreateFwWindow()
-    self.sw = qtmodern.windows.ModernWindow(self.secondwindow)
-    self.sw.show()
+def createUsersWindow(self,d):
+    list_users_to_edit = []
+    for i in d:
+        if d[i].isSelected == True:
+            list_users_to_edit.append(i)
+    if len(list_users_to_edit) == 0 or len(list_users_to_edit) > 1:
+        QMessageBox.warning(self, 'warning', 'Please select just one Zone')
+    else:
+        for user in self.list_of_fw :
+            if user[0] == list_users_to_edit[0]:
+                self.secondwindow = CreateFwWindow(user)
+                self.sw = qtmodern.windows.ModernWindow(self.secondwindow)
+                self.sw.show()
+            else:
+                continue
 
-def editFwWindow(self):
-    self.secondwindow = EditFwWindow()
-    self.sw = qtmodern.windows.ModernWindow(self.secondwindow)
-    self.sw.show()
 
-def deleteFwWindow(self):
-    self.secondwindow = DeleteFwWindow()
-    self.sw = qtmodern.windows.ModernWindow(self.secondwindow)
-    self.sw.show()
+
+
+def editFWWindow(self,d):
+    list_users_to_edit = []
+    for i in d:
+        if d[i].isSelected == True:
+            list_users_to_edit.append(i)
+    if len(list_users_to_edit) == 0 or len(list_users_to_edit) > 1:
+        QMessageBox.warning(self, 'warning', 'Please select just one Zone')
+    else:
+        for user in self.list_of_fw :
+            if user[0] == list_users_to_edit[0]:
+                self.secondwindow = EditFwWindow(user)
+                self.sw = qtmodern.windows.ModernWindow(self.secondwindow)
+                self.sw.show()
+            else:
+                continue
+
+
+def deleteFwWindow(self,d):
+    list_users_to_edit = []
+    for i in d:
+        if d[i].isSelected == True:
+            list_users_to_edit.append(i)
+    if len(list_users_to_edit) == 0 or len(list_users_to_edit) > 1:
+        QMessageBox.warning(self, 'warning', 'Please select just one Zone')
+    else:
+        for user in self.list_of_fw :
+            if user[0] == list_users_to_edit[0]:
+                self.secondwindow = DeleteFwWindow(user)
+                self.sw = qtmodern.windows.ModernWindow(self.secondwindow)
+                self.sw.show()
+            else:
+                continue

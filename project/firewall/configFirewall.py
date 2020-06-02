@@ -1,11 +1,13 @@
 from PyQt5.QtWidgets import *
 from project.firewall.firewallScripts import *
 from project.networking.networkingScripts import displayNetworkInterface
+from project.firewall.tableFirewall import *
 
 
 class CreateFwWindow(QWidget):
-    def __init__(self):
+    def __init__(self,par):
         super().__init__()
+        self.parZone=par[0]
         self.setGeometry(200, 50, 300, 400)
         self.setWindowTitle("Configure Firewall Run Time")
         self.layouts()
@@ -47,7 +49,6 @@ class CreateFwWindow(QWidget):
 
     def widgets(self):
         self.operation = QListWidget(self)
-
         self.operation.clicked.connect(self.addOperationsClick)
         self.operation.addItem('Add Interface To Zone')
         self.operation.addItem('Add Service To Default Zone')
@@ -65,10 +66,11 @@ class CreateFwWindow(QWidget):
         self.createNewZone.setPlaceholderText('Enter name from New Zone ')
         self.clearMiddel()
         self.task = self.operation.currentItem().text()
-        itemsA = listZones()
+        #itemsA = listZones()
         itemsB = listAllServices()
         self.zones = QComboBox(self)
-        self.zones.addItems(itemsA)
+        #self.zones.addItems(itemsA)
+        self.zones.addItem(self.parZone)
         self.servies = QComboBox(self)
         self.servies.addItems(itemsB)
         zone = defaultZone()
@@ -85,12 +87,12 @@ class CreateFwWindow(QWidget):
         if self.task in 'Add Service To A Specific Zone':
 
             self.middelLayout.addRow(QLabel('Select a Service :'), self.servies)
-            self.middelLayout.addRow(QLabel('Select a Zone :'), self.zones)
+            self.middelLayout.addRow(QLabel('Selected Zone :'), self.zones)
             self.middelLayout.addRow(QLabel(""), QLabel(""))
 
         elif self.task in 'Add Interface To Zone':
             self.middelLayout.addRow(QLabel('Select an Interface :'), self.interfaces)
-            self.middelLayout.addRow(QLabel('Select a Zone :'), self.zones)
+            self.middelLayout.addRow(QLabel('Selected Zone :'), self.zones)
 
         elif self.task in 'Add Service To Default Zone':
 
@@ -98,7 +100,7 @@ class CreateFwWindow(QWidget):
             self.middelLayout.addRow(QLabel('Default Zone Is:'), QLabel(f'{zone}'))
 
         elif self.task in 'Add Protocol and Port':
-
+            self.middelLayout.addRow(QLabel('Selected Zone :'), self.zones)
             self.middelLayout.addRow(QLabel('Select a Service :'), self.selectProtocol)
             self.middelLayout.addRow(QLabel('Select a Port :'), self.selectPort)
 
@@ -165,13 +167,14 @@ class CreateFwWindow(QWidget):
 
 ############################################################################################################################
 class EditFwWindow(QWidget):
-    def __init__(self):
+    def __init__(self,par):
         super().__init__()
         self.setGeometry(200,50,300,400)
         self.setWindowTitle("Configure System Permanent Mode")
         self.layouts()
         self.widgets()
-
+        self.zone=par[0]
+        print(self.zone)
     def layouts(self):
         self.mainLayout = QVBoxLayout()
 
@@ -310,6 +313,7 @@ class EditFwWindow(QWidget):
 
         elif self.task in 'Remove Permanent a Protocol':
             self.middelLayout.addRow(QLabel(""), QLabel(""))
+            self.middelLayout.addRow(QLabel('Select a Zone :'), self.zones)
             self.middelLayout.addRow(QLabel('Select a Service :'), self.selectProtocol)
             self.middelLayout.addRow(QLabel('Select a Port :'), self.selectPort)
 
@@ -354,17 +358,18 @@ class EditFwWindow(QWidget):
                     addPermanentServiceToSpecificZone(par1, par2)
 
                 elif self.task in 'Add Permanent Protocol and Port':
-                    par1 = self.selectProtocol.currentText()
-                    par2 = self.selectPort.text()
+
+
                     try:
                         par1 = self.selectProtocol.currentText()
                         par2 = self.selectPort.text()
+                        par3 = self.self.zones.currentText()
                         int(par2)
                     except ValueError:
                         QMessageBox.warning(self, 'error', f'Port numnber must be an Integer')
                         return
                     else:
-                        addPermanetProtocolPort(par2, par1)
+                        addPermanetProtocolPort(par2, par1,par3)
                 # Remove
 
                 elif self.task in 'Remove Permanent a inteface From A Specific Zone':
@@ -424,8 +429,9 @@ class EditFwWindow(QWidget):
 
 ##################################################################################################""
 class DeleteFwWindow(QWidget):
-    def __init__(self):
+    def __init__(self,par):
         super().__init__()
+        self.parZone=par[0]
         self.setGeometry(200,50,300,400)
         self.setWindowTitle("Configure System")
         self.layouts()
@@ -485,9 +491,9 @@ class DeleteFwWindow(QWidget):
         self.task = self.operation.currentItem().text()
 
         itemsA = listZones()
-        itemsB = listAllServices()
+        itemsB = listservices(self.parZone)
         self.zones = QComboBox(self)
-        self.zones.addItems(itemsA)
+        self.zones.addItem(self.parZone)
 
         #add new code
 
@@ -498,7 +504,7 @@ class DeleteFwWindow(QWidget):
         zone = zone[0]
 
         self.interfaces = QComboBox(self)
-        self.interfaces.addItems(displayNetworkInterface())
+        self.interfaces.addItems(listinterfaces(self.parZone))
 
         self.port = QComboBox(self)
         self.selectProtocol = QComboBox()
@@ -510,11 +516,11 @@ class DeleteFwWindow(QWidget):
         if self.task in 'Remove Interface To Zone':
 
             self.middelLayout.addRow(QLabel('Select an Interface :'), self.interfaces)
-            self.middelLayout.addRow(QLabel('Select a Zone :'), self.zones)
+            self.middelLayout.addRow(QLabel('Selected Zone :'), self.zones)
 
 
         elif self.task in 'Remove a Specific Zone':
-            self.middelLayout.addRow(QLabel('Select a Zone :'), self.zones)
+            self.middelLayout.addRow(QLabel('Selected Zone :'), self.zones)
 
 
 
@@ -527,10 +533,11 @@ class DeleteFwWindow(QWidget):
         elif self.task in 'Remove a Service From A Specific Zone':
 
             self.middelLayout.addRow(QLabel('Select a Service :'), self.servies)
-            self.middelLayout.addRow(QLabel('Select a Zone :'), self.zones)
+            self.middelLayout.addRow(QLabel('Selected Zone :'), self.zones)
 
 
         elif self.task in 'Remove a protocol and Port':
+            self.middelLayout.addRow(QLabel('Selected Zone :'), self.zones)
             self.middelLayout.addRow(QLabel('Select a Protocol :'), self.selectProtocol)
             self.middelLayout.addRow(QLabel('Select a Port :'), self.selectPort)
 
@@ -572,12 +579,13 @@ class DeleteFwWindow(QWidget):
                     try:
                         par1 = self.selectProtocol.currentText()
                         par2 = self.selectPort.text()
+                        par3 = self.zones.currentText()
                         int(par2)
                     except ValueError:
                         QMessageBox.warning(self, 'error', f'Port numnber must be an Integer')
                         return
                     else:
-                        RemoveProtocolPort(par2, par1)
+                        RemoveProtocolPort(par2, par1,par3)
 
 
             except:
