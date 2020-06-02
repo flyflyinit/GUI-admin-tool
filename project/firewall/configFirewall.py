@@ -331,7 +331,6 @@ class EditFwWindow(QWidget):
 
 
                     par1 = self.createNewZone.text()
-                    print(par1)
                     if str(par1) == '':
                         QMessageBox.warning(self, 'Warrnings', 'You Enter a name ')
                         return
@@ -489,6 +488,9 @@ class DeleteFwWindow(QWidget):
         itemsB = listAllServices()
         self.zones = QComboBox(self)
         self.zones.addItems(itemsA)
+
+        #add new code
+
 
         self.servies = QComboBox(self)
         self.servies.addItems(itemsB)

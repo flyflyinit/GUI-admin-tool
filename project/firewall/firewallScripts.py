@@ -144,21 +144,19 @@ def addPermanentNewZone(name):
 # add interface to zone
 
 def addPermanentInterfaceToZone(interface, zone):
-    command = f'firewall-cmd --permanent --zone={zone} --add-interface={interface}'
+    command = f'firewall-cmd --permanent --zone={zone} --add-interface={interface} '
 
     try:
         subprocess.run(command, check=True, shell=True)
         restarted()
 
-
     except subprocess.CalledProcessError:
-
         print("Error on addPermanentInterfaceToZone(interface, zone):")
-
+        return
 
 
 def addPermanentServiceDefaultZone(service):
-    command = f'firewall-cmd --permanent --add-service={service} > /tmp/state'
+    command = f'firewall-cmd  --permanen --add-service={service}t'
 
     try:
         subprocess.run(command, check=True, shell=True)
@@ -173,7 +171,7 @@ def addPermanentServiceDefaultZone(service):
 #   add service to specified Zone
 
 def addPermanentServiceToSpecificZone(service, zone):
-    command = f'firewall-cmd --permanent --zone={zone} --add-service={service} > /tmp/state'
+    command = f'firewall-cmd --permanent  --zone={zone} --add-service={service}'
 
     try:
         subprocess.run(command, check=True, shell=True)
@@ -186,23 +184,30 @@ def addPermanentServiceToSpecificZone(service, zone):
 
 
 def addPermanetProtocolPort(port, protocol):
-    command = f'firewall-cmd --permanent --add-port={port}/{protocol}'
+    command = f'firewall-cmd --permanent --add-port={port}/{protocol} '
 
     try:
         subprocess.run(command, check=True, shell=True)
         restarted()
-
-
-
     except subprocess.CalledProcessError:
 
         print("Error on addPermanetProtocolPort(port, protocol): ")
 
+# remove a zone
+def RemoveZone(zone):
+    command = f'firewall-cmd --permanent --delete-zone={zone}'
+
+    try:
+        subprocess.run(command, check=True, shell=True)
+
+    except subprocess.CalledProcessError:
+
+        print("Error on RemoveZone ")
 
 # remove interface from a zone
 
 def RemovePermanetInterfaceFromZone(service, zone):
-    command = f'firewall-cmd --permanent --zone={zone} --remove-interface={service}'
+    command = f'firewall-cmd  --permanent --zone={zone} --remove-interface={service} '
 
     try:
         subprocess.run(command, check=True, shell=True)
@@ -227,7 +232,7 @@ def removePermanentServiceFromDefaultZone(service):
 
 
 def RemovePermanetServiceFromSpecificZone(service, zone):
-    command = f'firewall-cmd --permanent  --zone={zone} --remove-service={service}'
+    command = f'firewall-cmd --permanent --zone={zone} --remove-service={service}'
 
     try:
         subprocess.run(command, check=True, shell=True)
@@ -267,15 +272,6 @@ def RemoveInterfaceFromZone(int, zone):
 
 # remove specific zone
 
-def RemoveZone(zone):
-    command = f'firewall-cmd --remove- zone={zone}'
-
-    try:
-        subprocess.run(command, check=True, shell=True)
-
-    except subprocess.CalledProcessError:
-
-        print("Error on RemoveZone ")
 
 def removeServiceFromDefaultZone(service):
 
@@ -384,4 +380,3 @@ def firewallGlobalInfo():
 
 
 
-firewallGlobalInfo()

@@ -43,9 +43,15 @@ def getContentFirewall(self):
 
 def createFwButtons(self):
     self.hboxbtn=QHBoxLayout()
-    defaultzone=defaultZone()[0]
-    self.defaultZone=QLabel(f"Default Zone is : {defaultzone}")
-    self.defaultZone.move(20,20)
+    try:
+        defaultzone=defaultZone()[0]
+        self.defaultZone=QLabel(f"DEFAULT ZONE : {defaultzone}")
+
+    except IndexError:
+        QMessageBox.critical(self, 'error', f'Please install Firewalld or start the service ')
+        self.defaultZone=QLabel("FIREWALLD SERVICE IS NOT RUNNING")
+
+    self.defaultZone.move(20, 20)
     self.addBtn=QPushButton('Add')
     self.editBtn=QPushButton('Edit')
     self.deleteBtn=QPushButton('Delete')
@@ -87,7 +93,6 @@ def createTableFw(self):
     self.tableFw.setHorizontalHeaderItem(2, QTableWidgetItem("Services"))
     self.tableFw.setHorizontalHeaderItem(3, QTableWidgetItem("Ports"))
     self.tableFw.setHorizontalHeaderItem(4, QTableWidgetItem("set-Default"))
-    print(firewallGlobalInfo())
 
     self.tableFw.setEditTriggers(QAbstractItemView.NoEditTriggers)
     showmyfwlist(self)
