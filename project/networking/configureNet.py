@@ -344,8 +344,8 @@ class EditNetworkWindow(QWidget):
                 QMessageBox.information(self, 'No Change', 'No Additionel changes ')
             else:
                 try:
-                    print(command)
                     subprocess.run(command, check=True, shell=True)
+
                 except subprocess.CalledProcessError:
                     QMessageBox.warning(self, 'warning', f"error Verify the fields \n")
                 else:

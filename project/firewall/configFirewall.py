@@ -209,7 +209,7 @@ class EditFwWindow(QWidget):
         self.setLayout(self.mainLayout)
 
     def widgets(self):
-        self.applayNewCh = QRadioButton("Save The New Changes Permanent ")
+        self.applayNewCh = QRadioButton("Save The New Changes Permanently ")
         self.cancelNewCh = QRadioButton("Cancel The New Changes")
 
         self.topLayout.addRow(QLabel(""), QLabel(""))
@@ -243,7 +243,7 @@ class EditFwWindow(QWidget):
                 return
 
         elif self.applayNewCh.isChecked():
-            self.mbox = QMessageBox.question(self, "Warningg!", "\n Are You Shure To Save The New Configurations Permanent ?",
+            self.mbox = QMessageBox.question(self, "Warningg!", "\n Are You Shure To Save The New Configurations Permanently ?",
                                              QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
             if self.mbox == QMessageBox.Yes:
                 try:
