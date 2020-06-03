@@ -11,7 +11,7 @@ class CreateNetworkWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setGeometry(200,50,600,400)
-        self.setWindowTitle("Add New Connection")
+        self.setWindowTitle("Add a New Connection")
         self.layouts()
         self.widgets()
 
@@ -58,13 +58,13 @@ class CreateNetworkWindow(QWidget):
         self.typeCombo.addItem("ethernet")
         self.typeCombo.addItem("wifi")
         self.newconNameEdit = QLineEdit()
-        self.newconNameEdit.setPlaceholderText('required field')
+        self.newconNameEdit.setPlaceholderText('Required field')
         self.ipEdit = QLineEdit()
-        self.ipEdit.setPlaceholderText('required field')
+        self.ipEdit.setPlaceholderText('Required field')
         self.gatewayEdit = QLineEdit()
         self.gatewayEdit.setPlaceholderText('required field')
         self.dnsEdit = QLineEdit()
-        self.dnsEdit.setPlaceholderText('This field is optionnel')
+        self.dnsEdit.setPlaceholderText('Optionnel field')
         self.maskListItem = QComboBox()
         self.maskListItem.addItem(" /24:     255.255.255.0      ")
         self.maskListItem.addItem(" /32:     255.255.255.255     ")
@@ -170,7 +170,7 @@ class EditNetworkWindow(QWidget):
     def __init__(self,d):
         super().__init__()
         self.setGeometry(200,50,300,400)
-        self.setWindowTitle("Configure System")
+        self.setWindowTitle("Edit a connection ")
         self.index=d
         self.itwas=d
         self.layouts()
@@ -386,7 +386,7 @@ class DeleteNetworkWindow(QWidget):
     def __init__(self,d):
         super().__init__()
         self.setGeometry(200,50,300,300)
-        self.setWindowTitle("Delete Users")
+        self.setWindowTitle("Delete a Connection")
         self.listUsersToDelete = d
         self.index=d
 

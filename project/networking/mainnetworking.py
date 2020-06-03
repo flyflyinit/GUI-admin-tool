@@ -502,7 +502,7 @@ def editUsersWindow(self,d):
         if d[i].isSelected == True:
             list_users_to_edit.append(i)
     if len(list_users_to_edit) == 0 or len(list_users_to_edit) > 1:
-        QMessageBox.warning(self, 'warning', 'Please select just one user')
+        QMessageBox.warning(self, 'warning', 'Please select just one connection')
     else:
         for user in self.usersList :
             if user[0] == list_users_to_edit[0]:
@@ -518,7 +518,7 @@ def deleteUsersWindow(self,d):
         if d[i].isSelected == True:
             list_users_to_delete.append(i)
     if len(list_users_to_delete) == 0:
-        QMessageBox.warning(self, 'warning', 'no selected users.\nPlease select at least one user')
+        QMessageBox.warning(self, 'warning', 'no selected connection.\nPlease select at least one connection')
     else:
         self.secondwindow = DeleteNetworkWindow(list_users_to_delete)
         self.sw = qtmodern.windows.ModernWindow(self.secondwindow)

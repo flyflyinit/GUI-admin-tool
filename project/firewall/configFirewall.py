@@ -9,7 +9,7 @@ class CreateFwWindow(QWidget):
         super().__init__()
         self.parZone=par[0]
         self.setGeometry(200, 50, 300, 400)
-        self.setWindowTitle("Configure Firewall Run Time")
+        self.setWindowTitle("Add on Run Time ")
         self.layouts()
         self.widgets()
 
@@ -57,10 +57,13 @@ class CreateFwWindow(QWidget):
         self.operation.addItem('Add Protocol and Port')
         self.topLayout.addRow(QLabel(f"Zone Selected is : {self.parZone} "), QLabel())
         self.topLayout.addRow(QLabel("Please Select Operations To Applay It "), QLabel())
+        self.middelLayout.addRow(QLabel(""), QLabel(""))
+        self.middelLayout.addRow(QLabel(""), QLabel(""))
+        self.topLayout.addRow(QLabel(""), QLabel(""))
+        self.topLayout.addRow(QLabel(""), QLabel(""))
+
         self.topLayout.addRow(self.operation, QLabel())
         self.middelLayout.addRow(QLabel(""), QLabel(""))
-
-
         # after click Widget
 
     def addOperationsClick(self):
@@ -109,6 +112,10 @@ class CreateFwWindow(QWidget):
         elif self.task in 'Add a New Zone':
             self.middelLayout.addRow(QLabel(""), QLabel(""))
             self.middelLayout.addRow(QLabel(''), self.createNewZone)
+
+
+        self.middelLayout.addRow(QLabel(""), QLabel(""))
+        self.middelLayout.addRow(QLabel(""), QLabel(""))
 
     def clearMiddel(self):
 
@@ -185,7 +192,7 @@ class EditFwWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setGeometry(200,50,300,400)
-        self.setWindowTitle("Configure System Permanent Mode")
+        self.setWindowTitle("Cancel configuration - Permanent Mode configuration ")
         self.layouts()
         self.widgets()
         self.zone=''
@@ -292,7 +299,7 @@ class DeleteFwWindow(QWidget):
         super().__init__()
         self.parZone=par[0]
         self.setGeometry(200,50,300,400)
-        self.setWindowTitle("Configure System")
+        self.setWindowTitle("Delete Run Time")
         self.layouts()
         self.widgets()
 
@@ -335,11 +342,16 @@ class DeleteFwWindow(QWidget):
         self.operation.clicked.connect(self.addOperationsClick)
         self.operation.addItem('Remove a Zone')
         self.operation.addItem('Remove Interface To Zone')
-        self.operation.addItem('Remove a Specific Zone')
         self.operation.addItem('Remove Service To Default Zone')
         self.operation.addItem('Remove a Service From A Specific Zone')
         self.operation.addItem('Remove a protocol and Port')
+        self.topLayout.addRow(QLabel(f"Zone Selected is : {self.parZone} "), QLabel())
         self.topLayout.addRow(QLabel("Please Select Operations To Applay It "), QLabel())
+        self.middelLayout.addRow(QLabel(""), QLabel(""))
+        self.middelLayout.addRow(QLabel(""), QLabel(""))
+        self.topLayout.addRow(QLabel(""), QLabel(""))
+        self.topLayout.addRow(QLabel(""), QLabel(""))
+
         self.topLayout.addRow(self.operation, QLabel())
         self.middelLayout.addRow(QLabel(""), QLabel(""))
 
@@ -400,6 +412,9 @@ class DeleteFwWindow(QWidget):
             self.middelLayout.addRow(QLabel('Selected Zone :'), self.zones)
             self.middelLayout.addRow(QLabel('Select a Protocol :'), self.selectProtocol)
             self.middelLayout.addRow(QLabel('Select a Port :'), self.selectPort)
+
+        self.middelLayout.addRow(QLabel(""), QLabel(""))
+        self.middelLayout.addRow(QLabel(""), QLabel(""))
 
     def clearMiddel(self):
 
