@@ -14,7 +14,7 @@ class ConfigureSystemWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setGeometry(200,50,300,400)
-        self.setWindowTitle("Configure System")
+        self.setWindowTitle("Edit Hostname")
         self.layouts()
         self.widgets()
 
