@@ -475,21 +475,62 @@ def showmyuserslist(self):
     for i in self.usersList:
         self.rowPosition = self.tableNet.rowCount()
         self.tableNet.insertRow(self.rowPosition)
-        self.tableNet.setItem(self.rowPosition, 0, QTableWidgetItem(i[0]))
-        self.tableNet.setItem(self.rowPosition, 1, QTableWidgetItem(i[1]))
-        self.dic6[i[0]] = IPCellInTableNet(i[0])
-        self.tableNet.setCellWidget(self.rowPosition,2,self.dic6[i[0]])
-        self.tableNet.setItem(self.rowPosition, 3, QTableWidgetItem(i[2]))
-        self.tableNet.setItem(self.rowPosition, 4, QTableWidgetItem(i[3]))
-        self.dic3[i[0]] = UpDownCellInTable(i[0],i[2])
-        self.tableNet.setCellWidget(self.rowPosition,5,self.dic3[i[0]])
-        self.dic2[i[0]] = SelectCellInTableNet()
-        self.tableNet.setCellWidget(self.rowPosition,8,self.dic2[i[0]])
-        self.dic4[i[0]] = DHCPCellInTable(i[0],i[2])
-        self.tableNet.setCellWidget(self.rowPosition,6,self.dic4[i[0]])
-        self.dic5[i[0]] = AutoConnectCellInTable(i[0],i[3])
-        self.tableNet.setCellWidget(self.rowPosition,7,self.dic5[i[0]])
-
+        try:
+            self.tableNet.setItem(self.rowPosition, 0, QTableWidgetItem(i[0]))
+        except:
+            pass
+        try:
+            self.tableNet.setItem(self.rowPosition, 1, QTableWidgetItem(i[1]))
+        except:
+            pass
+        try:
+            self.dic6[i[0]] = IPCellInTableNet(i[0])
+        except:
+            pass
+        try:
+            self.tableNet.setCellWidget(self.rowPosition,2,self.dic6[i[0]])
+        except:
+            pass
+        try:
+            self.tableNet.setItem(self.rowPosition, 3, QTableWidgetItem(i[2]))
+        except:
+            pass
+        try:
+            self.tableNet.setItem(self.rowPosition, 4, QTableWidgetItem(i[3]))
+        except:
+            pass
+        try:
+            self.dic3[i[0]] = UpDownCellInTable(i[0],i[2])
+        except:
+            pass
+        try:
+            self.tableNet.setCellWidget(self.rowPosition,5,self.dic3[i[0]])
+        except:
+            pass
+        try:
+            self.dic2[i[0]] = SelectCellInTableNet()
+        except:
+            pass
+        try:
+            self.tableNet.setCellWidget(self.rowPosition,8,self.dic2[i[0]])
+        except:
+            pass
+        try:
+            self.dic4[i[0]] = DHCPCellInTable(i[0],i[2])
+        except:
+            pass
+        try:
+            self.tableNet.setCellWidget(self.rowPosition,6,self.dic4[i[0]])
+        except:
+            pass
+        try:
+            self.dic5[i[0]] = AutoConnectCellInTable(i[0],i[3])
+        except:
+            pass
+        try:
+            self.tableNet.setCellWidget(self.rowPosition,7,self.dic5[i[0]])
+        except:
+            pass
 
 def createUsersWindow(self):
     self.secondwindow = CreateNetworkWindow()
