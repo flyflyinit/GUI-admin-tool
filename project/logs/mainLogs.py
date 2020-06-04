@@ -1,6 +1,7 @@
 import qtmodern.styles
 import qtmodern.windows
 from PyQt5 import QtGui, QtCore
+from PyQt5.QtCore import QDate
 from PyQt5.QtWidgets import *
 import subprocess
 import json
@@ -8,16 +9,101 @@ import select
 
 def getContentLogs(self):
     self.filters = QHBoxLayout()
+    self.hboxxx = QHBoxLayout()
 
+    #self.time = QComboBox(self)
+
+    self.since = QDateTimeEdit(QDate.currentDate().addMonths(-1))
+    #self.since.setMinimumDate(QDate.currentDate().addDays(-365))
+    self.since.setMaximumDate(QDate.currentDate())
+    self.since.setDisplayFormat("yyyy.MM.dd")
+    self.since.setStyleSheet("color: #95a5a6; background-color: #303a46 ; border: 0px solid #303a46")
+    self.since.setFixedHeight(25)
+    self.since.setFixedWidth(110)
+
+    self.until = QDateTimeEdit(QDate.currentDate())
+    #self.until.setMinimumDate(QDate.currentDate().addDays(-365))
+    self.until.setMaximumDate(QDate.currentDate())
+    self.until.setDisplayFormat("yyyy.MM.dd")
+    self.until.setStyleSheet("color: #95a5a6; background-color: #303a46 ; border: 0px solid #303a46")
+    self.until.setFixedHeight(25)
+    self.until.setFixedWidth(110)
+
+
+    self.prio = QComboBox(self)
+    self.prio.setStyleSheet("color: #95a5a6; background-color: #303a46 ; border: 0px solid #303a46")
+    self.prio.setFixedHeight(25)
+    self.prio.setFixedWidth(80)
+    self.prio.addItem("All")
+    self.prio.addItems(['emerg','alert','crit','err','warning','notice','info','debug'])
+    self.prio.setCurrentIndex(0)
+
+    self.pid = QLineEdit(self)
+    self.pid.setPlaceholderText('PID 1 ~ 32768')
+    self.pid.setText('All')
+    self.pid.setStyleSheet("color: #95a5a6; background-color: #303a46 ; border: 0px solid #303a46")
+    self.pid.setFixedHeight(25)
+    self.pid.setFixedWidth(100)
+
+    self.uid = QLineEdit(self)
+    self.uid.setPlaceholderText('UID 0 ~ 65536')
+    self.uid.setText('All')
+    self.uid.setStyleSheet("color: #95a5a6; background-color: #303a46 ; border: 0px solid #303a46")
+    self.uid.setFixedHeight(25)
+    self.uid.setFixedWidth(100)
+
+    self.gid = QLineEdit(self)
+    self.gid.setPlaceholderText('GID 0 ~ 65536')
+    self.gid.setText('All')
+    self.gid.setStyleSheet("color: #95a5a6; background-color: #303a46 ; border: 0px solid #303a46")
+    self.gid.setFixedHeight(25)
+    self.gid.setFixedWidth(100)
+
+    self.unit = QComboBox(self)
+    self.unit.setStyleSheet("color: #95a5a6; background-color: #303a46 ; border: 0px solid #303a46")
+    self.unit.setFixedHeight(25)
+    self.unit.setFixedWidth(180)
+    self.unit.addItem("All")
+    self.unit.setCurrentIndex(0)
+    c = subprocess.run('ls -f /lib/systemd/system',shell=True,stdout=subprocess.PIPE)
+    c = c.stdout.decode('utf-8').split('\n')
+    self.unit.addItems(c[2:-1])
+
+    self.selectBtn = QPushButton("Select")
+    self.selectBtn.clicked.connect(lambda :selectclicked(self))
+    self.selectBtn.setStyleSheet("color: #95a5a6; background-color: #303a46 ; border: 0px solid #303a46")
+    self.selectBtn.setFixedHeight(25)
+    self.selectBtn.setFixedWidth(80)
+
+    self.hboxxx.addWidget(self.since)
+    self.hboxxx.addWidget(self.until)
+    self.hboxxx.addWidget(self.prio)
+    self.hboxxx.addWidget(self.pid)
+    self.hboxxx.addWidget(self.uid)
+    self.hboxxx.addWidget(self.gid)
+    self.hboxxx.addWidget(self.unit)
+    self.hboxxx.addWidget(self.selectBtn)
+    self.hboxxx.addStretch()
+    self.filters.addLayout(self.hboxxx)
 
     createTableLogs(self)
     
     self.containerLogs=QVBoxLayout()
-
     self.containerLogs.addLayout(self.filters)
     self.containerLogs.addWidget(self.tableLogs)
-
     self.bottomRightLayout.addLayout(self.containerLogs)
+
+def selectclicked(self):
+    current = self.listnet.currentIndex()
+    currenttext = self.listnet.currentText()
+    while self.tableLogs.rowCount() > 0:
+        self.tableLogs.removeRow(0)
+
+    createTableLogs(self)
+
+    self.listnet.setCurrentIndex(current)
+    self.containerLogs.addWidget(self.tableLogs)
+
 
 def createTableLogs(self):
     self.tableLogs=QTableWidget()
@@ -40,10 +126,10 @@ def createTableLogs(self):
     self.tableLogs.setHorizontalHeaderItem(7, QTableWidgetItem("Command"))
     self.tableLogs.setHorizontalHeaderItem(8, QTableWidgetItem("Message"))
     self.tableLogs.setEditTriggers(QAbstractItemView.NoEditTriggers)
-    showmyserviceslist(self)
+    showmylogslist(self)
 
 
-def showmyserviceslist(self,since='',until='',priority='',pid='',gid='',unit=''):
+def showmylogslist(self,since='',until='',priority='',pid='',gid='',unit=''):
     self.rowposition = 0
 
     args = f"journalctl -r {since} {until} {priority} {pid} {gid} {unit} -o json"
@@ -98,46 +184,3 @@ def showmyserviceslist(self,since='',until='',priority='',pid='',gid='',unit='')
                 pass
         except Exception as e:
             print(e)
-
-
-def createLogsWindow(self):
-    pass
-    '''
-    self.secondwindow = CreateLogsWindow()
-    self.sw = qtmodern.windows.ModernWindow(self.secondwindow)
-    self.sw.show()
-    '''
-
-def editLogsWindow(self,d):
-    pass
-    '''
-    list_users_to_edit = []
-    for i in d:
-        if d[i].isSelected == True:
-            list_users_to_edit.append(i)
-    if len(list_users_to_edit) == 0 or len(list_users_to_edit) > 1:
-        QMessageBox.warning(self, 'warning', 'Please select just one user')
-    else:
-        for user in self.usersList :
-            if user[0] == list_users_to_edit[0]:
-                self.secondwindow = EditLogsWindow(user)
-                self.sw = qtmodern.windows.ModernWindow(self.secondwindow)
-                self.sw.show()
-            else:
-                continue
-    '''
-
-def deleteLogsWindow(self,d):
-    pass
-    '''
-    list_users_to_delete = []
-    for i in d:
-        if d[i].isSelected == True:
-            list_users_to_delete.append(i)
-    if len(list_users_to_delete) == 0:
-        QMessageBox.warning(self, 'warning', 'no selected users.\nPlease select at least one user')
-    else:
-        self.secondwindow = DeleteLogsWindow(list_users_to_delete)
-        self.sw = qtmodern.windows.ModernWindow(self.secondwindow)
-        self.sw.show()
-    '''
