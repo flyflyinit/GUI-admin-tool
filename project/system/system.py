@@ -487,7 +487,6 @@ class PolygonCPUs(MyMplCanvas):
         for c in range(self.cpuLogicalCount):
             logicalcpus[c]=[]
 
-        print(logicalcpus)
         global cpus
         global cputime
         global cpucurrenttime
