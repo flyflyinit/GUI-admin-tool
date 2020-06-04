@@ -14,6 +14,7 @@ from project.firewall import mainFirewall
 from project.services import mainServices
 from project.backup import mainbackup
 from project.terminal import mainterminal
+from project.logs import mainLogs
 
 '''
 from project.networking.mainnetworking import getContentNetwork
@@ -35,15 +36,6 @@ try:
 except ImportError as e:
     print(f'package qtmodern Not Found\n{e}\ntry :\npip3 install --user qtmodern\n')
 
-try:
-    from system import mainsystem
-    from users import mainusers
-    from networking import mainnetworking
-    from firewall import mainFirewall
-    from services import mainServices
-    from backup import mainbackup
-    from terminal import mainterminal
-    from project.dashboard import mainDashboard
 
 except ImportError as e:
     print(f'package not found\n{e}\n')
@@ -163,9 +155,13 @@ class mainWindow(QWidget):
         self.item6.setSizeHint(QtCore.QSize(50, 50))
         self.listWidget.addItem(self.item6)
 
-        self.item7 = QtWidgets.QListWidgetItem("  ⌨  Terminal")
+        self.item7 = QtWidgets.QListWidgetItem("  ⌨  Logs")
         self.item7.setSizeHint(QtCore.QSize(50, 50))
         self.listWidget.addItem(self.item7)
+
+        self.item8 = QtWidgets.QListWidgetItem("  ⌨  Terminal")
+        self.item8.setSizeHint(QtCore.QSize(50, 50))
+        self.listWidget.addItem(self.item8)
 
         self.listWidget.itemSelectionChanged.connect(self.getContentTrigger)
 
@@ -200,6 +196,9 @@ class mainWindow(QWidget):
             self.clearLayout(self.bottomRightLayout)
             mainServices.getContentServices(self)
         elif si==self.item7:
+            self.clearLayout(self.bottomRightLayout)
+            mainLogs.getContentLogs(self)
+        elif si==self.item8:
             self.clearLayout(self.bottomRightLayout)
             mainterminal.main(self)
         else:
