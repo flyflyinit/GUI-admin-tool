@@ -1,16 +1,12 @@
-
-def main():
-    import subprocess
-
-    fontsize = 10
-    fontstyle = "Regular"
-    font = "Monospace"
-    font = f"URxvt.font: xft:{font}:style={fontstyle}:size={fontsize}"
-
-    subprocess.run("cp /home/abdelmoumen/DEV-TESTS/PYTHON-PROJECTS/GUI_admin_tool/project/terminal/Xresources ~/.Xresources",shell=True)
-    with open('~/.Xresources', mode='a') as file:
-        file.write(f'\n{font}')
-    subprocess.run("xrdb ~/.Xresources",shell=True)
+import datetime
+import systemd.journal
+from PyQt5.QtCore import QDate
+from PyQt5.QtWidgets import QDateTimeEdit
 
 if __name__ == '__main__':
-    main()
+
+    dateEdit = QDateTimeEdit(QDate.currentDate())
+    dateEdit.setMinimumDate(QDate.currentDate().addDays(-365))
+    dateEdit.setMaximumDate(QDate.currentDate().addDays(365))
+    dateEdit.setDisplayFormat("yyyy.MM.dd")
+

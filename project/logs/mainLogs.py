@@ -1,7 +1,9 @@
+from datetime import datetime
+
 import qtmodern.styles
 import qtmodern.windows
 from PyQt5 import QtGui, QtCore
-from PyQt5.QtCore import QDate
+from PyQt5.QtCore import QDate, Qt
 from PyQt5.QtWidgets import *
 import subprocess
 import json
@@ -11,8 +13,9 @@ def getContentLogs(self):
     self.filters = QHBoxLayout()
     self.hboxxx = QHBoxLayout()
 
-    #self.time = QComboBox(self)
+    self.a = ['emerg', 'alert', 'crit', 'err', 'warning', 'notice', 'info', 'debug']
 
+    self.sinceC = QVBoxLayout()
     self.since = QDateTimeEdit(QDate.currentDate().addMonths(-1))
     #self.since.setMinimumDate(QDate.currentDate().addDays(-365))
     self.since.setMaximumDate(QDate.currentDate())
@@ -20,7 +23,11 @@ def getContentLogs(self):
     self.since.setStyleSheet("color: #95a5a6; background-color: #303a46 ; border: 0px solid #303a46")
     self.since.setFixedHeight(25)
     self.since.setFixedWidth(110)
+    self.sinceT = QLabel("Since :")
+    self.sinceC.addWidget(self.sinceT)
+    self.sinceC.addWidget(self.since)
 
+    self.untilC = QVBoxLayout()
     self.until = QDateTimeEdit(QDate.currentDate())
     #self.until.setMinimumDate(QDate.currentDate().addDays(-365))
     self.until.setMaximumDate(QDate.currentDate())
@@ -28,37 +35,57 @@ def getContentLogs(self):
     self.until.setStyleSheet("color: #95a5a6; background-color: #303a46 ; border: 0px solid #303a46")
     self.until.setFixedHeight(25)
     self.until.setFixedWidth(110)
+    self.untilT = QLabel("Until :")
+    self.untilC.addWidget(self.untilT)
+    self.untilC.addWidget(self.until)
 
 
+    self.prioC = QVBoxLayout()
     self.prio = QComboBox(self)
     self.prio.setStyleSheet("color: #95a5a6; background-color: #303a46 ; border: 0px solid #303a46")
     self.prio.setFixedHeight(25)
     self.prio.setFixedWidth(80)
     self.prio.addItem("All")
-    self.prio.addItems(['emerg','alert','crit','err','warning','notice','info','debug'])
+    self.prio.addItems(self.a)
     self.prio.setCurrentIndex(0)
+    self.prioT = QLabel("Priority :")
+    self.prioC.addWidget(self.prioT)
+    self.prioC.addWidget(self.prio)
 
+    self.pidC = QVBoxLayout()
     self.pid = QLineEdit(self)
     self.pid.setPlaceholderText('PID 1 ~ 32768')
     self.pid.setText('All')
     self.pid.setStyleSheet("color: #95a5a6; background-color: #303a46 ; border: 0px solid #303a46")
     self.pid.setFixedHeight(25)
     self.pid.setFixedWidth(100)
+    self.pidT = QLabel("Process ID :")
+    self.pidC.addWidget(self.pidT)
+    self.pidC.addWidget(self.pid)
 
+    self.uidC = QVBoxLayout()
     self.uid = QLineEdit(self)
     self.uid.setPlaceholderText('UID 0 ~ 65536')
     self.uid.setText('All')
     self.uid.setStyleSheet("color: #95a5a6; background-color: #303a46 ; border: 0px solid #303a46")
     self.uid.setFixedHeight(25)
     self.uid.setFixedWidth(100)
+    self.uidT = QLabel("User ID :")
+    self.uidC.addWidget(self.uidT)
+    self.uidC.addWidget(self.uid)
 
+    self.gidC = QVBoxLayout()
     self.gid = QLineEdit(self)
     self.gid.setPlaceholderText('GID 0 ~ 65536')
     self.gid.setText('All')
     self.gid.setStyleSheet("color: #95a5a6; background-color: #303a46 ; border: 0px solid #303a46")
     self.gid.setFixedHeight(25)
     self.gid.setFixedWidth(100)
+    self.gidT = QLabel("Group ID :")
+    self.gidC.addWidget(self.gidT)
+    self.gidC.addWidget(self.gid)
 
+    self.unitC = QVBoxLayout()
     self.unit = QComboBox(self)
     self.unit.setStyleSheet("color: #95a5a6; background-color: #303a46 ; border: 0px solid #303a46")
     self.unit.setFixedHeight(25)
@@ -67,7 +94,11 @@ def getContentLogs(self):
     self.unit.setCurrentIndex(0)
     c = subprocess.run('ls -f /lib/systemd/system',shell=True,stdout=subprocess.PIPE)
     c = c.stdout.decode('utf-8').split('\n')
-    self.unit.addItems(c[2:-1])
+    c = c[2:-1]
+    c.sort()
+    self.unit.addItems(c)
+    self.unitT = QLabel("Unit :")
+    self.unitC.addWidget(self.unitT)
 
     self.selectBtn = QPushButton("Select")
     self.selectBtn.clicked.connect(lambda :selectclicked(self))
@@ -75,38 +106,71 @@ def getContentLogs(self):
     self.selectBtn.setFixedHeight(25)
     self.selectBtn.setFixedWidth(80)
 
-    self.hboxxx.addWidget(self.since)
-    self.hboxxx.addWidget(self.until)
-    self.hboxxx.addWidget(self.prio)
-    self.hboxxx.addWidget(self.pid)
-    self.hboxxx.addWidget(self.uid)
-    self.hboxxx.addWidget(self.gid)
-    self.hboxxx.addWidget(self.unit)
-    self.hboxxx.addWidget(self.selectBtn)
+    box = QHBoxLayout()
+    box.addWidget(self.unit)
+    box.addWidget(self.selectBtn)
+    self.unitC.addLayout(box)
+
+    self.hboxxx.addLayout(self.sinceC)
+    self.hboxxx.addLayout(self.untilC)
+    self.hboxxx.addLayout(self.prioC)
+    self.hboxxx.addLayout(self.pidC)
+    self.hboxxx.addLayout(self.gidC)
+    self.hboxxx.addLayout(self.uidC)
+    self.hboxxx.addLayout(self.unitC)
     self.hboxxx.addStretch()
     self.filters.addLayout(self.hboxxx)
 
+    self.tableLogs=QTableWidget()
     createTableLogs(self)
-    
+    showmylogslist(self)
+
     self.containerLogs=QVBoxLayout()
     self.containerLogs.addLayout(self.filters)
     self.containerLogs.addWidget(self.tableLogs)
     self.bottomRightLayout.addLayout(self.containerLogs)
 
 def selectclicked(self):
-    current = self.listnet.currentIndex()
-    currenttext = self.listnet.currentText()
+
+    currentSince = '--since='+self.since.date().toString(Qt.ISODate)
+    currentUntil = '--until='+self.until.date().toString(Qt.ISODate)
+    currentPID = self.pid.text()
+    currentGID = self.gid.text()
+    currentUID = self.uid.text()
+    currentPrio = self.prio.currentText()
+    currentUnit = self.unit.currentText()
+
     while self.tableLogs.rowCount() > 0:
         self.tableLogs.removeRow(0)
 
     createTableLogs(self)
 
-    self.listnet.setCurrentIndex(current)
+    if currentPID == 'All':
+        currentPID = ''
+    else:
+        currentPID = '_PID='+currentPID
+    if currentGID == 'All':
+        currentGID = ''
+    else:
+        currentGID = '_GID='+currentGID
+    if currentUID == 'All':
+        currentUID = ''
+    else:
+        currentUID = '_UID='+currentUID
+    if currentPrio == 'All':
+        currentPrio = ''
+    else:
+        currentPrio = 'PRIORITY='+str(self.a.index(currentPrio))
+    if currentUnit == 'All':
+        currentUnit = ''
+    else:
+        currentUnit = 'UNIT='+currentUnit
+
+    showmylogslist(self,since=currentSince,until=currentUntil,priority=currentPrio,pid=currentPID,gid=currentGID,uid=currentUID,unit=currentUnit)
     self.containerLogs.addWidget(self.tableLogs)
 
 
 def createTableLogs(self):
-    self.tableLogs=QTableWidget()
     self.tableLogs.setRowCount(0)
     self.tableLogs.setColumnCount(9)
 
@@ -126,13 +190,13 @@ def createTableLogs(self):
     self.tableLogs.setHorizontalHeaderItem(7, QTableWidgetItem("Command"))
     self.tableLogs.setHorizontalHeaderItem(8, QTableWidgetItem("Message"))
     self.tableLogs.setEditTriggers(QAbstractItemView.NoEditTriggers)
-    showmylogslist(self)
 
 
-def showmylogslist(self,since='',until='',priority='',pid='',gid='',unit=''):
+def showmylogslist(self,since='',until='',priority='',pid='',gid='',uid='',unit=''):
     self.rowposition = 0
 
-    args = f"journalctl -r {since} {until} {priority} {pid} {gid} {unit} -o json"
+    args = f"journalctl -r {since} {until} {priority} {pid} {gid} {uid} {unit} -o json"
+    print(args)
     f = subprocess.Popen(args, stdout=subprocess.PIPE,shell=True)
     i = 0
     while True:
@@ -146,10 +210,13 @@ def showmylogslist(self,since='',until='',priority='',pid='',gid='',unit=''):
             journal_json = json.loads('[' + line.strip() + ']')
             self.rowPosition = self.tableLogs.rowCount()
             self.tableLogs.insertRow(self.rowPosition)
+
+
             try:
                 self.tableLogs.setItem(self.rowPosition, 0, QTableWidgetItem(journal_json[0]['SYSLOG_TIMESTAMP']))
             except:
-                self.tableLogs.setItem(self.rowPosition, 0, QTableWidgetItem(journal_json[0]['__REALTIME_TIMESTAMP']))
+                #self.tableLogs.setItem(self.rowPosition, 0, QTableWidgetItem(datetime.fromtimestamp(int(journal_json[0]['__MONOTONIC_TIMESTAMP']))))
+                pass
             try:
                 self.tableLogs.setItem(self.rowPosition, 1, QTableWidgetItem(journal_json[0]['PRIORITY']))
             except:
@@ -171,7 +238,7 @@ def showmylogslist(self,since='',until='',priority='',pid='',gid='',unit=''):
             except:
                 pass
             try:
-                self.tableLogs.setItem(self.rowPosition, 6, QTableWidgetItem(journal_json[0]['_SYSTEMD_UNIT']))
+                self.tableLogs.setItem(self.rowPosition, 6, QTableWidgetItem(journal_json[0]['UNIT']))
             except:
                 pass
             try:
