@@ -119,6 +119,9 @@ def getContentLogs(self):
     self.hboxxx.addLayout(self.uidC)
     self.hboxxx.addLayout(self.unitC)
     self.hboxxx.addStretch()
+    f = subprocess.run("journalctl --disk-usage | awk {'print $7'}",shell=True,stdout=subprocess.PIPE)
+    diskUsage = QLabel(f"journals size: {f.stdout.decode('utf-8')}")
+    self.hboxxx.addWidget(diskUsage)
     self.filters.addLayout(self.hboxxx)
 
     self.tableLogs=QTableWidget()
@@ -218,7 +221,7 @@ def showmylogslist(self,since='',until='',priority='',pid='',gid='',uid='',unit=
                 #self.tableLogs.setItem(self.rowPosition, 0, QTableWidgetItem(datetime.fromtimestamp(int(journal_json[0]['__MONOTONIC_TIMESTAMP']))))
                 pass
             try:
-                self.tableLogs.setItem(self.rowPosition, 1, QTableWidgetItem(journal_json[0]['PRIORITY']))
+                self.tableLogs.setItem(self.rowPosition, 1, QTableWidgetItem(str(self.a[int(journal_json[0]['PRIORITY'])])))
             except:
                 pass
             try:
