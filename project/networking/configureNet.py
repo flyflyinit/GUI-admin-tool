@@ -6,6 +6,19 @@ from project.networking.displayConnections import displayConnection
 from project.networking.displayIP import DisplayIP
 from project.networking.netScript import disInterfaceConnection
 from PyQt5.QtGui import *
+from PyQt5.QtWidgets import QDateTimeEdit, QFormLayout, QLabel, QApplication, QWidget, QLineEdit, QHBoxLayout, \
+    QPushButton, QRadioButton, QButtonGroup
+
+import datetime
+
+import qtmodern
+import systemd.journal
+from PyQt5.QtCore import QDate
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QDateTimeEdit, QFormLayout, QLabel, QApplication, QWidget, QLineEdit, QHBoxLayout, \
+    QPushButton, QRadioButton, QButtonGroup
+from PyQt5.uic.properties import QtGui
+
 
 class CreateNetworkWindow(QWidget):
     def __init__(self):
@@ -81,14 +94,16 @@ class CreateNetworkWindow(QWidget):
         self.maskListItem.addItem(" /21:     255.255.248.255")
         self.maskListItem.addItem(" /20:     255.255.255.240")
 
-
-        self.dhcp = QRadioButton("DHCP")
-        self.man = QRadioButton("Manual")
-        self.man.setChecked(True)
-
-
         # GROUP LAYOUT
         self.ip_group=QHBoxLayout()
+        widget=QWidget(self)
+        self.ip_group_button=QButtonGroup(widget)
+        self.man = QRadioButton("Manual")
+        self.dhcp = QRadioButton("DHCP")
+        self.man.setChecked(True)
+
+        self.ip_group_button.addButton(self.man)
+        self.ip_group_button.addButton(self.dhcp)
         self.ip_group.addWidget(self.man)
         self.ip_group.addWidget(self.dhcp)
 
