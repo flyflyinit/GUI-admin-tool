@@ -96,14 +96,12 @@ class EnableDisableCellInButton(QWidget):
     def __init__(self,unit, parent=None):
         super(EnableDisableCellInButton,self).__init__(parent)
         self.unit = unit
+        self.isEnabled=False
+
         self.hbox = QHBoxLayout()
-        self.enableBtn=QPushButton('Enable')
-        self.disableBtn=QPushButton('Disable')
-        self.enableBtn.clicked.connect(self.enableClicked)
-        self.disableBtn.clicked.connect(self.disableClicked)
-        self.hbox.addWidget(self.enableBtn)
-        self.hbox.addStretch()
-        self.hbox.addWidget(self.disableBtn)
+        self.enableDisableBtn=QPushButton('Enable')
+        self.enableDisableBtn.clicked.connect(self.enableDisableClicked)
+        self.hbox.addWidget(self.enableDisableBtn)
         self.hbox.addStretch()
         self.hbox.setContentsMargins(0,0,0,0)
         self.hbox.setSpacing(8)
@@ -111,48 +109,54 @@ class EnableDisableCellInButton(QWidget):
 
         if isEnable(self.unit) == True:
 
-            self.enableBtn.setStyleSheet("background-color: green")
+            self.enableDisableBtn.setStyleSheet("background-color: green")
+            self.enableDisableBtn.setText("disable")
+            self.isEnabled = True
+
+
 
         else:
-            self.disableBtn.setStyleSheet("background-color: red")
+            self.enableDisableBtn.setStyleSheet("background-color: red")
+            self.enableDisableBtn.setText("enable")
+            self.isEnabled =False
 
-    def enableClicked(self):
-        try:
-            enableServices(self.unit)
-        except subprocess.CalledProcessError as e:
-            QMessageBox.critical(self, 'error', f'error cannot Enable {self.unit} ')
-            # self.slider.setValue(0)
+    def enableDisableClicked(self):
+
+        if self.isEnabled==False:
+            try:
+                enableServices(self.unit)
+            except subprocess.CalledProcessError as e:
+                QMessageBox.critical(self, 'error', f'error cannot Enable {self.unit} ')
+                # self.slider.setValue(0)
+            else:
+                QMessageBox.information(self, 'success', f'{self.unit} has been Enabled succesfully')
+                self.enableDisableBtn.setStyleSheet("background-color: green")
+                self.enableDisableBtn.setText("disable")
+                self.isEnabled==True
+
+        elif self.isEnabled==True:
+
+            try:
+                disableServices(self.unit)
+            except subprocess.CalledProcessError as e:
+                QMessageBox.critical(self, 'error', f'error cannot Disable  {self.unit}')
+            else:
+                QMessageBox.information(self, 'success', f'{self.unit} has been Disabled succesfully')
+                self.enableDisableBtn.setStyleSheet("background-color: red")
+                self.enableDisableBtn.setText("enable")
+                self.isEnabled=False
         else:
-            QMessageBox.information(self, 'success', f'{self.unit} has been Enabled succesfully')
-
-        self.enableBtn.setStyleSheet("background-color: green")
-        self.disableBtn.setStyleSheet("background-color: light gray")
-
-    def disableClicked(self):
-
-        try:
-            disableServices(self.unit)
-        except subprocess.CalledProcessError as e:
-            QMessageBox.critical(self, 'error', f'error cannot Disable  {self.unit}')
-        else:
-            QMessageBox.information(self, 'success', f'{self.unit} has been Disabled succesfully')
-            self.disableBtn.setStyleSheet("background-color: red")
-            self.enableBtn.setStyleSheet("background-color: light gray")
-
-
+            pass
 
 class StartStopCellInTableButton(QWidget):
     def __init__(self,unit, parent=None):
         super(StartStopCellInTableButton,self).__init__(parent)
+        self.isStarted=False
         self.unit = unit
         self.hbox = QHBoxLayout()
-        self.startBtn=QPushButton('Start')
-        self.stopBtn=QPushButton('Stop')
-        self.startBtn.clicked.connect(self.startClicked)
-        self.stopBtn.clicked.connect(self.stopClicked)
-        self.hbox.addWidget(self.startBtn)
-        self.hbox.addStretch()
-        self.hbox.addWidget(self.stopBtn)
+        self.startStopBtn=QPushButton('Start')
+        self.startStopBtn.clicked.connect(self.startStopClicked)
+        self.hbox.addWidget(self.startStopBtn)
         self.hbox.addStretch()
         self.hbox.setContentsMargins(0,0,0,0)
         self.hbox.setSpacing(8)
@@ -160,36 +164,44 @@ class StartStopCellInTableButton(QWidget):
 
         if isStart(self.unit) == True:
 
-            self.startBtn.setStyleSheet("background-color: green")
+            self.startStopBtn.setStyleSheet("background-color: green")
+            self.startStopBtn.setText("stop")
+            self.isStarted=True
 
         else:
-            self.stopBtn.setStyleSheet("background-color: red")
+            self.startStopBtn.setStyleSheet("background-color: red")
+            self.startStopBtn.setText("start")
+            self.isStarted=False
 
-    def startClicked(self):
+    def startStopClicked(self):
 
-        try:
-            startServices(self.unit)
-        except subprocess.CalledProcessError as e:
-            QMessageBox.critical(self, 'error', f'error cannot start {self.unit} ')
-            # self.slider.setValue(0)
+        if self.isStarted==False:
+
+            try:
+                startServices(self.unit)
+            except subprocess.CalledProcessError as e:
+                QMessageBox.critical(self, 'error', f'error cannot start {self.unit} ')
+                # self.slider.setValue(0)
+                self.isStarted=True
+            else:
+                QMessageBox.information(self, 'success', f'{self.unit} has been started succesfully')
+                self.startStopBtn.setStyleSheet("background-color: green")
+                self.startStopBtn.setText("stop")
+
+
+        elif self.isStarted==True:
+            try:
+                stopServices(self.unit)
+            except subprocess.CalledProcessError as e:
+                QMessageBox.critical(self, 'error', f'error cannot stop  {self.unit}')
+                 # self.slider.setValue(1)
+            else:
+                QMessageBox.information(self, 'success', f'{self.unit} has been stopped succesfully')
+                self.startStopBtn.setStyleSheet("background-color: red")
+                self.startStopBtn.setText("start")
+                self.isStarted=False
         else:
-            QMessageBox.information(self, 'success', f'{self.unit} has been started succesfully')
-            self.startBtn.setStyleSheet("background-color: green")
-            self.stopBtn.setStyleSheet("background-color: light gray")
-
-
-
-    def stopClicked(self):
-        try:
-            stopServices(self.unit)
-        except subprocess.CalledProcessError as e:
-            QMessageBox.critical(self, 'error', f'error cannot stop  {self.unit}')
-            # self.slider.setValue(1)
-        else:
-            QMessageBox.information(self, 'success', f'{self.unit} has been stopped succesfully')
-            self.stopBtn.setStyleSheet("background-color: red")
-            self.startBtn.setStyleSheet("background-color: light gray")
-
+            pass
 
 def showmyserviceslist(self):
     self.servicesList = listAllServices()
