@@ -185,14 +185,14 @@ class EditNetworkWindow(QWidget):
         self.mainLayout = QVBoxLayout()
         self.topLayout = QFormLayout()
         self.middelLayout = QFormLayout()
-
-        # self.topLayout.setContentsMargins(20,20,20,20)
+        self.middelLayout.setContentsMargins(20, 20, 20, 20)
+        self.topLayout.setContentsMargins(20, 20, 20, 20)
         self.bottomLayout = QHBoxLayout()
 
-        self.submitBtn = QPushButton("Add")
+        self.submitBtn = QPushButton("Submit")
         self.submitBtn.clicked.connect(self.submitAction)
         self.cancelBtn = QPushButton("Cancel")
-        self.cancelBtn.clicked.connect(self.cancelAction)
+
         self.submitBtn.setFixedHeight(30)
         self.cancelBtn.setFixedHeight(30)
         self.submitBtn.setStyleSheet("color: #ecf0f1; background-color: #27ae60 ; border: 0px solid #27ae60")
@@ -200,13 +200,7 @@ class EditNetworkWindow(QWidget):
 
         self.bottomLayout.addWidget(self.submitBtn)
         self.bottomLayout.addWidget(self.cancelBtn)
-
-
         self.mainLayout.addLayout(self.topLayout)
-        self.mainLayout.addStretch()
-        self.mainLayout.addLayout(self.bottomLayout)
-        self.setLayout(self.mainLayout)
-
 
         if self.index[2] != 'auto':
             self.mainLayout.addLayout(self.middelLayout)
