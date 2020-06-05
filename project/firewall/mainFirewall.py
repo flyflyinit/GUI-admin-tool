@@ -48,13 +48,13 @@ def createFwButtons(self):
     try:
         defaultzone=defaultZone()[0]
         self.defaultZone=QLabel(f"DEFAULT ZONE : {defaultzone}")
-        self.defaultZone.setStyleSheet("color: #303a46;font: bold 14px;")
         self.defaultZone.move(10,10)
 
     except IndexError:
         QMessageBox.critical(self, 'error', f'Please install Firewalld or start the service ')
         self.defaultZone=QLabel("FIREWALLD SERVICE IS NOT RUNNING")
 
+    self.defaultZone.setStyleSheet("color: #303a46;font: bold 14px;")
     self.addBtn = QPushButton('Add')
     self.editBtn = QPushButton('Edit')
     self.deleteBtn = QPushButton('Delete')
