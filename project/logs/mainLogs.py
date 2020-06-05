@@ -196,7 +196,6 @@ def showmylogslist(self,since='',until='',priority='',pid='',gid='',uid='',unit=
     self.rowposition = 0
 
     args = f"journalctl -r {since} {until} {priority} {pid} {gid} {uid} {unit} -o json"
-    print(args)
     f = subprocess.Popen(args, stdout=subprocess.PIPE,shell=True)
     i = 0
     self.dic = {}
@@ -243,7 +242,6 @@ def showmylogslist(self,since='',until='',priority='',pid='',gid='',uid='',unit=
                 pass
             try:
                 self.tableLogs.setItem(self.rowPosition, 7, QTableWidgetItem(journal_json[0]['_CMDLINE']))
-
             except:
                 pass
             try:
@@ -251,15 +249,13 @@ def showmylogslist(self,since='',until='',priority='',pid='',gid='',uid='',unit=
                 self.tableLogs.setCellWidget(self.rowPosition, 8, self.dic[i])
             except:
                 pass
-
             if journal_json[0]['PRIORITY'] in ['0','1','2','3']:
                 self.tableLogs.item(self.rowPosition, 1).setBackground(QtGui.QColor(234, 0, 0))
             if journal_json[0]['PRIORITY'] == '4':
                 self.tableLogs.item(self.rowPosition, 1).setBackground(QtGui.QColor(254, 177, 0))
 
         except Exception as e:
-            print(e)
-
+            pass
 
 class moreCellInTableLogs(QWidget):
     def __init__(self,message, parent=None):

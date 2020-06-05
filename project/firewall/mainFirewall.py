@@ -48,6 +48,7 @@ def createFwButtons(self):
     try:
         defaultzone=defaultZone()[0]
         self.defaultZone=QLabel(f"DEFAULT ZONE : {defaultzone}")
+        self.defaultZone.setStyleSheet("color: #303a46;font: bold 14px;")
         self.defaultZone.move(10,10)
 
     except IndexError:
