@@ -131,18 +131,22 @@ class CreateNetworkWindow(QWidget):
 
             if self.man.isChecked():
 
-                dns1 =  False
+                dns=  False
                 if str(newDns) not in ' ':
-                    dns1 = True
+                    dns = True
 
                 Mask = str(newMask)
                 mask =str( Mask[2:])
                 ipMask=f'{newIp}/{mask}'
                 name=newName.text()
                 #name=name.replace(' ','\\ ')
-                command=f'nmcli con add con-name {name} ifname {str(newInter.currentText())} type {str(newType)} ipv4.address {ipMask} ipv4.gateway {str(newGatway)} ipv4.method manual'
-                if dns1==True:
-                    command+=f'ipv4.dns {newDns}'
+                command=f'nmcli con add con-name {name} ifname {str(newInter.currentText())} type {str(newType)} ipv4.address {ipMask} ipv4.gateway {str(newGatway)}'
+                if dns==True:
+                    command+=f' ipv4.dns {newDns} ipv4.method manual'
+                else:
+                    command+=f' ipv4.method manual'
+
+
                 try:
                     subprocess.run(command, check=True, shell=True)
                 except subprocess.CalledProcessError:
@@ -283,7 +287,7 @@ class EditNetworkWindow(QWidget):
 
         self.middelLayout.addRow(QLabel(f'IP= {self.ipInfo[0]}'), QLabel(''))
         self.middelLayout.addRow(QLabel(f'GATEWAY= {self.ipInfo[1]}'), QLabel(''))
-        self.middelLayout.addRow(QLabel(f'DNS One= {ipInfoDns[0]}'), QLabel(''))
+        self.middelLayout.addRow(QLabel(f'DNS One= {ipInfoDns}'), QLabel(''))
         self.middelLayout.addRow(QLabel(''), QLabel(''))
 
         self.middelLayout.addRow(QLabel(''), QLabel(''))
@@ -381,6 +385,8 @@ class EditNetworkWindow(QWidget):
                     QMessageBox.information(self, 'success', 'Editing Applied  Succesfully.')
                     self.close()
 
+    def cancelAction(self):
+        self.close()
 ##################################################################################################""
 class DeleteNetworkWindow(QWidget):
     def __init__(self,d):
