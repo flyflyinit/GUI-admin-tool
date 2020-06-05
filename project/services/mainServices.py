@@ -99,7 +99,7 @@ class EnableDisableCellInButton(QWidget):
         self.isEnabled=False
 
         self.hbox = QHBoxLayout()
-        self.enableDisableBtn=QPushButton('Enable')
+        self.enableDisableBtn=QPushButton('')
         self.enableDisableBtn.clicked.connect(self.enableDisableClicked)
         self.hbox.addWidget(self.enableDisableBtn)
         self.hbox.addStretch()
@@ -110,14 +110,14 @@ class EnableDisableCellInButton(QWidget):
         if isEnable(self.unit) == True:
 
             self.enableDisableBtn.setStyleSheet("background-color: green")
-            self.enableDisableBtn.setText("disable")
+            self.enableDisableBtn.setText("enabled")
             self.isEnabled = True
 
 
 
         else:
             self.enableDisableBtn.setStyleSheet("background-color: red")
-            self.enableDisableBtn.setText("enable")
+            self.enableDisableBtn.setText("disabled")
             self.isEnabled =False
 
     def enableDisableClicked(self):
@@ -131,7 +131,7 @@ class EnableDisableCellInButton(QWidget):
             else:
                 QMessageBox.information(self, 'success', f'{self.unit} has been Enabled succesfully')
                 self.enableDisableBtn.setStyleSheet("background-color: green")
-                self.enableDisableBtn.setText("disable")
+                self.enableDisableBtn.setText("enabled")
                 self.isEnabled==True
 
         elif self.isEnabled==True:
@@ -143,7 +143,7 @@ class EnableDisableCellInButton(QWidget):
             else:
                 QMessageBox.information(self, 'success', f'{self.unit} has been Disabled succesfully')
                 self.enableDisableBtn.setStyleSheet("background-color: red")
-                self.enableDisableBtn.setText("enable")
+                self.enableDisableBtn.setText("disabled")
                 self.isEnabled=False
         else:
             pass
@@ -154,7 +154,7 @@ class StartStopCellInTableButton(QWidget):
         self.isStarted=False
         self.unit = unit
         self.hbox = QHBoxLayout()
-        self.startStopBtn=QPushButton('Start')
+        self.startStopBtn=QPushButton('')
         self.startStopBtn.clicked.connect(self.startStopClicked)
         self.hbox.addWidget(self.startStopBtn)
         self.hbox.addStretch()
@@ -165,12 +165,12 @@ class StartStopCellInTableButton(QWidget):
         if isStart(self.unit) == True:
 
             self.startStopBtn.setStyleSheet("background-color: green")
-            self.startStopBtn.setText("stop")
+            self.startStopBtn.setText("started")
             self.isStarted=True
 
         else:
             self.startStopBtn.setStyleSheet("background-color: red")
-            self.startStopBtn.setText("start")
+            self.startStopBtn.setText("disabled")
             self.isStarted=False
 
     def startStopClicked(self):
@@ -186,10 +186,11 @@ class StartStopCellInTableButton(QWidget):
             else:
                 QMessageBox.information(self, 'success', f'{self.unit} has been started succesfully')
                 self.startStopBtn.setStyleSheet("background-color: green")
-                self.startStopBtn.setText("stop")
+                self.startStopBtn.setText("started")
 
 
         elif self.isStarted==True:
+
             try:
                 stopServices(self.unit)
             except subprocess.CalledProcessError as e:
@@ -198,7 +199,7 @@ class StartStopCellInTableButton(QWidget):
             else:
                 QMessageBox.information(self, 'success', f'{self.unit} has been stopped succesfully')
                 self.startStopBtn.setStyleSheet("background-color: red")
-                self.startStopBtn.setText("start")
+                self.startStopBtn.setText("stopped")
                 self.isStarted=False
         else:
             pass
