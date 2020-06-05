@@ -54,7 +54,7 @@ def getContentLogs(self):
 
     self.pidC = QVBoxLayout()
     self.pid = QLineEdit(self)
-    self.pid.setPlaceholderText('PID 1 ~ 32768')
+    self.pid.setPlaceholderText('1 ~ 32768')
     self.pid.setText('All')
     self.pid.setStyleSheet("color: #95a5a6; background-color: #303a46 ; border: 0px solid #303a46")
     self.pid.setFixedHeight(25)
@@ -65,7 +65,7 @@ def getContentLogs(self):
 
     self.uidC = QVBoxLayout()
     self.uid = QLineEdit(self)
-    self.uid.setPlaceholderText('UID 0 ~ 65536')
+    self.uid.setPlaceholderText('0 ~ 65536')
     self.uid.setText('All')
     self.uid.setStyleSheet("color: #95a5a6; background-color: #303a46 ; border: 0px solid #303a46")
     self.uid.setFixedHeight(25)
@@ -76,7 +76,7 @@ def getContentLogs(self):
 
     self.gidC = QVBoxLayout()
     self.gid = QLineEdit(self)
-    self.gid.setPlaceholderText('GID 0 ~ 65536')
+    self.gid.setPlaceholderText('0 ~ 65536')
     self.gid.setText('All')
     self.gid.setStyleSheet("color: #95a5a6; background-color: #303a46 ; border: 0px solid #303a46")
     self.gid.setFixedHeight(25)
@@ -100,7 +100,7 @@ def getContentLogs(self):
     self.unitT = QLabel("Unit :")
     self.unitC.addWidget(self.unitT)
 
-    self.selectBtn = QPushButton("Select")
+    self.selectBtn = QPushButton("Filter")
     self.selectBtn.clicked.connect(lambda :selectclicked(self))
     self.selectBtn.setStyleSheet("color: #95a5a6; background-color: #303a46 ; border: 0px solid #303a46")
     self.selectBtn.setFixedHeight(25)
@@ -167,7 +167,7 @@ def selectclicked(self):
     if currentUnit == 'All':
         currentUnit = ''
     else:
-        currentUnit = 'UNIT='+currentUnit
+        currentUnit = '_SYSTEMD_UNIT='+currentUnit
 
     showmylogslist(self,since=currentSince,until=currentUntil,priority=currentPrio,pid=currentPID,gid=currentGID,uid=currentUID,unit=currentUnit)
     self.containerLogs.addWidget(self.tableLogs)
@@ -195,6 +195,7 @@ def createTableLogs(self):
     self.tableLogs.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
 
+
 def showmylogslist(self,since='',until='',priority='',pid='',gid='',uid='',unit=''):
     self.rowposition = 0
 
@@ -202,11 +203,13 @@ def showmylogslist(self,since='',until='',priority='',pid='',gid='',uid='',unit=
     print(args)
     f = subprocess.Popen(args, stdout=subprocess.PIPE,shell=True)
     i = 0
+    self.dic = {}
+
     while True:
         i = i + 1
         try:
             line = f.stdout.readline()
-            if not line or i >= 5000:
+            if not line or i >= 1000:
                 break
             if isinstance(line, bytes):
                 line = line.decode('utf-8')
@@ -214,12 +217,10 @@ def showmylogslist(self,since='',until='',priority='',pid='',gid='',uid='',unit=
             self.rowPosition = self.tableLogs.rowCount()
             self.tableLogs.insertRow(self.rowPosition)
 
-
             try:
                 self.tableLogs.setItem(self.rowPosition, 0, QTableWidgetItem(journal_json[0]['SYSLOG_TIMESTAMP']))
             except:
-                #self.tableLogs.setItem(self.rowPosition, 0, QTableWidgetItem(datetime.fromtimestamp(int(journal_json[0]['__MONOTONIC_TIMESTAMP']))))
-                pass
+                self.tableLogs.setItem(self.rowPosition, 0, QTableWidgetItem(journal_json[0]['__REALTIME_TIMESTAMP']))
             try:
                 self.tableLogs.setItem(self.rowPosition, 1, QTableWidgetItem(str(self.a[int(journal_json[0]['PRIORITY'])])))
             except:
@@ -241,16 +242,84 @@ def showmylogslist(self,since='',until='',priority='',pid='',gid='',uid='',unit=
             except:
                 pass
             try:
-                self.tableLogs.setItem(self.rowPosition, 6, QTableWidgetItem(journal_json[0]['UNIT']))
+                self.tableLogs.setItem(self.rowPosition, 6, QTableWidgetItem(journal_json[0]['_SYSTEMD_UNIT']))
             except:
                 pass
             try:
                 self.tableLogs.setItem(self.rowPosition, 7, QTableWidgetItem(journal_json[0]['_CMDLINE']))
+
             except:
                 pass
             try:
-                self.tableLogs.setItem(self.rowPosition, 8, QTableWidgetItem(journal_json[0]['MESSAGE']))
+                self.dic[i] = moreCellInTableLogs(journal_json[0]['MESSAGE'])
+                self.tableLogs.setCellWidget(self.rowPosition, 8, self.dic[i])
             except:
                 pass
+
+            if journal_json[0]['PRIORITY'] in ['0','1','2','3']:
+                self.tableLogs.item(self.rowPosition, 1).setBackground(QtGui.QColor(234, 0, 0))
+            if journal_json[0]['PRIORITY'] == '4':
+                self.tableLogs.item(self.rowPosition, 1).setBackground(QtGui.QColor(254, 177, 0))
+
         except Exception as e:
             print(e)
+
+
+class moreCellInTableLogs(QWidget):
+    def __init__(self,message, parent=None):
+        super(moreCellInTableLogs,self).__init__(parent)
+        self.message = message
+        self.hbox = QHBoxLayout()
+        self.showmoreBtn=QPushButton('message')
+        self.showmoreBtn.clicked.connect(self.showmoreBtnClicked)
+        self.hbox.addWidget(self.showmoreBtn)
+        self.hbox.addWidget(QLabel(self.message))
+        self.hbox.addStretch()
+        self.hbox.setContentsMargins(0,0,0,0)
+        self.hbox.setSpacing(8)
+        self.setLayout(self.hbox)
+
+    def showmoreBtnClicked(self):
+        self.secondwindow = MoreMessageWindow(self.message)
+        self.sw = qtmodern.windows.ModernWindow(self.secondwindow)
+        self.sw.show()
+
+
+class MoreMessageWindow(QWidget):
+    def __init__(self,message):
+        super().__init__()
+        self.setGeometry(200,50,300,300)
+        self.setWindowTitle('Message')
+        self.message = message
+        self.layouts()
+
+    def layouts(self):
+        self.mainLayout = QVBoxLayout()
+        self.topLayout = QVBoxLayout()
+        self.bottomLayout=QHBoxLayout()
+
+        top = QHBoxLayout()
+        text = QLabel(str(self.message))
+        groupBox = QGroupBox()
+        text.setContentsMargins(30, 30, 30, 30)  # left ,#top ,#right , #bottom
+        top.addWidget(text)
+
+        groupBox.setLayout(top)
+        scroll = QScrollArea()
+        scroll.setWidget(groupBox)
+        scroll.setWidgetResizable(True)
+
+        self.okBtn=QPushButton("Ok")
+        self.okBtn.clicked.connect(self.okAction)
+        self.okBtn.setFixedHeight(30)
+        self.okBtn.setStyleSheet("color: #ecf0f1; background-color: #27ae60 ; border: 0px" )
+
+        self.topLayout.addWidget(scroll)
+        self.bottomLayout.addWidget(self.okBtn)
+        self.mainLayout.addLayout(self.topLayout)
+        self.mainLayout.addStretch()
+        self.mainLayout.addLayout(self.bottomLayout)
+        self.setLayout(self.mainLayout)
+
+    def okAction(self):
+        self.close()

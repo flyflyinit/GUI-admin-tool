@@ -155,7 +155,7 @@ class mainWindow(QWidget):
         self.item6.setSizeHint(QtCore.QSize(50, 50))
         self.listWidget.addItem(self.item6)
 
-        self.item7 = QtWidgets.QListWidgetItem("  ⌨  Logs")
+        self.item7 = QtWidgets.QListWidgetItem("  📚  Logs")
         self.item7.setSizeHint(QtCore.QSize(50, 50))
         self.listWidget.addItem(self.item7)
 
