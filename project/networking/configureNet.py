@@ -99,7 +99,7 @@ class CreateNetworkWindow(QWidget):
         self.topLayout.addRow(QLabel("Enter New IP Address"), self.ipEdit)
         self.topLayout.addRow(QLabel("Enter New Subnet Mask"), self.maskListItem)
         self.topLayout.addRow(QLabel("Enter New GATWAY address"), self.gatewayEdit)
-        self.topLayout.addRow(QLabel("enter DNS Address"), self.dnsEdit)
+        self.topLayout.addRow(QLabel("Enter DNS Address"), self.dnsEdit)
         self.topLayout.addRow(QLabel(''), QLabel(''))
         self.topLayout.addRow(QLabel(''), QLabel(''))
 
@@ -169,7 +169,7 @@ class CreateNetworkWindow(QWidget):
 
     def cancelAction(self):
         self.close()
-############################################################################################################################
+#####################################################################################################################################################"#############"#############
 class EditNetworkWindow(QWidget):
     def __init__(self,d):
         super().__init__()
@@ -190,25 +190,31 @@ class EditNetworkWindow(QWidget):
         self.bottomLayout = QHBoxLayout()
 
         self.submitBtn = QPushButton("Submit")
-        self.submitBtn.clicked.connect(self.submitAction)
         self.cancelBtn = QPushButton("Cancel")
+
+        self.submitBtn.clicked.connect(self.submitAction)
+        self.cancelBtn.clicked.connect(self.cancelAction)
 
         self.submitBtn.setFixedHeight(30)
         self.cancelBtn.setFixedHeight(30)
         self.submitBtn.setStyleSheet("color: #ecf0f1; background-color: #27ae60 ; border: 0px solid #27ae60")
         self.cancelBtn.setStyleSheet("color: #ecf0f1; background-color: #e74c3c; border: 0px solid #e74c3c")
 
-        self.bottomLayout.addWidget(self.submitBtn)
-        self.bottomLayout.addWidget(self.cancelBtn)
-        self.mainLayout.addLayout(self.topLayout)
+
 
         if self.index[2] != 'auto':
+            self.bottomLayout.addWidget(self.submitBtn)
+            self.bottomLayout.addWidget(self.cancelBtn)
+            self.mainLayout.addLayout(self.topLayout)
             self.mainLayout.addLayout(self.middelLayout)
             self.mainLayout.addStretch()
             self.mainLayout.addLayout(self.bottomLayout)
             self.setLayout(self.mainLayout)
 
         else:
+            self.bottomLayout.addWidget(self.submitBtn)
+            self.bottomLayout.addWidget(self.cancelBtn)
+            self.mainLayout.addLayout(self.topLayout)
             self.mainLayout.addStretch()
             self.mainLayout.addLayout(self.bottomLayout)
             self.setLayout(self.mainLayout)
@@ -387,7 +393,7 @@ class EditNetworkWindow(QWidget):
 
     def cancelAction(self):
         self.close()
-##################################################################################################""
+#######################################################################################################################################
 class DeleteNetworkWindow(QWidget):
     def __init__(self,d):
         super().__init__()
