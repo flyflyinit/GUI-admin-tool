@@ -5,6 +5,8 @@ from PyQt5.QtCore import QDate, Qt
 from PyQt5.QtWidgets import *
 import subprocess
 import json
+import datetime
+
 
 def getContentLogs(self):
     self.filters = QHBoxLayout()
@@ -213,9 +215,11 @@ def showmylogslist(self,since='',until='',priority='',pid='',gid='',uid='',unit=
             self.tableLogs.insertRow(self.rowPosition)
 
             try:
-                self.tableLogs.setItem(self.rowPosition, 0, QTableWidgetItem(journal_json[0]['SYSLOG_TIMESTAMP']))
+                s = int(journal_json[0]['__REALTIME_TIMESTAMP']) / 1000000
+                h = datetime.datetime.fromtimestamp(s).strftime('%Y-%m-%d %H:%M:%S.%f')
+                self.tableLogs.setItem(self.rowPosition, 0, QTableWidgetItem(h))
             except:
-                self.tableLogs.setItem(self.rowPosition, 0, QTableWidgetItem(journal_json[0]['__REALTIME_TIMESTAMP']))
+                pass
             try:
                 self.tableLogs.setItem(self.rowPosition, 1, QTableWidgetItem(str(self.a[int(journal_json[0]['PRIORITY'])])))
             except:

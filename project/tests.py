@@ -4,9 +4,7 @@ from PyQt5.QtCore import QDate
 from PyQt5.QtWidgets import QDateTimeEdit
 
 if __name__ == '__main__':
-
-    dateEdit = QDateTimeEdit(QDate.currentDate())
-    dateEdit.setMinimumDate(QDate.currentDate().addDays(-365))
-    dateEdit.setMaximumDate(QDate.currentDate().addDays(365))
-    dateEdit.setDisplayFormat("yyyy.MM.dd")
-
+    import datetime
+    s = 1591133789367049 / 1000000
+    h = datetime.datetime.fromtimestamp(s).strftime('%Y-%m-%d %H:%M:%S.%f')
+    print(h)
