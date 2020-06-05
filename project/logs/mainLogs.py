@@ -1,13 +1,10 @@
-from datetime import datetime
-
 import qtmodern.styles
 import qtmodern.windows
-from PyQt5 import QtGui, QtCore
+from PyQt5 import QtGui
 from PyQt5.QtCore import QDate, Qt
 from PyQt5.QtWidgets import *
 import subprocess
 import json
-import select
 
 def getContentLogs(self):
     self.filters = QHBoxLayout()
@@ -193,7 +190,6 @@ def createTableLogs(self):
     self.tableLogs.setHorizontalHeaderItem(7, QTableWidgetItem("Command"))
     self.tableLogs.setHorizontalHeaderItem(8, QTableWidgetItem("Message"))
     self.tableLogs.setEditTriggers(QAbstractItemView.NoEditTriggers)
-
 
 
 def showmylogslist(self,since='',until='',priority='',pid='',gid='',uid='',unit=''):

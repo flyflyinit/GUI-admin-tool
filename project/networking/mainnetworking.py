@@ -63,8 +63,15 @@ def createGrid(self):
     self.listnet.setFixedWidth(110)
     self.selectBtn.setFixedHeight(25)
     self.selectBtn.setFixedWidth(80)
+
+    a = subprocess.run("curl ifconfig.me",shell=True,stdout=subprocess.PIPE)
+    mypubaddr = QLabel(f"My Public IP : {a.stdout.decode('utf-8')}")
+    mypubaddr.setContentsMargins(10,0,0,0)
+    mypubaddr.setStyleSheet("color: #303a46 ; border: 0px solid #303a46")
+
     self.hboxxx.addWidget(self.listnet)
     self.hboxxx.addWidget(self.selectBtn)
+    self.hboxxx.addWidget(mypubaddr)
     self.hboxxx.addStretch()
 
     out = psutil.net_io_counters(pernic=True)
@@ -164,6 +171,7 @@ def createUsersButtons(self):
     self.deleteBtn.clicked.connect(lambda: deleteUsersWindow(self,self.dic2))
     self.deleteBtn.setStyleSheet("color: #ecf0f1; background-color: #e74c3c; border: 0px solid #2c3e50")
     self.selectall = SelectAllButton(self.dic2)
+
     self.hboxbtn.addWidget(self.selectall)
     self.hboxbtn.addStretch()
     self.hboxbtn.addWidget(self.addBtn)
