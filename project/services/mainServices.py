@@ -5,7 +5,7 @@ from PyQt5 import QtGui, QtCore
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import QTimer, Qt
 import subprocess
-from project.services.servicesScripts import stopServices, startServices, listAllServices,isEnable,enableServices,disableServices
+from project.services.servicesScripts import stopServices, startServices, listAllServices,isEnable,enableServices,disableServices,isStart
 
 def getContentServices(self):
     self.gridServices = QGridLayout()
@@ -35,8 +35,8 @@ def createTableServices(self):
     self.tableServices.setHorizontalHeaderItem(2, QTableWidgetItem("ACTIVE"))
     self.tableServices.setHorizontalHeaderItem(3, QTableWidgetItem("SUB"))
     self.tableServices.setHorizontalHeaderItem(4, QTableWidgetItem("DESCRIPTION"))
-    self.tableServices.setHorizontalHeaderItem(5, QTableWidgetItem("START-STOP SERVICE"))
-    self.tableServices.setHorizontalHeaderItem(6, QTableWidgetItem("ENABLE-DISABLE SERVICE"))
+    self.tableServices.setHorizontalHeaderItem(5, QTableWidgetItem(" ENABLED OR DISABLED  "))
+    self.tableServices.setHorizontalHeaderItem(6, QTableWidgetItem(" STARTED OR STOPED  "))
     #self.tableServices.setHorizontalHeaderItem(6, QTableWidgetItem("Select"))
     self.tableServices.setEditTriggers(QAbstractItemView.NoEditTriggers)
     showmyserviceslist(self)
@@ -90,119 +90,106 @@ class SelectAllButton(QWidget):
 '''
 
 
-#######START-STOP  WIDGET
+#############################################################    table WIDGETS "####################################################""
 
-class StartStopCellInTable(QWidget):
-    def __init__(self,username,groups, parent=None):
-        super(StartStopCellInTable,self).__init__(parent)
-        self.groups = groups
-        self.username = username
-        self.userIsAdmin = False
+class EnableDisableCellInButton(QWidget):
+    def __init__(self,unit, parent=None):
+        super(EnableDisableCellInButton,self).__init__(parent)
+        self.unit = unit
         self.hbox = QHBoxLayout()
-        self.slider = QSlider(Qt.Horizontal)
-        #self.slider.setStyleSheet("color: #2c3e50; selection-background-color: #e74c3c ;background-color: white ; selection-color: #ecf0f1 ;border: 2px solid #95a5a6")
-        self.slider.setMaximum(1)
-        self.slider.setMinimum(0)
-        self.slider.setFixedWidth(40)
-        #self.slider.setStyleSheet("color:#2ecc71 ")
-        self.slider.setTickInterval(1)  # change ticks interval
-        if ' active ' in self.groups:
-            self.userIsAdmin = True
-            self.slider.setValue(1)
-        else:
-            self.userIsAdmin = False
-            self.slider.setValue(0)
-        self.slider.valueChanged.connect(self.changed)
+        self.enableBtn=QPushButton('Enable')
+        self.disableBtn=QPushButton('Disable')
+        self.enableBtn.clicked.connect(self.enableClicked)
+        self.disableBtn.clicked.connect(self.disableClicked)
+        self.hbox.addWidget(self.enableBtn)
         self.hbox.addStretch()
-        self.hbox.addWidget(self.slider)
+        self.hbox.addWidget(self.disableBtn)
         self.hbox.addStretch()
         self.hbox.setContentsMargins(0,0,0,0)
         self.hbox.setSpacing(8)
         self.setLayout(self.hbox)
 
-    def changed(self):
-        if self.slider.value() == 1:
-            self.start()
-        elif self.slider.value() == 0:
-            self.stop()
+        if isEnable(self.unit) == True:
 
-    def start(self):
-        try:
-            startServices(self.username)
-        except subprocess.CalledProcessError as e:
-            QMessageBox.critical(self, 'error', f'error cannot start {self.username} ')
-            #self.slider.setValue(0)
+            self.enableBtn.setStyleSheet("background-color: green")
+
         else:
-            QMessageBox.information(self, 'success', f'{self.username} has been started succesfully')
-            self.slider.setValue(1)
-            self.userIsAdmin = True
+            self.disableBtn.setStyleSheet("background-color: red")
 
-    def stop(self):
+    def enableClicked(self):
         try:
-            stopServices(self.username)
+            enableServices(self.unit)
         except subprocess.CalledProcessError as e:
-            QMessageBox.critical(self, 'error', f'error cannot stop  {self.username}')
-            #self.slider.setValue(1)
+            QMessageBox.critical(self, 'error', f'error cannot Enable {self.unit} ')
+            # self.slider.setValue(0)
         else:
-            QMessageBox.information(self, 'success', f'{self.username} has been stopped succesfully')
-            self.slider.setValue(0)
-            self.userIsAdmin = False
+            QMessageBox.information(self, 'success', f'{self.unit} has been Enabled succesfully')
 
-class EnableDisableCellInTable(QWidget):
-    def __init__(self,username,groups, parent=None):
-        super(EnableDisableCellInTable,self).__init__(parent)
-        self.groups = groups
-        self.username = username
-        self.userIsAdmin = False
+        self.enableBtn.setStyleSheet("background-color: green")
+        self.disableBtn.setStyleSheet("background-color: light gray")
+
+    def disableClicked(self):
+
+        try:
+            disableServices(self.unit)
+        except subprocess.CalledProcessError as e:
+            QMessageBox.critical(self, 'error', f'error cannot Disable  {self.unit}')
+        else:
+            QMessageBox.information(self, 'success', f'{self.unit} has been Disabled succesfully')
+            self.disableBtn.setStyleSheet("background-color: red")
+            self.enableBtn.setStyleSheet("background-color: light gray")
+
+
+
+class StartStopCellInTableButton(QWidget):
+    def __init__(self,unit, parent=None):
+        super(StartStopCellInTableButton,self).__init__(parent)
+        self.unit = unit
         self.hbox = QHBoxLayout()
-        self.slider = QSlider(Qt.Horizontal)
-        #self.slider.setStyleSheet("color: #2c3e50; selection-background-color: #e74c3c ;background-color: white ; selection-color: #ecf0f1 ;border: 2px solid #95a5a6")
-        self.slider.setMaximum(1)
-        self.slider.setMinimum(0)
-        self.slider.setFixedWidth(40)
-        #self.slider.setStyleSheet("color:#2ecc71 ")
-        self.slider.setTickInterval(1)  # change ticks interval
-        if isEnable(self.username)==True :
-            self.userIsAdmin = True
-            self.slider.setValue(1)
-        else:
-            self.userIsAdmin = False
-            self.slider.setValue(0)
-        self.slider.valueChanged.connect(self.changed)
+        self.startBtn=QPushButton('Start')
+        self.stopBtn=QPushButton('Stop')
+        self.startBtn.clicked.connect(self.startClicked)
+        self.stopBtn.clicked.connect(self.stopClicked)
+        self.hbox.addWidget(self.startBtn)
         self.hbox.addStretch()
-        self.hbox.addWidget(self.slider)
+        self.hbox.addWidget(self.stopBtn)
         self.hbox.addStretch()
         self.hbox.setContentsMargins(0,0,0,0)
         self.hbox.setSpacing(8)
         self.setLayout(self.hbox)
 
-    def changed(self):
-        if self.slider.value() == 1:
-            self.start()
-        elif self.slider.value() == 0:
-            self.stop()
+        if isStart(self.unit) == True:
 
-    def start(self):
-        try:
-            enableServices(self.username)
-        except subprocess.CalledProcessError as e:
-            QMessageBox.critical(self, 'error', f'error cannot Enable {self.username} ')
-            #self.slider.setValue(0)
-        else:
-            QMessageBox.information(self, 'success', f'{self.username} has been Enabled succesfully')
-            self.slider.setValue(1)
-            self.userIsAdmin = True
+            self.startBtn.setStyleSheet("background-color: green")
 
-    def stop(self):
-        try:
-            disableServices(self.username)
-        except subprocess.CalledProcessError as e:
-            QMessageBox.critical(self, 'error', f'error cannot Disable  {self.username}')
-            #self.slider.setValue(1)
         else:
-            QMessageBox.information(self, 'success', f'{self.username} has been Disabled succesfully')
-            self.slider.setValue(0)
-            self.userIsAdmin = False
+            self.stopBtn.setStyleSheet("background-color: red")
+
+    def startClicked(self):
+
+        try:
+            startServices(self.unit)
+        except subprocess.CalledProcessError as e:
+            QMessageBox.critical(self, 'error', f'error cannot start {self.unit} ')
+            # self.slider.setValue(0)
+        else:
+            QMessageBox.information(self, 'success', f'{self.unit} has been started succesfully')
+            self.startBtn.setStyleSheet("background-color: green")
+            self.stopBtn.setStyleSheet("background-color: light gray")
+
+
+
+    def stopClicked(self):
+        try:
+            stopServices(self.unit)
+        except subprocess.CalledProcessError as e:
+            QMessageBox.critical(self, 'error', f'error cannot stop  {self.unit}')
+            # self.slider.setValue(1)
+        else:
+            QMessageBox.information(self, 'success', f'{self.unit} has been stopped succesfully')
+            self.stopBtn.setStyleSheet("background-color: red")
+            self.startBtn.setStyleSheet("background-color: light gray")
+
 
 def showmyserviceslist(self):
     self.servicesList = listAllServices()
@@ -220,11 +207,11 @@ def showmyserviceslist(self):
         self.tableServices.setItem(self.rowPosition, 2, QTableWidgetItem(i[2]))
         self.tableServices.setItem(self.rowPosition, 3, QTableWidgetItem(i[3]))
         self.tableServices.setItem(self.rowPosition, 4, QTableWidgetItem(i[4]))
-        self.dic3[i[0]] = StartStopCellInTable(i[0],i[2])
-        self.dic2[i[0]] = EnableDisableCellInTable(i[0],i[2])
+        self.dic3[i[0]] = StartStopCellInTableButton(i[0])
+        self.dic2[i[0]] = EnableDisableCellInButton(i[0])
         #self.dic2[i[0]] = SelectCellInTableServices()
-        self.tableServices.setCellWidget(self.rowPosition,5,self.dic3[i[0]])
-        self.tableServices.setCellWidget(self.rowPosition,6,self.dic2[i[0]])
+        self.tableServices.setCellWidget(self.rowPosition,6,self.dic3[i[0]])
+        self.tableServices.setCellWidget(self.rowPosition,5,self.dic2[i[0]])
 
 
 def createServicesWindow(self):

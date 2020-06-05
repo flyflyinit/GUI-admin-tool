@@ -24,6 +24,20 @@ def isEnable(name):
     else:
          return False
 
+def isStart(name):
+
+    name=str(name)
+    command=f'systemctl is-active {name} >/tmp/isActived'
+    os.system(command)
+    File= open('/tmp/isActived', 'rt')
+    txt = File.read()
+    isActive= txt.rstrip()
+    if(isActive=='active'):
+        return True
+
+    else:
+         return False
+
 def checkService(name):
     name+='d'
     command=f'sudo systemctl is-active {name} >/tmp/isActive '
