@@ -8,6 +8,7 @@ from project import about
 from project.about import *
 from project.dashboard import mainDashboard
 from project.system import mainsystem
+from project.system.configuresystem import ConfigureSystemWindow
 from project.users import mainusers
 from project.networking import mainnetworking
 from project.firewall import mainFirewall
@@ -44,7 +45,7 @@ except ImportError as e:
 class mainWindow(QWidget):
     def __init__(self, parent=None):
         super(mainWindow, self).__init__(parent)
-        self.setWindowTitle("GUI admin tool")
+        self.setWindowTitle("PyAdminDash")
         self.setWindowIcon(QIcon('/home/abdelmoumen/test.png'))
         self.UI()
 
@@ -101,7 +102,7 @@ class mainWindow(QWidget):
         b = QHBoxLayout()
         b.addWidget(refresh)
 
-        logotext = QLabel("GUI Admin Tool")
+        logotext = QLabel("PyAdminDash")
         logotext.setStyleSheet("color: #303a46;font: bold 25px;")
         logotext.setContentsMargins(15,0,0,0)
         self.topLayout.addWidget(logotext)
@@ -280,6 +281,10 @@ class mainWindow(QWidget):
         except Exception:
             pass
         try:
+            del self.tableLogs
+        except Exception:
+            pass
+        try:
             del self.dic
         except Exception:
             pass
@@ -328,80 +333,10 @@ class mainWindow(QWidget):
                 self.clearLayout(child.layout())
 
 def aboutClicked(self):
-    plotstostart = suspendPlots(self)
-    pww = about.AboutWindow(plotstostart)
-    pwww = qtmodern.windows.ModernWindow(pww)
-    #self.close()
-    pwww.show()
+    self.aboutWindow = about.ConfigureSystemWindow()
+    self.aw = qtmodern.windows.ModernWindow(self.aboutWindow)
+    self.aw.show()
 
-def suspendPlots(self):
-    plotstostart = []
-    try:
-        self.all.timer.stop()
-        plotstostart.append(self.all.timer)
-    except:
-        pass
-    try:
-        self.all2.timer.stop()
-        plotstostart.append(self.all2.timer)
-    except:
-        pass
-    try:
-        self.read.timer.stop()
-        plotstostart.append(self.read.timer)
-    except:
-        pass
-    try:
-        self.write.timer.stop()
-        plotstostart.append(self.write.timer)
-    except:
-        pass
-    try:
-        self.cpusC.timer.stop()
-        plotstostart.append(self.cpusC.timer)
-    except:
-        pass
-    try:
-        self.cpuC.timer.stop()
-        plotstostart.append(self.cpuC.timer)
-    except:
-        pass
-    try:
-        self.memoryC.timer.stop()
-        plotstostart.append(self.memoryC.timer)
-    except:
-        pass
-    try:
-        self.usg.timer.stop()
-        plotstostart.append(self.usg.timer)
-    except:
-        pass
-    try:
-        self.netSent.timer.stop()
-        plotstostart.append(self.netSent.timer)
-    except:
-        pass
-    try:
-        self.netRec.timer.stop()
-        plotstostart.append(self.netRec.timer)
-    except:
-        pass
-    return plotstostart
-
-'''
-def main():
-    app = QApplication(sys.argv)
-    window = mainWindow()
-
-    app = QApplication(sys.argv)
-    app.setApplicationName('MyWindow')
-
-    #qtmodern.styles.light(app)
-    #mw = qtmodern.windows.ModernWindow(window)
-    #mw.showFullScreen()
-    #mw.show()
-    sys.exit(app.exec_())
-'''
 
 if __name__ == '__main__':
     import sys

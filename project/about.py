@@ -1,49 +1,39 @@
-import qtmodern
-from PyQt5.QtWidgets import QWidget, QLabel, QHBoxLayout, QGroupBox, QVBoxLayout, QScrollArea
-from project.main import *
+try:
+    from PyQt5.QtWidgets import QWidget, QFormLayout, QLineEdit, QLabel, QMessageBox, QPushButton, QHBoxLayout, \
+    QVBoxLayout, QScrollArea, QGroupBox
+except ImportError as e:
+    print(f'package PyQt5 Not Found\n{e}\ntry :\npip3 install --user pyqt5\nOR\ndnf install python3-pyqt5, yum install python3-pyqt5\n')
+
+try:
+    import subprocess
+except ImportError as e:
+    print(f'package not found\n{e}\n')
 
 
-class AboutWindow(QWidget):
-    def __init__(self,plotstostart):
+class ConfigureSystemWindow(QWidget):
+    def __init__(self):
         super().__init__()
-        self.plotstostart = plotstostart
         self.setGeometry(0, 0, 300, 500)
-        self.setWindowTitle("About")
-        self.UI()
-        #self.setWindowIcon(QIcon("icon.png"))
-        self.show()
+        self.setWindowTitle("About PyAdminDash")
+        self.widgets()
 
-    def UI(self):
-        self.layouts()
-
-    def layouts(self):
-        top = QHBoxLayout()
-        text = QLabel("ksdhfkisd sdihbskdh bsiu yhdbiu hsdbkfhusdfuk bhfb khu bkh uidkh ksdj vhbksd\nksjadhcbskdhv\nasfkajsdhaksjhdcb\n\n")
+    def widgets(self):
+        top = QVBoxLayout()
+        title = QLabel("PyAdminDash")
+        text = QLabel("PyAdminDash is a GUI Linux System Administration Tool Based on Fedora/Centos/Redhat\nthe tool was designed and developped to provide an easy interaction with the operating system and its compenents,\nmaking the complex operating system tasks and compenents easy to deploy and monitor\nand by implementing plots and graphs you will have the full picture of your Opertaing System in realtime.\n\nPyAdminDash was developped as an bachelor final project in the university of Sidi Bel Abbes -Algeria-\nby Boudjemma Djawed  =>  github.com/DjawedBoudjemaa\nand Abdelmoumen Drici  =>  github.com/flyflyinit\n\nPlease If you have any feedback or suggestion we will be happy to hear from you :)\ngithub.com/flyflyinit/GUI-admin-tool")
+        title.setStyleSheet("color: #303a46;font: bold 14px;")
+        text.setStyleSheet("color: #303a46;")
         groupBox = QGroupBox()
-        text.setContentsMargins(30, 30, 30, 30)  # left ,#top ,#right , #bottom
+        title.setContentsMargins(30, 30, 30, 30)  # left ,#top ,#right , #bottom
+        text.setContentsMargins(30,0, 30, 30)  # left ,#top ,#right , #bottom
+        top.addWidget(title)
         top.addWidget(text)
+        top.addStretch()
 
         groupBox.setLayout(top)
         scroll = QScrollArea()
         scroll.setWidget(groupBox)
         scroll.setWidgetResizable(True)
-        # scroll.setFixedHeight(400)
         submain = QVBoxLayout()
         submain.addWidget(scroll)
         self.setLayout(submain)
-
-    def closeEvent(self, event):
-        for plot in self.plotstostart:
-            try:
-                plot.start(1000)
-            except:
-                pass
-
-
-        #app = QApplication(sys.argv)
-        #app.setApplicationName('MyWindow')
-        #main = mainWindow()
-        #qtmodern.styles.light(app)
-        #mw = qtmodern.windows.ModernWindow(main)
-        #mw.show()
-        #sys.exit(app.exec_())

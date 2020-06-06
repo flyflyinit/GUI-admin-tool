@@ -39,9 +39,9 @@ class lastLogins(MyMplCanvas):
     def __init__(self, *args, **kwargs):
         MyMplCanvas.__init__(self, *args, **kwargs)
         self.lastlogins_update_figure()
-        timer = QtCore.QTimer(self)
-        timer.timeout.connect(self.lastlogins_update_figure)
-        timer.start(10000)
+        self.timer = QtCore.QTimer(self)
+        self.timer.timeout.connect(self.lastlogins_update_figure)
+        self.timer.start(1000)
 
     def lastlogins_update_figure(self):
         global begindate
@@ -81,9 +81,9 @@ class lastBadLogins(MyMplCanvas):
     def __init__(self, *args, **kwargs):
         MyMplCanvas.__init__(self, *args, **kwargs)
         self.lastbadlogins_update_figure()
-        timer = QtCore.QTimer(self)
-        timer.timeout.connect(self.lastbadlogins_update_figure)
-        timer.start(10000)
+        self.timer = QtCore.QTimer(self)
+        self.timer.timeout.connect(self.lastbadlogins_update_figure)
+        self.timer.start(1000)
 
     def lastbadlogins_update_figure(self):
         global begindate

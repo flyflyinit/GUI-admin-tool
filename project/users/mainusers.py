@@ -84,7 +84,7 @@ def updateLoggedInList(self):
             self.listLoggedOn.addItem(i)
     except Exception:
         return None
-    QTimer.singleShot(10000, lambda: updateLoggedInList(self))
+    QTimer.singleShot(1000, lambda: updateLoggedInList(self))
 
 def createLoggedInList(self):
     self.listLoggedOn=QListWidget()

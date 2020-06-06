@@ -35,6 +35,7 @@ class MemoryCanvas(MyMplCanvas):
     """A canvas that updates itself every second with a new plot."""
     def __init__(self, *args, **kwargs):
         MyMplCanvas.__init__(self, *args, **kwargs)
+        self.mem_update_figure()
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.mem_update_figure)
         self.timer.start(1000)
@@ -136,6 +137,7 @@ class MemoryCanvas(MyMplCanvas):
 class CpuCanvas(MyMplCanvas):
     def __init__(self, *args, **kwargs):
         MyMplCanvas.__init__(self, *args, **kwargs)
+        self.cpu_update_figure()
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.cpu_update_figure)
         self.timer.start(1000)
@@ -225,6 +227,7 @@ class CpuCanvas(MyMplCanvas):
 class ReadCanvas(MyMplCanvas):
     def __init__(self, *args, **kwargs):
         MyMplCanvas.__init__(self, *args, **kwargs)
+        self.read_update_figure()
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.read_update_figure)
         self.timer.start(1000)
@@ -284,6 +287,7 @@ class ReadCanvas(MyMplCanvas):
 class WriteCanvas(MyMplCanvas):
     def __init__(self, *args, **kwargs):
         MyMplCanvas.__init__(self, *args, **kwargs)
+        self.write_update_figure()
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.write_update_figure)
         self.timer.start(1000)
@@ -424,6 +428,7 @@ class IooCanvas(MyMplCanvas):
 class UsageResume(MyMplCanvas):
     def __init__(self, *args, **kwargs):
         MyMplCanvas.__init__(self, *args, **kwargs)
+        self.resume_update_figure()
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.resume_update_figure)
         self.timer.start(1000)
@@ -475,8 +480,9 @@ class UsageResume(MyMplCanvas):
 class PolygonCPUs(MyMplCanvas):
     def __init__(self,*args, **kwargs):
         MyMplCanvas.__init__(self, *args, **kwargs)
+        self.cpus_update_figure()
         self.timer = QtCore.QTimer(self)
-        self.timer.timeout.connect(self.update_figure)
+        self.timer.timeout.connect(self.cpus_update_figure)
         self.timer.start(1000)
 
     def compute_initial_figure(self):
@@ -523,7 +529,7 @@ class PolygonCPUs(MyMplCanvas):
         self.Axes.ticklabel_format(style='sci', axis='y', scilimits=(0, 0), useMathText=True)
         self.Axes.legend(loc='upper left')
 
-    def update_figure(self):
+    def cpus_update_figure(self):
         global logicalcpus
         global cpus
         global cputime

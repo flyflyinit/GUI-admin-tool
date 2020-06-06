@@ -135,7 +135,7 @@ def updatetcpudpsocketsList(self):
             self.listtcpudpsockets.addItem(i)
     except Exception:
         return None
-    QTimer.singleShot(10000, lambda: updatetcpudpsocketsList(self))
+    QTimer.singleShot(1000, lambda: updatetcpudpsocketsList(self))
 
 def createtcpudpsocketsList(self):
     self.listtcpudpsockets=QListWidget()

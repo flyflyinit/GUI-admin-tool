@@ -36,6 +36,7 @@ class MyMplCanvas(FigureCanvas):
 class All(MyMplCanvas):
     def __init__(self, *args, **kwargs):
         MyMplCanvas.__init__(self, *args, **kwargs)
+        self.update_figure()
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.update_figure)
         self.timer.start(1000)
@@ -101,6 +102,7 @@ class All(MyMplCanvas):
 class All2(MyMplCanvas):
     def __init__(self, *args, **kwargs):
         MyMplCanvas.__init__(self, *args, **kwargs)
+        self.update_figure()
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.update_figure)
         self.timer.start(1000)
