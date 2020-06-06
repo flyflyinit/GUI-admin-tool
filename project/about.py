@@ -40,7 +40,7 @@ class About(QWidget):
         text2 = QLabel("\nPyAdminDash was developped as a bachelor final project in the university of Sidi Bel Abbes -Algeria-\nby Boudjemma Djawed  =>  github.com/DjawedBoudjemaa\nand Abdelmoumen Drici  =>  github.com/flyflyinit\nand supervised by Dr.Boukli Hacene Sofiane \n")
         text3 = QLabel("\nPlease If you have any feedback or suggestion we will be happy to hear from you :)\ngithub.com/flyflyinit/GUI-admin-tool")
         text4 = QLabel("\nLicense: MIT")
-        text5 = QLabel("\nContact: Abdelmoumen Drici, abdelmoumendrici@gmail.com\n               Boudjemaa Djawed,  djawed.boudjemaa01@gmail.com")
+        text5 = QLabel("\nContact: Abdelmoumen Drici, abdelmoumendrici@gmail.com\n               Boudjemaa Djawed,  jawedbdj@gmail.com")
         title.setStyleSheet("color: #303a46;font: bold 20px;")
         text.setStyleSheet("color: #303a46;")
         text2.setStyleSheet("color: #303a46;font: bold ;")
