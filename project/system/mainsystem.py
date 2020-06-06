@@ -159,7 +159,9 @@ def systemInformation(self):
     loadavg = subprocess.Popen("cat /proc/loadavg | awk {'print $1, $2, $3'}",shell=True,stdout=subprocess.PIPE).communicate()[0].decode('utf-8')
     loadavgg = loadavg.split(" ")
 
-    formleft.append(QLabel('General Informations :'))
+    a = QLabel('General Informations :')
+    a.setStyleSheet("color: #303a46;font: bold 14px;")
+    formleft.append(a)
     formright.append(QLabel(''))
 
     hst = subprocess.Popen("hostname",shell=True,stdout=subprocess.PIPE).communicate()[0].decode('utf-8')
@@ -213,7 +215,9 @@ def systemInformation(self):
     formleft.append(QLabel(''))
     formright.append(QLabel(''))
 
-    formleft.append(QLabel('CPU informations :'))
+    b = QLabel('CPU informations :')
+    b.setStyleSheet("color: #303a46;font: bold 14px;")
+    formleft.append(b)
     formright.append(QLabel(''))
 
     cpususage = ""
@@ -259,7 +263,9 @@ def systemInformation(self):
 
     formleft.append(QLabel(''))
     formright.append(QLabel(''))
-    formleft.append(QLabel('Memory Informations :'))
+    c = QLabel('Memory Informations :')
+    c.setStyleSheet("color: #303a46;font: bold 14px;")
+    formleft.append(c)
     formright.append(QLabel(''))
 
     self.mu = QLabel(f"{svmem.percent}%")
@@ -297,7 +303,9 @@ def systemInformation(self):
 
     formleft.append(QLabel(''))
     formright.append(QLabel(''))
-    formleft.append(QLabel('Disk Informations :'))
+    d = QLabel('Disk Informations :')
+    d.setStyleSheet("color: #303a46;font: bold 14px;")
+    formleft.append(d)
     formright.append(QLabel(''))
     partitions = psutil.disk_partitions()
     partitionn = ''
@@ -314,8 +322,9 @@ def systemInformation(self):
     formleft.append(QLabel('Partitions :'))
     formright.append(self.prts)
 
-
-    formleft.append(QLabel('Disk I/O Informations :'))
+    e = QLabel('Disk I/O Informations :')
+    e.setStyleSheet("color: #303a46;font: bold 14px;")
+    formleft.append(e)
     formright.append(QLabel(''))
     disk_io = psutil.disk_io_counters()
 

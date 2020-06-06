@@ -95,7 +95,7 @@ def createLoggedInList(self):
     for i in l:
         self.listLoggedOn.addItem(i)
     usersLoginsText = QLabel('Logged In Users : ')
-    usersLoginsText.setStyleSheet("color:#2c3e50")
+    usersLoginsText.setStyleSheet("color: #303a46;font: bold 14px;")
     self.gridUsers.addWidget(usersLoginsText, 0, 2)
     self.gridUsers.addWidget(self.listLoggedOn, 1, 2)
 

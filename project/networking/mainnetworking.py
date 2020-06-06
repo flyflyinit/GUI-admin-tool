@@ -147,7 +147,7 @@ def createtcpudpsocketsList(self):
         i.replace("     ", "")
         self.listtcpudpsockets.addItem(i)
     tcpudpsocketsText = QLabel('TCP UDP Sockets : ')
-    tcpudpsocketsText.setStyleSheet("color:#2c3e50")
+    tcpudpsocketsText.setStyleSheet("color: #303a46;font: bold 14px;")
     self.gridNetwork.addWidget(tcpudpsocketsText, 0, 2)
     self.gridNetwork.addWidget(self.listtcpudpsockets, 1, 2)
 

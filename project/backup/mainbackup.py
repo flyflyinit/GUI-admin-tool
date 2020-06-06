@@ -34,6 +34,8 @@ def getContentBackup(self):
     self.gridBackup.setColumnMinimumWidth(1100,1100)
     self.titlefullbackup=QLabel('Full Backups :  ')
     self.titleincbackup=QLabel('Incremental Backups :  ')
+    self.titlefullbackup.setStyleSheet("color: #303a46;font: bold 14px;")
+    self.titleincbackup.setStyleSheet("color: #303a46;font: bold 14px;")
 
     #################### creating and triggerting update for user's table
     createTableFullBackup(self)
