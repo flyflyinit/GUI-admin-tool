@@ -5,6 +5,7 @@
 *.background: #151515
 *.cursorColor: #afbfbf
 
+
 ! black
 *.color0: #263640
 *.color8: #4a697d
