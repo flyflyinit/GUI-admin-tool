@@ -254,9 +254,9 @@ def showmylogslist(self,since='',until='',priority='',pid='',gid='',uid='',unit=
             except:
                 pass
             if journal_json[0]['PRIORITY'] in ['0','1','2','3']:
-                self.tableLogs.item(self.rowPosition, 1).setBackground(QtGui.QColor(234, 0, 0))
+                self.tableLogs.item(self.rowPosition, 1).setBackground(QtGui.QColor(231, 76, 60))
             if journal_json[0]['PRIORITY'] == '4':
-                self.tableLogs.item(self.rowPosition, 1).setBackground(QtGui.QColor(254, 177, 0))
+                self.tableLogs.item(self.rowPosition, 1).setBackground(QtGui.QColor(243, 156, 18))
 
         except Exception as e:
             pass
