@@ -100,6 +100,7 @@ class EnableDisableCellInButton(QWidget):
 
         self.hbox = QHBoxLayout()
         self.enableDisableBtn=QPushButton('')
+        self.enableDisableBtn.setFixedSize(100, 30)
         self.enableDisableBtn.clicked.connect(self.enableDisableClicked)
         self.hbox.addWidget(self.enableDisableBtn)
         self.hbox.addStretch()
@@ -109,14 +110,14 @@ class EnableDisableCellInButton(QWidget):
 
         if isEnable(self.unit) == True:
 
-            self.enableDisableBtn.setStyleSheet("background-color: green")
+            self.enableDisableBtn.setStyleSheet("background-color: #2ecc71 ; border: 0px solid #303a46")
             self.enableDisableBtn.setText("enabled")
             self.isEnabled = True
 
 
 
         else:
-            self.enableDisableBtn.setStyleSheet("background-color: red")
+            self.enableDisableBtn.setStyleSheet("background-color: #e74c3c ; border: 0px solid #303a46")
             self.enableDisableBtn.setText("disabled")
             self.isEnabled =False
 
@@ -130,7 +131,7 @@ class EnableDisableCellInButton(QWidget):
                 # self.slider.setValue(0)
             else:
                 QMessageBox.information(self, 'success', f'{self.unit} has been Enabled succesfully')
-                self.enableDisableBtn.setStyleSheet("background-color: green")
+                self.enableDisableBtn.setStyleSheet("background-color: #2ecc71 ; border: 0px solid #303a46")
                 self.enableDisableBtn.setText("enabled")
                 self.isEnabled==True
 
@@ -142,7 +143,7 @@ class EnableDisableCellInButton(QWidget):
                 QMessageBox.critical(self, 'error', f'error cannot Disable  {self.unit}')
             else:
                 QMessageBox.information(self, 'success', f'{self.unit} has been Disabled succesfully')
-                self.enableDisableBtn.setStyleSheet("background-color: red")
+                self.enableDisableBtn.setStyleSheet("background-color: #e74c3c ; border: 0px solid #303a46")
                 self.enableDisableBtn.setText("disabled")
                 self.isEnabled=False
         else:
@@ -155,6 +156,7 @@ class StartStopCellInTableButton(QWidget):
         self.unit = unit
         self.hbox = QHBoxLayout()
         self.startStopBtn=QPushButton('')
+        self.startStopBtn.setFixedSize(100, 30)
         self.startStopBtn.clicked.connect(self.startStopClicked)
         self.hbox.addWidget(self.startStopBtn)
         self.hbox.addStretch()
@@ -164,12 +166,12 @@ class StartStopCellInTableButton(QWidget):
 
         if isStart(self.unit) == True:
 
-            self.startStopBtn.setStyleSheet("background-color: green")
+            self.startStopBtn.setStyleSheet("background-color: #e74c3c ; border: 0px solid #303a46")
             self.startStopBtn.setText("started")
             self.isStarted=True
 
         else:
-            self.startStopBtn.setStyleSheet("background-color: red")
+            self.startStopBtn.setStyleSheet("background-color: #e74c3c ; border: 0px solid #303a46")
             self.startStopBtn.setText("disabled")
             self.isStarted=False
 
@@ -185,7 +187,7 @@ class StartStopCellInTableButton(QWidget):
                 self.isStarted=True
             else:
                 QMessageBox.information(self, 'success', f'{self.unit} has been started succesfully')
-                self.startStopBtn.setStyleSheet("background-color: green")
+                self.startStopBtn.setStyleSheet("background-color: #2ecc71 ; border: 0px solid #303a46")
                 self.startStopBtn.setText("started")
 
 
@@ -198,7 +200,7 @@ class StartStopCellInTableButton(QWidget):
                  # self.slider.setValue(1)
             else:
                 QMessageBox.information(self, 'success', f'{self.unit} has been stopped succesfully')
-                self.startStopBtn.setStyleSheet("background-color: red")
+                self.startStopBtn.setStyleSheet("background-color: #e74c3c ; border: 0px solid #303a46")
                 self.startStopBtn.setText("stopped")
                 self.isStarted=False
         else:
