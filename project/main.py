@@ -86,13 +86,11 @@ class mainWindow(QWidget):
         self.bottomRightLayout=QVBoxLayout()
         #self.bottomRightLayout.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
-        '''
+
         logo = QLabel(self)
-        pixmap = QPixmap('icons/admin.png')
-        pixmap = pixmap.scaled(50, 50)
+        pixmap = QPixmap('icons/logo.png')
+        pixmap = pixmap.scaled(80, 80)
         logo.setPixmap(pixmap)
-        '''
-        #self.topLayout.addWidget(logo)
 
         refresh = QPushButton("🔁")
         refresh.clicked.connect(self.getContentTrigger)
@@ -105,6 +103,7 @@ class mainWindow(QWidget):
         logotext = QLabel("PyAdminDash")
         logotext.setStyleSheet("color: #303a46;font: bold 25px;")
         logotext.setContentsMargins(15,0,0,0)
+        self.topLayout.addWidget(logo)
         self.topLayout.addWidget(logotext)
         #self.topLayout.addStretch()
         self.topLayout.addLayout(menuLayout)
