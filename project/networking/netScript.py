@@ -213,3 +213,19 @@ def disInterfaceConnection(connetion):
     txt=txt.splitlines()
     return txt[0]
 
+def displaySSID(con):
+
+    fullCommand = f'nmcli connection  show {con} | grep -F 802-11-wireless.ssid: > /tmp/displaySSID'
+
+    try:
+        subprocess.run(fullCommand, check=True, shell=True)
+
+    except subprocess.CalledProcessError:
+        print("Error on displaySSID()")
+
+    File = open('/tmp/displaySSID', 'rt')
+    txt = File.read()
+    txt = txt.replace('802-11-wireless.ssid:', '')
+    txt = txt.replace(' ', '')
+    txt = txt.splitlines()
+    return txt[0]

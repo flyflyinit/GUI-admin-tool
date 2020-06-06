@@ -4,7 +4,7 @@ from PyQt5 import QtGui,QtCore
 from project.networking.networkingScripts import displayNetworkInterface
 from project.networking.displayConnections import displayConnection
 from project.networking.displayIP import DisplayIP
-from project.networking.netScript import disInterfaceConnection
+from project.networking.netScript import disInterfaceConnection,displaySSID
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import QDateTimeEdit, QFormLayout, QLabel, QApplication, QWidget, QLineEdit, QHBoxLayout, \
     QPushButton, QRadioButton, QButtonGroup
@@ -304,6 +304,7 @@ class EditNetworkWindow(QWidget):
         self.typeCombo.addItem("wifi")
 
         self.newconNameEdit = QLineEdit()
+        self.newSSIDEdit = QLineEdit()
         self.ipEdit = QLineEdit()
         self.gatewayEdit = QLineEdit()
         self.dnsEdit = QLineEdit()
@@ -326,14 +327,16 @@ class EditNetworkWindow(QWidget):
 
         index = str(self.index[0])
         index = index.replace(' ', '\\ ')
+        tmpindex=index
         self.ipInfo = DisplayIP(index)
         ipInfoDns = self.ipInfo[2]
         ipInfoDns = ipInfoDns.split(',')
-
         self.topLayout.addRow(QLabel("Connection for editing is"), self.consName)
         self.topLayout.addRow(QLabel(''), QLabel(''))
         self.topLayout.addRow(QLabel(f'Old infrmation are '), QLabel(''))
         self.topLayout.addRow(QLabel(f'NAME= {self.index[0]}'), QLabel(''))
+        if self.index[1] in 'wifi':
+            self.topLayout.addRow(QLabel(f'SSID= {displaySSID(tmpindex)}'), QLabel(''))
         self.topLayout.addRow(QLabel(f'TYPE= {self.index[1]}'), QLabel(''))
         self.topLayout.addRow(QLabel(f'IP ASSIGN METHOD= {self.index[2]}'), QLabel(''))
         self.topLayout.addRow(QLabel(f'AUTO CONNECT = {self.index[3]}'), QLabel(''))
@@ -345,6 +348,11 @@ class EditNetworkWindow(QWidget):
         self.topLayout.addRow(QLabel('For New inforamtions Editing '), QLabel(''))
         self.topLayout.addRow(QLabel(''), QLabel(''))
         self.topLayout.addRow(QLabel("Enter New Connection's Name"), self.newconNameEdit)
+        thereisSSID=False
+        if self.index[1] in 'wifi':
+            self.topLayout.addRow(QLabel("Enter New SSID Name"), self.newSSIDEdit)
+            thereisSSID = True
+
         self.topLayout.addRow(QLabel("Select interface"), self.comboInt)
         self.middelLayout.addRow(QLabel('IP old Informations'), QLabel(''))
 
@@ -373,6 +381,7 @@ class EditNetworkWindow(QWidget):
         newMask = newMask.split(':')[0]
         newGatway = self.gatewayEdit.text()
         newDns = self.dnsEdit.text()
+        newSSID = self.newSSIDEdit.text()
 
         oldMask = self.ipInfo[0]
         oldMask = oldMask.replace(' ', '')
@@ -409,9 +418,14 @@ class EditNetworkWindow(QWidget):
                 command += ' +ipv4.dns '
                 command += str(newDns)
 
+            if str(newSSID) not in '':
+                command += '  ssid '
+                command += str(newDns)
+
+
             if command.find('con-name') == -1 and command.find('ifname') == -1 and command.find(
                     'con-name') == -1 and command.find('ipv4.addresses') == -1 and command.find(
-                    'ipv4.gateway') == -1 and command.find('ipv4.dns') == -1:
+                    'ipv4.gateway') == -1 and command.find('ipv4.dns') == -1 and   command.find('ssid') == -1:
                 QMessageBox.information(self, 'No Change', 'No Additionel changes ')
             else:
                 try:
@@ -437,10 +451,15 @@ class EditNetworkWindow(QWidget):
                 command += ' connection.type '
                 command += str(newType)
 
-            if command.find('con-name') == -1 and command.find('ifname') == -1 and command.find('con-name') == -1:
+            if str(newSSID) not in '':
+                command += '  ssid '
+                command += str(newSSID)
+
+            if command.find('con-name') == -1 and command.find('ifname') == -1 and command.find('con-name') == -1 and command.find('ssid') == -1:
                 QMessageBox.information(self, 'No Change', 'No Additionel changes ')
             else:
                 try:
+
                     subprocess.run(command, check=True, shell=True)
                 except subprocess.CalledProcessError:
                     QMessageBox.warning(self, 'warning', f"error Verify the fields \n")
