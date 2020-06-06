@@ -165,13 +165,13 @@ class StartStopCellInTableButton(QWidget):
 
         if isStart(self.unit) == True:
 
-            self.startStopBtn.setStyleSheet("background-color: #e74c3c ; border: 0px solid #303a46")
+            self.startStopBtn.setStyleSheet("background-color: #2ecc71 ; border: 0px solid #303a46")
             self.startStopBtn.setText("started")
             self.isStarted=True
 
         else:
             self.startStopBtn.setStyleSheet("background-color: #e74c3c ; border: 0px solid #303a46")
-            self.startStopBtn.setText("disabled")
+            self.startStopBtn.setText("stopped")
             self.isStarted=False
 
     def startStopClicked(self):
