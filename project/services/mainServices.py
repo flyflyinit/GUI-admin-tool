@@ -3,7 +3,6 @@ import qtmodern.windows
 from PyQt5 import QtGui, QtCore
 #from project.services.configServices import CreateServicesWindow, EditServicesWindow, DeleteServicesWindow
 from PyQt5.QtWidgets import *
-from PyQt5.QtCore import QTimer, Qt
 import subprocess
 from project.services.servicesScripts import stopServices, startServices, listAllServices,isEnable,enableServices,disableServices,isStart
 
