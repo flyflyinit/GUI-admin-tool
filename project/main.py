@@ -332,7 +332,7 @@ class mainWindow(QWidget):
                 self.clearLayout(child.layout())
 
 def aboutClicked(self):
-    self.aboutWindow = about.ConfigureSystemWindow()
+    self.aboutWindow = about.About()
     self.aw = qtmodern.windows.ModernWindow(self.aboutWindow)
     self.aw.show()
 

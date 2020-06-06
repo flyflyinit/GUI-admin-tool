@@ -12,7 +12,7 @@ except ImportError as e:
     print(f'package not found\n{e}\n')
 
 
-class ConfigureSystemWindow(QWidget):
+class About(QWidget):
     def __init__(self):
         super().__init__()
         self.setGeometry(0, 0, 300, 500)
@@ -37,7 +37,7 @@ class ConfigureSystemWindow(QWidget):
 
         title = QLabel("PyAdminDash")
         text = QLabel("PyAdminDash is a GUI Linux System Administration Tool Based on Fedora/Centos/Redhat\nthe tool was designed and developped to provide an easy interaction with the operating system and its compenents,\nmaking the complex operating system tasks and compenents easy to deploy and monitor\nand by implementing plots and graphs you will have the full picture of your Opertaing System in realtime.")
-        text2 = QLabel("\nPyAdminDash was developped as a bachelor final project in the university of Sidi Bel Abbes -Algeria-\nby Boudjemma Djawed  =>  github.com/DjawedBoudjemaa\nand Abdelmoumen Drici  =>  github.com/flyflyinit")
+        text2 = QLabel("\nPyAdminDash was developped as a bachelor final project in the university of Sidi Bel Abbes -Algeria-\nby Boudjemma Djawed  =>  github.com/DjawedBoudjemaa\nand Abdelmoumen Drici  =>  github.com/flyflyinit\nand supervised by Dr.Boukli\n")
         text3 = QLabel("\nPlease If you have any feedback or suggestion we will be happy to hear from you :)\ngithub.com/flyflyinit/GUI-admin-tool")
         text4 = QLabel("\nLicense: MIT")
         text5 = QLabel("\nContact: Abdelmoumen Drici, abdelmoumendrici@gmail.com\n               Boudjemaa Djawed, jawedbdj@gmail.com")
