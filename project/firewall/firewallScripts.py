@@ -1,21 +1,18 @@
-import os, subprocess
+import subprocess
 
 
 def restarted():
     command = 'systemctl restart firewalld > /tmp/zones 2> /tmp/firewallZonesError'
     try:
         subprocess.run(command, check=True, shell=True)
-
     except subprocess.CalledProcessError:
         print("Error restarted()")
 
 
 def listZones():
     command = 'firewall-cmd --get-zones > /tmp/firewallZones 2> /tmp/firewallZonesError'
-
     try:
         subprocess.run(command, check=True, shell=True)
-
     except subprocess.CalledProcessError:
         print("listZones() ")
 
@@ -30,12 +27,9 @@ def listZones():
 
 def defaultZone():
     command = 'firewall-cmd --get-default-zone > /tmp/firDefZone 2> /tmp/firewalldefZoneError'
-
     try:
         subprocess.run(command, check=True, shell=True)
-
     except subprocess.CalledProcessError:
-
         print("defaultZone():")
 
     file = open('/tmp/firDefZone', 'rt')
@@ -51,84 +45,56 @@ def defaultZone():
 
 def activeZone():
     command = 'firewall-cmd --get-active-zones > /tmp/activeZone 2> /tmp/activeZoneError'
-
     try:
         subprocess.run(command, check=True, shell=True)
-
     except subprocess.CalledProcessError:
-
         print("activeZone(): ")
 
     file = open('/tmp/activeZone', 'rt')
     file = file.read()
     default = file.replace('\n', ':')
-
     return default
 
 
 def setDefaultZone(zone):
     command = f'firewall-cmd --set-default-zone={zone} '
-
     try:
         subprocess.run(command, check=True, shell=True)
-
     except subprocess.CalledProcessError:
-
         print("Error While fetching Data ")
-
     restarted()
 
 
-######################### {ADD} RUN ####################################################################################################
-
 def addInterfaceToZone(interface, zone):
     command = f'firewall-cmd --zone={zone} --add-interface={interface}'
-
     try:
         subprocess.run(command, check=True, shell=True)
-
-
     except subprocess.CalledProcessError:
-
         print("Error on addInterfaceToZone ")
-
 
 
 def addServiceToDefaultZone(service):
     command = f'firewall-cmd  --add-service={service}'
-
     try:
         subprocess.run(command, check=True, shell=True)
-
     except subprocess.CalledProcessError:
-
         print("Error on addServiceToDefaultZone ")
 
 
 def addServiceToSpecificZone(service, zone):
     command = f'firewall-cmd --zone={zone} --add-service={service} > /tmp/state'
-
     try:
         subprocess.run(command, check=True, shell=True)
-
-
     except subprocess.CalledProcessError:
-
         print("addServiceToSpecificZone(service, zone): ")
 
 
-def addPort(port, protocol,zone):
+def addPort(port, protocol, zone):
     command = f'firewall-cmd --zone={zone} --add-port={port}/{protocol}'
-
     try:
         subprocess.run(command, check=True, shell=True)
-
     except subprocess.CalledProcessError:
-
         print("Error on addPort ")
-
-
-################################ {EDIT} --permanent   ##############################################################################
 
 
 def addPermanentNewZone(name):
@@ -141,15 +107,11 @@ def addPermanentNewZone(name):
         print("Error on addPermanentNewZone ")
 
 
-# add interface to zone
-
 def addPermanentInterfaceToZone(interface, zone):
     command = f'firewall-cmd --permanent --zone={zone} --add-interface={interface} '
-
     try:
         subprocess.run(command, check=True, shell=True)
         restarted()
-
     except subprocess.CalledProcessError:
         print("Error on addPermanentInterfaceToZone(interface, zone):")
         return
@@ -157,89 +119,63 @@ def addPermanentInterfaceToZone(interface, zone):
 
 def addPermanentServiceDefaultZone(service):
     command = f'firewall-cmd  --permanen --add-service={service}t'
-
     try:
         subprocess.run(command, check=True, shell=True)
         restarted()
-        
     except subprocess.CalledProcessError:
-
         print("Error on addPermanentServiceDefaultZone ")
 
 
-
-#   add service to specified Zone
-
 def addPermanentServiceToSpecificZone(service, zone):
     command = f'firewall-cmd --permanent  --zone={zone} --add-service={service}'
-
     try:
         subprocess.run(command, check=True, shell=True)
         restarted()
-
-
     except subprocess.CalledProcessError:
-
         print("Error on addPermanentServiceToSpecificZone ")
 
 
-def addPermanetProtocolPort(port, protocol,zone):
+def addPermanetProtocolPort(port, protocol, zone):
     command = f'firewall-cmd --permanent --zone={zone} --add-port={port}/{protocol} '
-
     try:
         subprocess.run(command, check=True, shell=True)
         restarted()
     except subprocess.CalledProcessError:
-
         print("Error on addPermanetProtocolPort(port, protocol): ")
 
-# remove a zone
+
 def RemoveZone(zone):
     command = f'firewall-cmd --permanent --delete-zone={zone}'
-
     try:
         subprocess.run(command, check=True, shell=True)
-
     except subprocess.CalledProcessError:
-
         print("Error on RemoveZone ")
 
-# remove interface from a zone
 
 def RemovePermanetInterfaceFromZone(service, zone):
     command = f'firewall-cmd  --permanent --zone={zone} --remove-interface={service} '
-
     try:
         subprocess.run(command, check=True, shell=True)
         restarted()
-
     except subprocess.CalledProcessError:
-
         print("Error on RemoveInterfaceFromZone ")
-
-# remove service from default zone
 
 
 def removePermanentServiceFromDefaultZone(service):
     command = f'firewall-cmd --permanent --remove-service={service}'
-
     try:
         subprocess.run(command, check=True, shell=True)
         restarted()
-
     except subprocess.CalledProcessError:
         print("Error  on removePermanentServiceFromDefaultZone")
 
 
 def RemovePermanetServiceFromSpecificZone(service, zone):
     command = f'firewall-cmd --permanent --zone={zone} --remove-service={service}'
-
     try:
         subprocess.run(command, check=True, shell=True)
         restarted()
-
     except subprocess.CalledProcessError:
-
         print("Error on RemovePermanetServiceFromSpecificZone ")
 
 
@@ -253,75 +189,44 @@ def RemovePermanetProtocolPort(port, protocol):
         print("Error on RemovePermanetProtocolPort  ")
 
 
-################################   DELETE    ##############################################################################
-
-# remove interface to zone
-
 def RemoveInterfaceFromZone(int, zone):
     command = f'firewall-cmd --zone={zone} --remove-interface={int}'
-
     try:
         subprocess.run(command, check=True, shell=True)
-
-
     except subprocess.CalledProcessError:
-
         print("Error on  RemoveInterfaceFromZone ")
 
 
-
-# remove specific zone
-
-
 def removeServiceFromDefaultZone(service):
-
     command = f'firewall-cmd --remove-service={service}'
-
     try:
         subprocess.run(command, check=True, shell=True)
-
-
     except subprocess.CalledProcessError:
-
         print("Error on removeServiceFromDefaultZone ")
-
 
 
 def RemoveServiceToZone(service, zone):
     command = f'firewall-cmd --zone={zone} --remove-service={service}'
-
     try:
         subprocess.run(command, check=True, shell=True)
-
     except subprocess.CalledProcessError:
-
         print("Error on RemoveServiceToZone ")
 
 
-
-def RemoveProtocolPort(port, protocol,zone):
+def RemoveProtocolPort(port, protocol, zone):
     command = f'firewall-cmd --zone={zone} --remove-port={port}/{protocol}'
     try:
         subprocess.run(command, check=True, shell=True)
-
     except subprocess.CalledProcessError:
         print("Error on RemoveProtocolPort ")
 
 
-
-
-
-
-##############################################################################################################################
 def listAllServices():
     list = []
     command = f'firewall-cmd --get-services > /tmp/listAllServices'
-
     try:
         subprocess.run(command, check=True, shell=True)
-
     except subprocess.CalledProcessError:
-
         print("Error While fetching Data ")
     with open('/tmp/listAllServices', 'r') as file:
         file = file.read()
@@ -375,8 +280,3 @@ def firewallGlobalInfo():
             i = i.split(':')
             list.append(i)
         return (list)
-
-
-
-
-

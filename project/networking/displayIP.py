@@ -1,4 +1,5 @@
-import os ,subprocess
+import subprocess
+
 
 def showIpMethod(con):
     fullCommand = f'nmcli connection  show {con}  | grep -F ipv4.method >  /tmp/ConIpMethod2'
@@ -16,14 +17,14 @@ def showIpMethod(con):
     con = con.strip()
     return con
 
+
 def DisplayIP(connectionName):
-    listData=[]
-    listEmpty=[]
+    listEmpty = []
     listEmpty.append("")
     listEmpty.append("")
     listEmpty.append("")
 
-    if showIpMethod(connectionName)=='manual':
+    if showIpMethod(connectionName) == 'manual':
         cm1 = f'nmcli connection  show {connectionName}| grep -F ipv4.addresses: > /tmp/MANipAddress'
         cm2 = f'nmcli connection  show {connectionName}| grep -F ipv4.gateway: > /tmp/MANgateway'
         cm3 = f'nmcli connection  show {connectionName}| grep -F ipv4.dns:  > /tmp/MANdns'
@@ -55,14 +56,12 @@ def DisplayIP(connectionName):
         File = open('/tmp/MANdns', 'rt')
         txt = File.read()
         dns = txt.rstrip()
-        dns= dns.replace("ipv4.dns:", "  ")
-        dns= dns.replace(" ", "")
+        dns = dns.replace("ipv4.dns:", "  ")
+        dns = dns.replace(" ", "")
         coninfo = ipAddress + '-' + gateway + '-' + dns
         coninfo = coninfo.split("-")
         return coninfo
-
-
-    elif showIpMethod(connectionName)=='auto':
+    elif showIpMethod(connectionName) == 'auto':
         cm1 = f'nmcli connection  show {connectionName}| grep -F IP4.ADDRESS[1]: > /tmp/AUTOipAddress'
         cm2 = f'nmcli connection  show {connectionName}| grep -F  IP4.GATEWAY: > /tmp/AUTOgateway'
         cm3 = f'nmcli connection  show {connectionName}| grep -F  IP4.DNS[1]:  > /tmp/AUTOdns1'
@@ -112,6 +111,3 @@ def DisplayIP(connectionName):
         coninfo2 = coninfo2.split("-")
         listData = coninfo2
         return listData
-
-
-

@@ -2,7 +2,8 @@ try:
     from PyQt5.QtWidgets import QWidget, QFormLayout, QLineEdit, QLabel, QMessageBox, QPushButton, QHBoxLayout, \
         QVBoxLayout
 except ImportError as e:
-    print(f'package PyQt5 Not Found\n{e}\ntry :\npip3 install --user pyqt5\nOR\ndnf install python3-pyqt5, yum install python3-pyqt5\n')
+    print(
+        f'package PyQt5 Not Found\n{e}\ntry :\npip3 install --user pyqt5\nOR\ndnf install python3-pyqt5, yum install python3-pyqt5\n')
 
 try:
     import subprocess
@@ -13,7 +14,7 @@ except ImportError as e:
 class ConfigureSystemWindow(QWidget):
     def __init__(self):
         super().__init__()
-        self.setGeometry(200,50,300,400)
+        self.setGeometry(200, 50, 300, 400)
         self.setWindowTitle("Edit Hostname")
         self.layouts()
         self.widgets()
@@ -21,16 +22,16 @@ class ConfigureSystemWindow(QWidget):
     def layouts(self):
         self.mainLayout = QVBoxLayout()
         self.topLayout = QFormLayout()
-        self.topLayout.setContentsMargins(20,20,20,20)
-        self.bottomLayout=QHBoxLayout()
+        self.topLayout.setContentsMargins(20, 20, 20, 20)
+        self.bottomLayout = QHBoxLayout()
 
-        self.submitBtn=QPushButton("Submit")
+        self.submitBtn = QPushButton("Submit")
         self.submitBtn.clicked.connect(self.submitAction)
-        self.cancelBtn=QPushButton("Cancel")
+        self.cancelBtn = QPushButton("Cancel")
         self.cancelBtn.clicked.connect(self.cancelAction)
         self.submitBtn.setFixedHeight(30)
         self.cancelBtn.setFixedHeight(30)
-        self.submitBtn.setStyleSheet("color: #ecf0f1; background-color: #27ae60 ; border: 0px solid #27ae60" )
+        self.submitBtn.setStyleSheet("color: #ecf0f1; background-color: #27ae60 ; border: 0px solid #27ae60")
         self.cancelBtn.setStyleSheet("color: #ecf0f1; background-color: #e74c3c; border: 0px solid #e74c3c")
 
         self.bottomLayout.addWidget(self.submitBtn)
@@ -43,16 +44,16 @@ class ConfigureSystemWindow(QWidget):
     def widgets(self):
         self.edit = QLineEdit()
         self.edit.setPlaceholderText('enter new hostname')
-        self.topLayout.addRow(QLabel('Hostname :'),self.edit)
+        self.topLayout.addRow(QLabel('Hostname :'), self.edit)
 
     def submitAction(self):
         hst = self.edit.text()
         try:
-            subprocess.run(f'hostnamectl set-hostname {hst}',check=True,shell=True)
-        except subprocess.CalledProcessError :
-            QMessageBox.warning(self,'warning',f"error occured during setting this hostname\n")
+            subprocess.run(f'hostnamectl set-hostname {hst}', check=True, shell=True)
+        except subprocess.CalledProcessError:
+            QMessageBox.warning(self, 'warning', f"error occured during setting this hostname\n")
         else:
-            QMessageBox.information(self,'success',f'hostname changed to {hst} succesfully.')
+            QMessageBox.information(self, 'success', f'hostname changed to {hst} succesfully.')
             self.close()
 
     def cancelAction(self):

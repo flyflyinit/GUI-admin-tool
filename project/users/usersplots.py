@@ -1,7 +1,8 @@
 try:
     from PyQt5 import QtCore, QtWidgets
 except ImportError as e:
-    print(f'package PyQt5 Not Found\n{e}\ntry :\npip3 install --user pyqt5\nOR\ndnf install python3-pyqt5, yum install python3-pyqt5\n')
+    print(
+        f'package PyQt5 Not Found\n{e}\ntry :\npip3 install --user pyqt5\nOR\ndnf install python3-pyqt5, yum install python3-pyqt5\n')
 
 try:
     from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -15,13 +16,12 @@ try:
 except ImportError as e:
     print(f'package not found\n{e}\n')
 
-
-
 begindate = '2000-01-01'
 enddate = 'now'
 
+
 class MyMplCanvas(FigureCanvas):
-    def __init__(self,parent=None, width=5, height=5, dpi=50):
+    def __init__(self, parent=None, width=5, height=5, dpi=50):
         fig = Figure(figsize=(width, height), dpi=dpi)
         plt.style.use('Solarize_Light2')
         self.Axes = fig.add_subplot()
@@ -29,8 +29,9 @@ class MyMplCanvas(FigureCanvas):
 
         FigureCanvas.__init__(self, fig)
         self.setParent(parent)
-        FigureCanvas.setSizePolicy(self,QtWidgets.QSizePolicy.Expanding,QtWidgets.QSizePolicy.Expanding)
+        FigureCanvas.setSizePolicy(self, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
+
     def compute_initial_figure(self):
         pass
 
@@ -48,13 +49,14 @@ class lastLogins(MyMplCanvas):
         global enddate
 
         nameslist = getLastLoginsStats()
-        nameslist = nameslist + ['runlevel','reboot']
+        nameslist = nameslist + ['runlevel', 'reboot']
         count = []
         countnames = []
         explode = ()
         for user in nameslist:
             cmd = f"last -s {begindate} -t {enddate} -w -x --time-format notime | awk " + " {'print $1'} " + f" | grep ^{user}$ | wc -l"
-            out = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].decode('utf-8')
+            out = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[
+                0].decode('utf-8')
             if int(out) != 0:
                 countnames.append(str(user))
                 count.append(int(out))
@@ -64,7 +66,7 @@ class lastLogins(MyMplCanvas):
                     explode = tuple(explodelist)
                 else:
                     explodelist.append(0)
-                    explode=tuple(explodelist)
+                    explode = tuple(explodelist)
 
         self.Axes.cla()
         self.Axes.pie(count, explode=explode, labels=countnames, autopct='%1.1f%%', shadow=True, startangle=90)
@@ -96,7 +98,8 @@ class lastBadLogins(MyMplCanvas):
         explode = ()
         for user in nameslist:
             cmd = f"lastb -s {begindate} -t {enddate} -w -x --time-format notime | awk " + " {'print $1'} " + f" | grep {user} | wc -l"
-            outt = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].decode('utf-8')
+            outt = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[
+                0].decode('utf-8')
             if int(outt) != 0:
                 countnames.append(str(user))
                 count.append(int(outt))
@@ -106,7 +109,7 @@ class lastBadLogins(MyMplCanvas):
                     explode = tuple(explodelist)
                 else:
                     explodelist.append(0)
-                    explode=tuple(explodelist)
+                    explode = tuple(explodelist)
 
         self.Axes.cla()
         self.Axes.pie(count, explode=explode, labels=countnames, autopct='%1.1f%%', shadow=True, startangle=90)
@@ -129,6 +132,7 @@ def retrievedatafrompasswdfile():
         each_user2 = each_user.split(":")
         list_of_users.append(each_user2)
     return list_of_users
+
 
 def getLastLoginsStats():
     list_of_users = retrievedatafrompasswdfile()

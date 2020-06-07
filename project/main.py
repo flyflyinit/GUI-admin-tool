@@ -1,6 +1,4 @@
 #!/bin/python3
-import subprocess
-import sys
 import qtmodern.styles
 import qtmodern.windows
 from PyQt5.QtCore import Qt
@@ -9,7 +7,6 @@ from project import about
 from project.about import *
 from project.dashboard import mainDashboard
 from project.system import mainsystem
-from project.system.configuresystem import ConfigureSystemWindow
 from project.users import mainusers
 from project.networking import mainnetworking
 from project.firewall import mainFirewall
@@ -18,19 +15,15 @@ from project.backup import mainbackup
 from project.terminal import mainterminal
 from project.logs import mainLogs
 
-'''
-from project.networking.mainnetworking import getContentNetwork
-from project.firewall import mainFirewall
-from project.services import mainServices
-'''
 try:
     from PyQt5 import QtCore, QtWidgets
     from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel, QDockWidget, QVBoxLayout, QListWidget, QAbstractItemView, \
-    QMessageBox, QApplication, QSizePolicy, QPushButton, QGroupBox, QScrollArea, QStyleOptionTitleBar, QStyle
+        QMessageBox, QApplication, QSizePolicy, QPushButton, QGroupBox, QScrollArea, QStyleOptionTitleBar, QStyle
     from PyQt5.QtGui import QIcon
     from PyQt5.QtGui import QPixmap
 except ImportError as e:
-    print(f'package PyQt5 Not Found\n{e}\ntry :\npip3 install --user pyqt5\nOR\ndnf install python3-pyqt5, yum install python3-pyqt5\n')
+    print(
+        f'package PyQt5 Not Found\n{e}\ntry :\npip3 install --user pyqt5\nOR\ndnf install python3-pyqt5, yum install python3-pyqt5\n')
 
 try:
     import qtmodern.styles
@@ -56,22 +49,18 @@ class mainWindow(QWidget):
             self
         )
         geometry = app.desktop().availableGeometry()
-        geometry.setHeight(geometry.height() - (titleBarHeight*2))
+        geometry.setHeight(geometry.height() - (titleBarHeight * 2))
 
         self.setGeometry(geometry)
 
-    #@QtCore.pyqtSlot()
-    #def on_pushButtonClose_clicked(self):
-    #    QApplication.instance().quit()
-
     def UI(self):
+        QMessageBox.information(self,'Information','Make Sure You execute this tool with the required permission, and you installed the requirements\ncheck README.md, Pipfile')
         self.layouts()
         self.widgets()
 
-
     def layouts(self):
         menuLayout = QVBoxLayout()
-        menuLayout.setContentsMargins(0,0,0,0)
+        menuLayout.setContentsMargins(0, 0, 0, 0)
         about = QPushButton("|  About")
         about.clicked.connect(lambda: aboutClicked(self))
         about.setFixedHeight(30)
@@ -79,14 +68,12 @@ class mainWindow(QWidget):
         about.setStyleSheet("color: #303a46 ; border: 0px solid #303a46")
         menuLayout.addWidget(about)
 
-        self.mainLayout=QVBoxLayout()
-        self.topLayout=QHBoxLayout()
-        self.bottomLayout=QHBoxLayout()
+        self.mainLayout = QVBoxLayout()
+        self.topLayout = QHBoxLayout()
+        self.bottomLayout = QHBoxLayout()
 
-        self.bottomLeftLayout=QHBoxLayout()
-        self.bottomRightLayout=QVBoxLayout()
-        #self.bottomRightLayout.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-
+        self.bottomLeftLayout = QHBoxLayout()
+        self.bottomRightLayout = QVBoxLayout()
 
         logo = QLabel(self)
         pixmap = QPixmap('icons/logo.png')
@@ -103,17 +90,15 @@ class mainWindow(QWidget):
 
         logotext = QLabel("PyAdminDash")
         logotext.setStyleSheet("color: #303a46;font: bold 25px;")
-        logotext.setContentsMargins(15,0,0,0)
+        logotext.setContentsMargins(15, 0, 0, 0)
         self.topLayout.addWidget(logo)
         self.topLayout.addWidget(logotext)
-        #self.topLayout.addStretch()
         self.topLayout.addLayout(menuLayout)
         self.topLayout.addStretch()
         self.topLayout.addLayout(b)
 
         self.bottomLayout.addLayout(self.bottomLeftLayout)
-        self.bottomLayout.addLayout(self.bottomRightLayout,1)
-        #self.bottomLayout.addStretch()
+        self.bottomLayout.addLayout(self.bottomRightLayout, 1)
 
         self.mainLayout.addLayout(self.topLayout)
         self.mainLayout.addLayout(self.bottomLayout)
@@ -124,7 +109,8 @@ class mainWindow(QWidget):
         self.dockWidget = QDockWidget(self)
         self.listWidget = QListWidget(self)
         self.listWidget.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.listWidget.setStyleSheet("color: #303a46; selection-background-color: #303a46 ; selection-color: #95a5a6 ;border: 0px solid #95a5a6")
+        self.listWidget.setStyleSheet(
+            "color: #303a46; selection-background-color: #303a46 ; selection-color: #95a5a6 ;border: 0px solid #95a5a6")
 
         self.dockWidget.setFixedWidth(180)
 
@@ -172,59 +158,58 @@ class mainWindow(QWidget):
         self.bottomLeftLayout.addWidget(self.dockWidget)
         self.listWidget.setCurrentItem(self.item0)
 
-
     def getContentTrigger(self):
         si = self.listWidget.selectedItems()[0]
-        if si==self.item0:
+        if si == self.item0:
             self.setCursor(Qt.WaitCursor)
             self.clearLayout(self.bottomRightLayout)
             mainDashboard.getContentDashboard(self)
             self.setCursor(Qt.ArrowCursor)
-        elif si==self.item1:
+        elif si == self.item1:
             self.setCursor(Qt.WaitCursor)
             self.clearLayout(self.bottomRightLayout)
             mainsystem.getContentSystem(self)
             self.setCursor(Qt.ArrowCursor)
-        elif si==self.item2:
+        elif si == self.item2:
             self.setCursor(Qt.WaitCursor)
             self.clearLayout(self.bottomRightLayout)
             mainusers.getContentUsers(self)
             self.setCursor(Qt.ArrowCursor)
-        elif si==self.item3:
+        elif si == self.item3:
             self.setCursor(Qt.WaitCursor)
             self.clearLayout(self.bottomRightLayout)
             mainbackup.getContentBackup(self)
             self.setCursor(Qt.ArrowCursor)
-        elif si==self.item4:
+        elif si == self.item4:
             self.setCursor(Qt.WaitCursor)
             self.clearLayout(self.bottomRightLayout)
             mainnetworking.getContentNetwork(self)
             self.setCursor(Qt.ArrowCursor)
-        elif si==self.item5:
+        elif si == self.item5:
             self.setCursor(Qt.WaitCursor)
             self.clearLayout(self.bottomRightLayout)
             mainFirewall.getContentFirewall(self)
             self.setCursor(Qt.ArrowCursor)
-        elif si==self.item6:
+        elif si == self.item6:
             self.setCursor(Qt.WaitCursor)
             self.clearLayout(self.bottomRightLayout)
             mainServices.getContentServices(self)
             self.setCursor(Qt.ArrowCursor)
-        elif si==self.item7:
+        elif si == self.item7:
             self.setCursor(Qt.WaitCursor)
             self.clearLayout(self.bottomRightLayout)
             mainLogs.getContentLogs(self)
             self.setCursor(Qt.ArrowCursor)
-        elif si==self.item8:
+        elif si == self.item8:
             self.setCursor(Qt.WaitCursor)
             self.clearLayout(self.bottomRightLayout)
             mainterminal.main(self)
             self.setCursor(Qt.ArrowCursor)
 
         else:
-            QMessageBox.warning(self,"warning","no section selected, please selecet a section")
+            QMessageBox.warning(self, "warning", "no section selected, please selecet a section")
 
-    def clearLayout(self,layout):
+    def clearLayout(self, layout):
         try:
             del self.memoryC
         except Exception:
@@ -277,7 +262,6 @@ class mainWindow(QWidget):
             del self.sw
         except Exception:
             pass
-
 
         try:
             del self.tableIncBackup
@@ -351,6 +335,7 @@ class mainWindow(QWidget):
             elif child.layout() is not None:
                 self.clearLayout(child.layout())
 
+
 def aboutClicked(self):
     self.aboutWindow = about.About()
     self.aw = qtmodern.windows.ModernWindow(self.aboutWindow)
@@ -359,17 +344,14 @@ def aboutClicked(self):
 
 if __name__ == '__main__':
     import sys
+
     print("===================================================================")
-    print("PS: this tool is RPM Distributions Based (Fedora,centos,redhat)\nMake Sure You execute this tool with the admin permission, and you installed the requirements")
-    print("To setup your virtual environment:\n1- install pipenv \n  pip3 install pipenv\n2- install virtual environment dependecies\n  pipenv install")
+    print(
+        "PS: this tool is RPM Distributions Based (Fedora,centos,redhat)\nMake Sure You execute this tool with the admin permission, and you installed the requirements")
+    print(
+        "To setup your virtual environment:\n1- install pipenv \n  pip3 install pipenv\n2- install virtual environment dependecies\n  pipenv sync")
     print("===================================================================\n\n")
-    '''
-    app = QApplication(sys.argv)
-    app.setApplicationName('MyWindow')
-    main = mainWindow()
-    main.show()
-    sys.exit(app.exec_())
-    '''
+
     app = QApplication(sys.argv)
     main = mainWindow()
     qtmodern.styles.light(app)

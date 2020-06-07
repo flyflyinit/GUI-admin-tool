@@ -1,10 +1,10 @@
 from PyQt5.QtWidgets import *
 import subprocess
-from PyQt5 import QtGui,QtCore
+from PyQt5 import QtGui, QtCore
 from project.networking.networkingScripts import displayNetworkInterface
 from project.networking.displayConnections import displayConnection
 from project.networking.displayIP import DisplayIP
-from project.networking.netScript import disInterfaceConnection,displaySSID
+from project.networking.netScript import disInterfaceConnection, displaySSID
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import QDateTimeEdit, QFormLayout, QLabel, QApplication, QWidget, QLineEdit, QHBoxLayout, \
     QPushButton, QRadioButton, QButtonGroup
@@ -23,7 +23,7 @@ from PyQt5.uic.properties import QtGui
 class CreateNetworkWindow(QWidget):
     def __init__(self):
         super().__init__()
-        self.setGeometry(200,50,600,400)
+        self.setGeometry(200, 50, 600, 400)
         self.setWindowTitle("Add a New Connection")
         self.layouts()
         self.widgets()
@@ -31,18 +31,17 @@ class CreateNetworkWindow(QWidget):
     def layouts(self):
         self.mainLayout = QVBoxLayout()
         self.topLayout = QFormLayout()
-        self.middelLayout=QFormLayout()
+        self.middelLayout = QFormLayout()
 
-        #self.topLayout.setContentsMargins(20,20,20,20)
-        self.bottomLayout=QHBoxLayout()
+        self.bottomLayout = QHBoxLayout()
 
-        self.submitBtn=QPushButton("Add")
+        self.submitBtn = QPushButton("Add")
         self.submitBtn.clicked.connect(self.submitAction)
-        self.cancelBtn=QPushButton("Cancel")
+        self.cancelBtn = QPushButton("Cancel")
         self.cancelBtn.clicked.connect(self.cancelAction)
         self.submitBtn.setFixedHeight(30)
         self.cancelBtn.setFixedHeight(30)
-        self.submitBtn.setStyleSheet("color: #ecf0f1; background-color: #27ae60 ; border: 0px solid #27ae60" )
+        self.submitBtn.setStyleSheet("color: #ecf0f1; background-color: #27ae60 ; border: 0px solid #27ae60")
         self.cancelBtn.setStyleSheet("color: #ecf0f1; background-color: #e74c3c; border: 0px solid #e74c3c")
 
         self.bottomLayout.addWidget(self.submitBtn)
@@ -54,7 +53,6 @@ class CreateNetworkWindow(QWidget):
 
     def widgets(self):
         self.comboInt = QComboBox()
-        # fectch interfaces
         try:
             subprocess.run(' ls /sys/class/net > /tmp/networkInterfaces.txt', check=True, shell=True)
             deviceFile = open('/tmp/networkInterfaces.txt', 'rt')
@@ -65,8 +63,7 @@ class CreateNetworkWindow(QWidget):
         except:
             print("Can't fetch network interface ")
 
-        # New
-        self.ssid=QLineEdit()
+        self.ssid = QLineEdit()
         self.ssid.setPlaceholderText('Required on wifi type ')
         self.typeCombo = QComboBox()
         self.typeCombo.addItem("ethernet")
@@ -94,10 +91,9 @@ class CreateNetworkWindow(QWidget):
         self.maskListItem.addItem(" /21:     255.255.248.255")
         self.maskListItem.addItem(" /20:     255.255.255.240")
 
-        # GROUP LAYOUT
-        self.ip_group=QHBoxLayout()
-        widget=QWidget(self)
-        self.ip_group_button=QButtonGroup(widget)
+        self.ip_group = QHBoxLayout()
+        widget = QWidget(self)
+        self.ip_group_button = QButtonGroup(widget)
         self.man = QRadioButton("Manual")
         self.dhcp = QRadioButton("DHCP")
         self.man.setChecked(True)
@@ -107,12 +103,10 @@ class CreateNetworkWindow(QWidget):
         self.ip_group.addWidget(self.man)
         self.ip_group.addWidget(self.dhcp)
 
-
-        #GROUP LAYOUT
         self.ethernet = QRadioButton("Ethernet")
-        self.wifi= QRadioButton("Wifi")
+        self.wifi = QRadioButton("Wifi")
         self.ethernet.setChecked(True)
-        self.type_group=QHBoxLayout()
+        self.type_group = QHBoxLayout()
         self.type_group.addWidget(self.ethernet)
         self.type_group.addWidget(self.wifi)
 
@@ -121,7 +115,7 @@ class CreateNetworkWindow(QWidget):
         self.topLayout.addRow(QLabel("Enter New Connection's Name:"), self.newconNameEdit)
         self.topLayout.addRow(QLabel("Enter SSID: "), self.ssid)
         self.topLayout.addRow(QLabel("Select interface:"), self.comboInt)
-        self.topLayout.addRow(QLabel("Change Connection Type:"),QLabel(""))
+        self.topLayout.addRow(QLabel("Change Connection Type:"), QLabel(""))
         self.topLayout.addRow(self.type_group)
         self.topLayout.addRow(QLabel(''), QLabel(''))
 
@@ -140,60 +134,47 @@ class CreateNetworkWindow(QWidget):
         self.topLayout.addRow(QLabel(''), QLabel(''))
 
     def submitAction(self):
-        newssid=self.ssid.text()
-        newName =self.newconNameEdit
+        newssid = self.ssid.text()
+        newName = self.newconNameEdit
         newInter = self.comboInt
         newIp = self.ipEdit.text()
         newMask = self.maskListItem.currentText()
-        newMask=newMask.split(':')[0]
+        newMask = newMask.split(':')[0]
         newGatway = self.gatewayEdit.text()
         newDns = self.dnsEdit.text()
 
         if str(newName.text()) in ' ':
-
             QMessageBox.warning(self, 'warning', f"Must Enter Connection name\n")
-
         elif str(newIp) in ' ' and self.man.isChecked():
             QMessageBox.warning(self, 'warning', f"Must Enter Connection Ip\n")
-
         elif str(newGatway) in ' ' and self.man.isChecked():
             QMessageBox.warning(self, 'warning', f"Must Enter Connection Gateway\n")
-
-        elif str(newGatway)==str(newIp) and self.man.isChecked() :
+        elif str(newGatway) == str(newIp) and self.man.isChecked():
             QMessageBox.warning(self, 'warning', f"Gateway is the same IP address \n")
-
         elif self.wifi.isChecked() and newssid in '':
-
             QMessageBox.warning(self, 'warning', " SSID is missing .\n Enter SSID name  \n")
-
         else:
-
             if self.man.isChecked():
-
-                dns=  False
+                dns = False
                 if str(newDns) not in ' ':
                     dns = True
 
                 Mask = str(newMask)
-                mask =str( Mask[2:])
-                ipMask=f'{newIp}/{mask}'
-                name=newName.text()
-                #name=name.replace(' ','\\ ')
+                mask = str(Mask[2:])
+                ipMask = f'{newIp}/{mask}'
+                name = newName.text()
 
-                command=f'nmcli con add con-name {name} ifname {str(newInter.currentText())}'
+                command = f'nmcli con add con-name {name} ifname {str(newInter.currentText())}'
 
                 if self.wifi.isChecked():
-                    command+=f' type wifi ssid {str(newssid)}'
+                    command += f' type wifi ssid {str(newssid)}'
                 else:
-                    command+=f' type ethernet'
-
-                command+=f' ipv4.address {ipMask} ipv4.gateway {str(newGatway)}'
-
-                if dns==True:
-                    command+=f' ipv4.dns {newDns} ipv4.method manual'
+                    command += f' type ethernet'
+                command += f' ipv4.address {ipMask} ipv4.gateway {str(newGatway)}'
+                if dns == True:
+                    command += f' ipv4.dns {newDns} ipv4.method manual'
                 else:
-                    command+=f' ipv4.method manual'
-
+                    command += f' ipv4.method manual'
 
                 try:
                     subprocess.run(command, check=True, shell=True)
@@ -203,18 +184,13 @@ class CreateNetworkWindow(QWidget):
                     QMessageBox.information(self, 'success', '\n a New Connection Added  Succesfully.')
                     self.close()
 
-            #DHCP
             if self.dhcp.isChecked():
-
-                command=f'nmcli con add con-name {str(newName.text())} ifname {str(newInter.currentText())}'
-
+                command = f'nmcli con add con-name {str(newName.text())} ifname {str(newInter.currentText())}'
                 if self.wifi.isChecked():
-                    command+=f' type wifi ssid {str(newssid)}'
+                    command += f' type wifi ssid {str(newssid)}'
                 else:
-
-                    command+=f' type ethernet'
-
-                command+=f' ipv4.method auto'
+                    command += f' type ethernet'
+                command += f' ipv4.method auto'
 
                 try:
                     subprocess.run(command, check=True, shell=True)
@@ -226,17 +202,17 @@ class CreateNetworkWindow(QWidget):
 
     def cancelAction(self):
         self.close()
-#####################################################################################################################################################"#############"#############
+
+
 class EditNetworkWindow(QWidget):
-    def __init__(self,d):
+    def __init__(self, d):
         super().__init__()
-        self.setGeometry(200,50,300,400)
+        self.setGeometry(200, 50, 300, 400)
         self.setWindowTitle("Edit a connection ")
-        self.index=d
-        self.itwas=d
+        self.index = d
+        self.itwas = d
         self.layouts()
         self.widgets()
-
 
     def layouts(self):
         self.mainLayout = QVBoxLayout()
@@ -256,8 +232,6 @@ class EditNetworkWindow(QWidget):
         self.cancelBtn.setFixedHeight(30)
         self.submitBtn.setStyleSheet("color: #ecf0f1; background-color: #27ae60 ; border: 0px solid #27ae60")
         self.cancelBtn.setStyleSheet("color: #ecf0f1; background-color: #e74c3c; border: 0px solid #e74c3c")
-
-
 
         if self.index[2] != 'auto':
             self.bottomLayout.addWidget(self.submitBtn)
@@ -288,7 +262,6 @@ class EditNetworkWindow(QWidget):
         self.newconNameEdit = QLineEdit()
 
         self.operation = QComboBox()
-        # self.operation.currentIndexChanged.connect(self.clickingEvent)
         self.operation.addItem('Type')
         self.operation.addItem('Change Network name')
         self.operation.addItem('Change Network interface')
@@ -327,7 +300,7 @@ class EditNetworkWindow(QWidget):
 
         index = str(self.index[0])
         index = index.replace(' ', '\\ ')
-        tmpindex=index
+        tmpindex = index
         self.ipInfo = DisplayIP(index)
         ipInfoDns = self.ipInfo[2]
         ipInfoDns = ipInfoDns.split(',')
@@ -342,13 +315,12 @@ class EditNetworkWindow(QWidget):
         self.topLayout.addRow(QLabel(f'AUTO CONNECT = {self.index[3]}'), QLabel(''))
         self.topLayout.addRow(QLabel(f'INTERFACE ASSOICIATED  = {disInterfaceConnection(index)}'), QLabel(''))
 
-        # self.topLayout.addRow(QLabel(f'DNS Two= {ipInfoDns[1]}'), QLabel(''))
         self.topLayout.addRow(QLabel(''), QLabel(''))
 
         self.topLayout.addRow(QLabel('For New inforamtions Editing '), QLabel(''))
         self.topLayout.addRow(QLabel(''), QLabel(''))
         self.topLayout.addRow(QLabel("Enter New Connection's Name"), self.newconNameEdit)
-        thereisSSID=False
+        thereisSSID = False
         if self.index[1] in 'wifi':
             self.topLayout.addRow(QLabel("Enter New SSID Name"), self.newSSIDEdit)
             thereisSSID = True
@@ -388,7 +360,7 @@ class EditNetworkWindow(QWidget):
         oldMask = oldMask[-2:]
         command = 'nmcli con mod ' + appliedCon
         command += ' '
-        # new Check
+
         if self.index[2] != 'auto':
             if str(newName.text()) not in ' ':
                 command += ' con-name '
@@ -422,10 +394,9 @@ class EditNetworkWindow(QWidget):
                 command += '  ssid '
                 command += str(newDns)
 
-
             if command.find('con-name') == -1 and command.find('ifname') == -1 and command.find(
                     'con-name') == -1 and command.find('ipv4.addresses') == -1 and command.find(
-                    'ipv4.gateway') == -1 and command.find('ipv4.dns') == -1 and   command.find('ssid') == -1:
+                'ipv4.gateway') == -1 and command.find('ipv4.dns') == -1 and command.find('ssid') == -1:
                 QMessageBox.information(self, 'No Change', 'No Additionel changes ')
             else:
                 try:
@@ -436,30 +407,24 @@ class EditNetworkWindow(QWidget):
                 else:
                     QMessageBox.information(self, 'success', 'Editing Applied  Succesfully.')
                     self.close()
-
         else:
-
             if str(newName.text()) not in ' ':
                 command += ' con-name '
                 command += str(newName.text())
-
             if newInter.currentText() not in 'no change':
                 command += ' ifname '
                 command += newInter.currentText()
-
             if str(newType) not in 'no change':
                 command += ' connection.type '
                 command += str(newType)
-
             if str(newSSID) not in '':
                 command += '  ssid '
                 command += str(newSSID)
-
-            if command.find('con-name') == -1 and command.find('ifname') == -1 and command.find('con-name') == -1 and command.find('ssid') == -1:
+            if command.find('con-name') == -1 and command.find('ifname') == -1 and command.find(
+                    'con-name') == -1 and command.find('ssid') == -1:
                 QMessageBox.information(self, 'No Change', 'No Additionel changes ')
             else:
                 try:
-
                     subprocess.run(command, check=True, shell=True)
                 except subprocess.CalledProcessError:
                     QMessageBox.warning(self, 'warning', f"error Verify the fields \n")
@@ -469,14 +434,15 @@ class EditNetworkWindow(QWidget):
 
     def cancelAction(self):
         self.close()
-#######################################################################################################################################
+
+
 class DeleteNetworkWindow(QWidget):
-    def __init__(self,d):
+    def __init__(self, d):
         super().__init__()
-        self.setGeometry(200,50,300,300)
+        self.setGeometry(200, 50, 300, 300)
         self.setWindowTitle("Delete a Connection")
         self.listUsersToDelete = d
-        self.index=d
+        self.index = d
 
         self.layouts()
         self.widgets()

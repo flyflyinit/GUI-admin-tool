@@ -16,7 +16,6 @@ def getContentLogs(self):
 
     self.sinceC = QVBoxLayout()
     self.since = QDateTimeEdit(QDate.currentDate().addMonths(-1))
-    #self.since.setMinimumDate(QDate.currentDate().addDays(-365))
     self.since.setMaximumDate(QDate.currentDate())
     self.since.setDisplayFormat("yyyy.MM.dd")
     self.since.setStyleSheet("color: #95a5a6; background-color: #303a46 ; border: 0px solid #303a46")
@@ -28,7 +27,6 @@ def getContentLogs(self):
 
     self.untilC = QVBoxLayout()
     self.until = QDateTimeEdit(QDate.currentDate())
-    #self.until.setMinimumDate(QDate.currentDate().addDays(-365))
     self.until.setMaximumDate(QDate.currentDate())
     self.until.setDisplayFormat("yyyy.MM.dd")
     self.until.setStyleSheet("color: #95a5a6; background-color: #303a46 ; border: 0px solid #303a46")
@@ -37,7 +35,6 @@ def getContentLogs(self):
     self.untilT = QLabel("Until :")
     self.untilC.addWidget(self.untilT)
     self.untilC.addWidget(self.until)
-
 
     self.prioC = QVBoxLayout()
     self.prio = QComboBox(self)
@@ -91,7 +88,7 @@ def getContentLogs(self):
     self.unit.setFixedWidth(180)
     self.unit.addItem("All")
     self.unit.setCurrentIndex(0)
-    c = subprocess.run('ls -f /lib/systemd/system',shell=True,stdout=subprocess.PIPE)
+    c = subprocess.run('ls -f /lib/systemd/system', shell=True, stdout=subprocess.PIPE)
     c = c.stdout.decode('utf-8').split('\n')
     c = c[2:-1]
     c.sort()
@@ -100,7 +97,7 @@ def getContentLogs(self):
     self.unitC.addWidget(self.unitT)
 
     self.selectBtn = QPushButton("Filter")
-    self.selectBtn.clicked.connect(lambda :selectclicked(self))
+    self.selectBtn.clicked.connect(lambda: selectclicked(self))
     self.selectBtn.setStyleSheet("color: #95a5a6; background-color: #303a46 ; border: 0px solid #303a46")
     self.selectBtn.setFixedHeight(25)
     self.selectBtn.setFixedWidth(80)
@@ -118,24 +115,25 @@ def getContentLogs(self):
     self.hboxxx.addLayout(self.uidC)
     self.hboxxx.addLayout(self.unitC)
     self.hboxxx.addStretch()
-    f = subprocess.run("journalctl --disk-usage | awk {'print $7'}",shell=True,stdout=subprocess.PIPE)
+    f = subprocess.run("journalctl --disk-usage | awk {'print $7'}", shell=True, stdout=subprocess.PIPE)
     diskUsage = QLabel(f"journals size: {f.stdout.decode('utf-8')}")
     self.hboxxx.addWidget(diskUsage)
     self.filters.addLayout(self.hboxxx)
 
-    self.tableLogs=QTableWidget()
+    self.tableLogs = QTableWidget()
     createTableLogs(self)
     showmylogslist(self)
 
-    self.containerLogs=QVBoxLayout()
+    self.containerLogs = QVBoxLayout()
     self.containerLogs.addLayout(self.filters)
     self.containerLogs.addWidget(self.tableLogs)
     self.bottomRightLayout.addLayout(self.containerLogs)
 
+
 def selectclicked(self):
     self.setCursor(Qt.WaitCursor)
-    currentSince = '--since='+self.since.date().toString(Qt.ISODate)
-    currentUntil = '--until='+self.until.date().toString(Qt.ISODate)
+    currentSince = '--since=' + self.since.date().toString(Qt.ISODate)
+    currentUntil = '--until=' + self.until.date().toString(Qt.ISODate)
     currentPID = self.pid.text()
     currentGID = self.gid.text()
     currentUID = self.uid.text()
@@ -150,25 +148,26 @@ def selectclicked(self):
     if currentPID == 'All':
         currentPID = ''
     else:
-        currentPID = '_PID='+currentPID
+        currentPID = '_PID=' + currentPID
     if currentGID == 'All':
         currentGID = ''
     else:
-        currentGID = '_GID='+currentGID
+        currentGID = '_GID=' + currentGID
     if currentUID == 'All':
         currentUID = ''
     else:
-        currentUID = '_UID='+currentUID
+        currentUID = '_UID=' + currentUID
     if currentPrio == 'All':
         currentPrio = ''
     else:
-        currentPrio = 'PRIORITY='+str(self.a.index(currentPrio))
+        currentPrio = 'PRIORITY=' + str(self.a.index(currentPrio))
     if currentUnit == 'All':
         currentUnit = ''
     else:
-        currentUnit = '_SYSTEMD_UNIT='+currentUnit
+        currentUnit = '_SYSTEMD_UNIT=' + currentUnit
 
-    showmylogslist(self,since=currentSince,until=currentUntil,priority=currentPrio,pid=currentPID,gid=currentGID,uid=currentUID,unit=currentUnit)
+    showmylogslist(self, since=currentSince, until=currentUntil, priority=currentPrio, pid=currentPID, gid=currentGID,
+                   uid=currentUID, unit=currentUnit)
     self.containerLogs.addWidget(self.tableLogs)
     self.setCursor(Qt.ArrowCursor)
 
@@ -195,11 +194,11 @@ def createTableLogs(self):
     self.tableLogs.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
 
-def showmylogslist(self,since='',until='',priority='',pid='',gid='',uid='',unit=''):
+def showmylogslist(self, since='', until='', priority='', pid='', gid='', uid='', unit=''):
     self.rowposition = 0
 
     args = f"journalctl -r {since} {until} {priority} {pid} {gid} {uid} {unit} -o json"
-    f = subprocess.Popen(args, stdout=subprocess.PIPE,shell=True)
+    f = subprocess.Popen(args, stdout=subprocess.PIPE, shell=True)
     i = 0
     self.dic = {}
 
@@ -222,7 +221,8 @@ def showmylogslist(self,since='',until='',priority='',pid='',gid='',uid='',unit=
             except:
                 pass
             try:
-                self.tableLogs.setItem(self.rowPosition, 1, QTableWidgetItem(str(self.a[int(journal_json[0]['PRIORITY'])])))
+                self.tableLogs.setItem(self.rowPosition, 1,
+                                       QTableWidgetItem(str(self.a[int(journal_json[0]['PRIORITY'])])))
             except:
                 pass
             try:
@@ -254,7 +254,7 @@ def showmylogslist(self,since='',until='',priority='',pid='',gid='',uid='',unit=
                 self.tableLogs.setCellWidget(self.rowPosition, 8, self.dic[i])
             except:
                 pass
-            if journal_json[0]['PRIORITY'] in ['0','1','2','3']:
+            if journal_json[0]['PRIORITY'] in ['0', '1', '2', '3']:
                 self.tableLogs.item(self.rowPosition, 1).setBackground(QtGui.QColor(231, 76, 60))
             if journal_json[0]['PRIORITY'] == '4':
                 self.tableLogs.item(self.rowPosition, 1).setBackground(QtGui.QColor(243, 156, 18))
@@ -262,17 +262,18 @@ def showmylogslist(self,since='',until='',priority='',pid='',gid='',uid='',unit=
         except Exception as e:
             pass
 
+
 class moreCellInTableLogs(QWidget):
-    def __init__(self,message, parent=None):
-        super(moreCellInTableLogs,self).__init__(parent)
+    def __init__(self, message, parent=None):
+        super(moreCellInTableLogs, self).__init__(parent)
         self.message = message
         self.hbox = QHBoxLayout()
-        self.showmoreBtn=QPushButton('message')
+        self.showmoreBtn = QPushButton('message')
         self.showmoreBtn.clicked.connect(self.showmoreBtnClicked)
         self.hbox.addWidget(self.showmoreBtn)
         self.hbox.addWidget(QLabel(self.message))
         self.hbox.addStretch()
-        self.hbox.setContentsMargins(0,0,0,0)
+        self.hbox.setContentsMargins(0, 0, 0, 0)
         self.hbox.setSpacing(8)
         self.setLayout(self.hbox)
 
@@ -283,9 +284,9 @@ class moreCellInTableLogs(QWidget):
 
 
 class MoreMessageWindow(QWidget):
-    def __init__(self,message):
+    def __init__(self, message):
         super().__init__()
-        self.setGeometry(200,50,300,300)
+        self.setGeometry(200, 50, 300, 300)
         self.setWindowTitle('Message')
         self.message = message
         self.layouts()
@@ -293,7 +294,7 @@ class MoreMessageWindow(QWidget):
     def layouts(self):
         self.mainLayout = QVBoxLayout()
         self.topLayout = QVBoxLayout()
-        self.bottomLayout=QHBoxLayout()
+        self.bottomLayout = QHBoxLayout()
 
         top = QHBoxLayout()
         text = QLabel(str(self.message))
@@ -306,10 +307,10 @@ class MoreMessageWindow(QWidget):
         scroll.setWidget(groupBox)
         scroll.setWidgetResizable(True)
 
-        self.okBtn=QPushButton("Ok")
+        self.okBtn = QPushButton("Ok")
         self.okBtn.clicked.connect(self.okAction)
         self.okBtn.setFixedHeight(30)
-        self.okBtn.setStyleSheet("color: #ecf0f1; background-color: #27ae60 ; border: 0px" )
+        self.okBtn.setStyleSheet("color: #ecf0f1; background-color: #27ae60 ; border: 0px")
 
         self.topLayout.addWidget(scroll)
         self.bottomLayout.addWidget(self.okBtn)

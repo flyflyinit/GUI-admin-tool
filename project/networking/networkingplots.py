@@ -6,7 +6,8 @@ except ImportError as e:
 try:
     from PyQt5 import QtCore, QtWidgets
 except ImportError as e:
-    print(f'package PyQt5 Not Found\n{e}\ntry :\npip3 install --user pyqt5\nOR\ndnf install python3-pyqt5, yum install python3-pyqt5\n')
+    print(
+        f'package PyQt5 Not Found\n{e}\ntry :\npip3 install --user pyqt5\nOR\ndnf install python3-pyqt5, yum install python3-pyqt5\n')
 
 try:
     from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -17,26 +18,24 @@ except ImportError as e:
 
 
 class MyMplCanvas(FigureCanvas):
-    def __init__(self, parent=None, interface='a',width=5, height=5, dpi=50):
+    def __init__(self, parent=None, interface='a', width=5, height=5, dpi=50):
         fig = Figure(figsize=(width, height), dpi=dpi)
         plt.style.use('Solarize_Light2')
-        #plt.style.use('seaborn')
-        #fig.patch.set_facecolor('black')
         self.Axes = fig.add_subplot()
         self.compute_initial_figure()
 
         FigureCanvas.__init__(self, fig)
         self.setParent(parent)
-        FigureCanvas.setSizePolicy(self,QtWidgets.QSizePolicy.Expanding,QtWidgets.QSizePolicy.Expanding)
+        FigureCanvas.setSizePolicy(self, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
+
     def compute_initial_figure(self):
         pass
 
 
 class NetSentCanvas(MyMplCanvas):
-    def __init__(self,*args, **kwargs):
+    def __init__(self, *args, **kwargs):
         for key, value in kwargs.items():
-            #print ("%s == %s" %(key, value))
             if key == 'interface':
                 self.interface = value
 
@@ -56,7 +55,7 @@ class NetSentCanvas(MyMplCanvas):
         netsenttimee = []
         netsentcurrenttime = 0
 
-        if self.interface == "All" :
+        if self.interface == "All":
             netsentval = psutil.net_io_counters(pernic=False, nowrap=False)[0]
         else:
             netsentval = psutil.net_io_counters(pernic=True, nowrap=False)[self.interface][0]
@@ -79,14 +78,14 @@ class NetSentCanvas(MyMplCanvas):
         global netsentval
 
         netsentvalpre = netsentval
-        if self.interface == "All" :
+        if self.interface == "All":
             netsentval = psutil.net_io_counters(pernic=False, nowrap=False)[0]
         else:
             netsentval = psutil.net_io_counters(pernic=True, nowrap=False)[self.interface][0]
 
         netsent.append(netsentval - netsentvalpre)
 
-        netsentcurrenttime=netsentcurrenttime+1
+        netsentcurrenttime = netsentcurrenttime + 1
         netsenttimee.append(str(netsentcurrenttime))
 
         if len(netsenttimee) == 100:
@@ -105,10 +104,10 @@ class NetSentCanvas(MyMplCanvas):
         self.Axes.legend(loc='upper left')
         self.draw()
 
+
 class NetRecCanvas(MyMplCanvas):
     def __init__(self, *args, **kwargs):
         for key, value in kwargs.items():
-            #print ("%s == %s" %(key, value))
             if key == 'interface':
                 self.interface = value
         MyMplCanvas.__init__(self, *args, **kwargs)
@@ -156,7 +155,7 @@ class NetRecCanvas(MyMplCanvas):
             netrecval = psutil.net_io_counters(pernic=True, nowrap=False)[self.interface][1]
 
         netrec.append(netrecval - netrecvalpre)
-        netreccurrenttime=netreccurrenttime+1
+        netreccurrenttime = netreccurrenttime + 1
         netrectimee.append(str(netreccurrenttime))
 
         if len(netrectimee) == 100:
@@ -174,5 +173,3 @@ class NetRecCanvas(MyMplCanvas):
         self.Axes.get_xaxis().set_visible(False)
         self.Axes.legend(loc='upper left')
         self.draw()
-
-

@@ -1,6 +1,4 @@
-
 import subprocess
-
 from project.networking.networkingScripts import showIpMethod, currentlyActiveConnectionNow, globalInof
 
 
@@ -8,32 +6,22 @@ def displayIP(connectionName):
     list = []
 
     if showIpMethod(connectionName) == 'manual':
-
         fullCommand = f'nmcli connection  show {connectionName} | grep -F ipv4.addresses: > /tmp/INipAddress'
         fullCommand = f'nmcli connection  show {connectionName} | grep -F ipv4.gateway: > /tmp/INgateway'
         fullCommand = f'nmcli connection  show {connectionName} | grep -F ipv4.dns:  >/tmp/INdns1'
 
-
         try:
             subprocess.run(fullCommand, check=True, shell=True)
-
         except subprocess.CalledProcessError:
             print("Error While fetching Data ")
 
-        # fullCommand = f'cat /etc/sysconfig/network-scripts/ifcfg-{connectionName}| grep -F DNS2 > /tmp/dns2'
-        # os.system(fullCommand)
-
-
         try:
             subprocess.run(fullCommand, check=True, shell=True)
-
         except subprocess.CalledProcessError:
             print("Error While fetching Data ")
 
-
         try:
             subprocess.run(fullCommand, check=True, shell=True)
-
         except subprocess.CalledProcessError:
             print("Error While fetching Data ")
 
@@ -74,42 +62,29 @@ def displayIP(connectionName):
         list.append(dns)
         list.append(dns2)
 
-
-
     else:
-
         fullCommand = f'nmcli connection  show {connectionName} | grep -F IP4.ADDRESS[1]: > /tmp/INipAddress2'
-
         try:
             subprocess.run(fullCommand, check=True, shell=True)
-
         except subprocess.CalledProcessError:
             print("Error While fetching Data ")
-
-        # fullCommand = f'cat /etc/sysconfig/network-scripts/ifcfg-{connectionName}| grep -F DNS2 > /tmp/dns2'
-        # os.system(fullCommand)
 
         fullCommand = f'nmcli connection  show {connectionName} | grep -F  IP4.GATEWAY: > /tmp/INgateway2'
 
         try:
             subprocess.run(fullCommand, check=True, shell=True)
-
         except subprocess.CalledProcessError:
             print("Error While fetching Data ")
 
         fullCommand = f'nmcli connection  show {connectionName} | grep -F  IP4.DNS[1]:  > /tmp/INdns12'
-
         try:
             subprocess.run(fullCommand, check=True, shell=True)
-
         except subprocess.CalledProcessError:
             print("Error While fetching Data ")
 
         fullCommand = f'nmcli connection  show {connectionName} | grep -F  IP4.DNS[2]:  > /tmp/INdns22'
-
         try:
             subprocess.run(fullCommand, check=True, shell=True)
-
         except subprocess.CalledProcessError:
             print("Error While fetching Data ")
 
@@ -145,7 +120,7 @@ def displayIP(connectionName):
         dns2 = dns2.replace("-", "")
         dns2 = dns2.strip()
         try:
-            fullCommand='rm -rf /tmp/IN*'
+            fullCommand = 'rm -rf /tmp/IN*'
             subprocess.run(fullCommand, check=True, shell=True)
 
         except subprocess.CalledProcessError:
@@ -157,69 +132,51 @@ def displayIP(connectionName):
         list.append(dns1)
         list.append(dns2)
         return list
-'''
-def fullINFO():
 
-    output=currentlyActiveConnectionNow()
-    r1=displayIP(output[0])
-    r2=globalInof(output[0])
-    r3=r2+r1
-    return r3
-'''
 
 def AutoConnection(connectionName, par):
+    fullCommand = f'nmcli connection modify {connectionName} autoconnect {par} '
+    try:
+        subprocess.run(fullCommand, check=True, shell=True)
+    except subprocess.CalledProcessError:
+        print("Error While fetching Data ")
 
-        fullCommand = f'nmcli connection modify {connectionName} autoconnect {par} '
-        try:
-            subprocess.run(fullCommand, check=True, shell=True)
 
-        except subprocess.CalledProcessError:
-            print("Error While fetching Data ")
-
-def takeIpFromDHCP(connectionName,par):
-
-    if par==True:
-
+def takeIpFromDHCP(connectionName, par):
+    if par == True:
         fullCommand = f'nmcli connection modify {connectionName} ipv4.method auto '
         try:
             subprocess.run(fullCommand, check=True, shell=True)
-
         except subprocess.CalledProcessError:
             print("Error While fetching Data ")
 
-    elif par==False:
-
+    elif par == False:
         fullCommand = f'nmcli connection modify {connectionName} ipv4.method manual '
         try:
             subprocess.run(fullCommand, check=True, shell=True)
-
         except subprocess.CalledProcessError:
             print("Error While fetching Data ")
 
 
 def disInterfaceConnection(connetion):
     fullCommand = f'nmcli connection  show {connetion} | grep -F connection.interface-name:   > /tmp/disInterfaceConnection'
-
     try:
         subprocess.run(fullCommand, check=True, shell=True)
-
     except subprocess.CalledProcessError:
         print("Error on disInterfaceConnection() ")
 
     File = open('/tmp/disInterfaceConnection', 'rt')
-    txt= File.read()
-    txt=txt.replace('connection.interface-name:','')
-    txt=txt.replace(' ','')
-    txt=txt.splitlines()
+    txt = File.read()
+    txt = txt.replace('connection.interface-name:', '')
+    txt = txt.replace(' ', '')
+    txt = txt.splitlines()
     return txt[0]
 
+
 def displaySSID(con):
-
     fullCommand = f'nmcli connection  show {con} | grep -F 802-11-wireless.ssid: > /tmp/displaySSID'
-
     try:
         subprocess.run(fullCommand, check=True, shell=True)
-
     except subprocess.CalledProcessError:
         print("Error on displaySSID()")
 

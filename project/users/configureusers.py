@@ -1,10 +1,12 @@
 from PyQt5.QtCore import Qt
 
 try:
-    from PyQt5.QtWidgets import QWidget, QVBoxLayout, QProgressBar, QPushButton, QSpinBox, QLabel, QLineEdit, QFormLayout, \
+    from PyQt5.QtWidgets import QWidget, QVBoxLayout, QProgressBar, QPushButton, QSpinBox, QLabel, QLineEdit, \
+        QFormLayout, \
         QHBoxLayout, QListWidget, QMessageBox, QCheckBox
 except ImportError as e:
-    print(f'package PyQt5 Not Found\n{e}\ntry :\npip3 install --user pyqt5\nOR\ndnf install python3-pyqt5, yum install python3-pyqt5\n')
+    print(
+        f'package PyQt5 Not Found\n{e}\ntry :\npip3 install --user pyqt5\nOR\ndnf install python3-pyqt5, yum install python3-pyqt5\n')
 
 try:
     import subprocess
@@ -17,7 +19,7 @@ except ImportError as e:
 class CreateUsersWindow(QWidget):
     def __init__(self):
         super().__init__()
-        self.setGeometry(200,50,300,400)
+        self.setGeometry(200, 50, 300, 400)
         self.setWindowTitle("Add Users")
         self.layouts()
         self.widgets()
@@ -25,25 +27,25 @@ class CreateUsersWindow(QWidget):
     def layouts(self):
         self.mainLayout = QVBoxLayout()
         self.topLayout = QVBoxLayout()
-        self.topLayout.setContentsMargins(20,20,20,20)
-        self.bottomLayout=QHBoxLayout()
+        self.topLayout.setContentsMargins(20, 20, 20, 20)
+        self.bottomLayout = QHBoxLayout()
 
         self.progeesBar = QProgressBar()
         self.progeesBar.setHidden(True)
-        self.okBtn=QPushButton("Ok")
+        self.okBtn = QPushButton("Ok")
         self.okBtn.clicked.connect(self.cancelAction)
-        self.okBtn.setStyleSheet("color: #ecf0f1; background-color: #27ae60 ; border: 0px solid #27ae60" )
+        self.okBtn.setStyleSheet("color: #ecf0f1; background-color: #27ae60 ; border: 0px solid #27ae60")
         self.okBtn.setHidden(True)
-        self.submitBtn=QPushButton("Submit")
+        self.submitBtn = QPushButton("Submit")
         self.submitBtn.clicked.connect(self.submitAction)
-        self.cancelBtn=QPushButton("Cancel")
+        self.cancelBtn = QPushButton("Cancel")
         self.cancelBtn.clicked.connect(self.cancelAction)
         self.submitBtn.setHidden(False)
         self.cancelBtn.setHidden(False)
         self.okBtn.setFixedHeight(30)
         self.submitBtn.setFixedHeight(30)
         self.cancelBtn.setFixedHeight(30)
-        self.submitBtn.setStyleSheet("color: #ecf0f1; background-color: #27ae60 ; border: 0px solid #27ae60" )
+        self.submitBtn.setStyleSheet("color: #ecf0f1; background-color: #27ae60 ; border: 0px solid #27ae60")
         self.cancelBtn.setStyleSheet("color: #ecf0f1; background-color: #e74c3c; border: 0px solid #e74c3c")
 
         self.bottomLayout.addWidget(self.okBtn)
@@ -60,19 +62,19 @@ class CreateUsersWindow(QWidget):
         self.usersNbr.setMinimum(1)
         self.usersNbr.setMaximum(1000)
         self.usersNbr.setSuffix(" user")
-        self.createHomeDir=QCheckBox('Create Home Directory')
+        self.createHomeDir = QCheckBox('Create Home Directory')
 
-        self.form=QFormLayout()
-        self.editLineUsername=QLineEdit('')
+        self.form = QFormLayout()
+        self.editLineUsername = QLineEdit('')
         self.editLineUsername.setPlaceholderText('enter username')
-        self.form.addRow(QLabel('Username :'),self.editLineUsername)
-        self.editLineUserShell=QLineEdit('')
+        self.form.addRow(QLabel('Username :'), self.editLineUsername)
+        self.editLineUserShell = QLineEdit('')
         self.editLineUserShell.setPlaceholderText('enter shell')
-        self.form.addRow(QLabel('User Shell :'),self.editLineUserShell)
-        self.editLineUserComment=QLineEdit('')
+        self.form.addRow(QLabel('User Shell :'), self.editLineUserShell)
+        self.editLineUserComment = QLineEdit('')
         self.editLineUserComment.setPlaceholderText('enter comment')
-        self.form.addRow(QLabel('Comment :'),self.editLineUserComment)
-        self.note=QLabel('')
+        self.form.addRow(QLabel('Comment :'), self.editLineUserComment)
+        self.note = QLabel('')
 
         self.topLayout.addWidget(self.usersNbr)
         self.topLayout.addWidget(self.editLineUsername)
@@ -92,7 +94,7 @@ class CreateUsersWindow(QWidget):
         with concurrent.futures.ThreadPoolExecutor() as executor:
             results = executor.map(self.createuserThreading, usersList)
             for result in results:
-                nbr+=1
+                nbr += 1
                 self.progeesBar.setValue(nbr)
                 txt = txt + result + "\n"
                 self.note.setText(txt)
@@ -108,20 +110,23 @@ class CreateUsersWindow(QWidget):
             homeDir = 'True'
 
         if int(self.usersNbr.value()) == 1:
-            usersList.append([self.editLineUsername.text(),self.editLineUserComment.text(),self.editLineUserShell.text(),homeDir])
+            usersList.append(
+                [self.editLineUsername.text(), self.editLineUserComment.text(), self.editLineUserShell.text(), homeDir])
         else:
             for user in range(self.usersNbr.value()):
-                usersList.append([self.editLineUsername.text()+str(user+1),self.editLineUserComment.text()+str(user+1),self.editLineUserShell.text(),homeDir])
+                usersList.append(
+                    [self.editLineUsername.text() + str(user + 1), self.editLineUserComment.text() + str(user + 1),
+                     self.editLineUserShell.text(), homeDir])
         return usersList
 
-    def createuserThreading(self,user):
-        if user[3]=='True':
+    def createuserThreading(self, user):
+        if user[3] == 'True':
             homedir = '-m'
         else:
             homedir = ''
         try:
             c = f'useradd {homedir} -s {user[2]} -c "{user[1]}" {user[0]}'
-            subprocess.run(c,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL ,shell=True,check=True)
+            subprocess.run(c, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True, check=True)
         except subprocess.CalledProcessError:
             return f"error occured during creating {user[0]} "
         else:
@@ -132,9 +137,9 @@ class CreateUsersWindow(QWidget):
 
 
 class EditUsersWindow(QWidget):
-    def __init__(self,userDetails):
+    def __init__(self, userDetails):
         super().__init__()
-        self.setGeometry(200,50,500,500)
+        self.setGeometry(200, 50, 500, 500)
         self.setWindowTitle("Edit User")
         self.userDetails = userDetails
         self.layouts()
@@ -144,24 +149,24 @@ class EditUsersWindow(QWidget):
         self.mainLayout = QVBoxLayout()
         self.topLayout = QVBoxLayout()
         self.middleLayout = QHBoxLayout()
-        self.topLayout.setContentsMargins(20,20,20,20)
-        self.bottomLayout=QHBoxLayout()
+        self.topLayout.setContentsMargins(20, 20, 20, 20)
+        self.bottomLayout = QHBoxLayout()
 
         self.text = QLabel('')
         self.progeesBar = QProgressBar()
         self.progeesBar.setHidden(True)
-        self.submitBtn=QPushButton("Submit")
+        self.submitBtn = QPushButton("Submit")
         self.submitBtn.clicked.connect(self.submitAction)
-        self.cancelBtn=QPushButton("Cancel")
+        self.cancelBtn = QPushButton("Cancel")
         self.cancelBtn.clicked.connect(self.cancelAction)
-        self.okBtn=QPushButton("Ok")
+        self.okBtn = QPushButton("Ok")
         self.okBtn.clicked.connect(self.okAction)
         self.okBtn.setHidden(True)
         self.submitBtn.setFixedHeight(30)
         self.cancelBtn.setFixedHeight(30)
         self.okBtn.setFixedHeight(30)
-        self.submitBtn.setStyleSheet("color: #ecf0f1; background-color: #27ae60 ; border: 0px" )
-        self.okBtn.setStyleSheet("color: #ecf0f1; background-color: #27ae60 ; border: 0px" )
+        self.submitBtn.setStyleSheet("color: #ecf0f1; background-color: #27ae60 ; border: 0px")
+        self.okBtn.setStyleSheet("color: #ecf0f1; background-color: #27ae60 ; border: 0px")
         self.cancelBtn.setStyleSheet("color: #ecf0f1; background-color: #e74c3c; border: 0px")
 
         self.bottomLayout.addWidget(self.submitBtn)
@@ -176,48 +181,48 @@ class EditUsersWindow(QWidget):
         self.form = QFormLayout()
 
         print(self.userDetails)
-        self.username=QLineEdit(self.userDetails[0])
-        self.form.addRow(QLabel('Username :'),self.username)
-        self.id=QLineEdit(self.userDetails[1])
-        self.form.addRow(QLabel('User ID :'),self.id)
+        self.username = QLineEdit(self.userDetails[0])
+        self.form.addRow(QLabel('Username :'), self.username)
+        self.id = QLineEdit(self.userDetails[1])
+        self.form.addRow(QLabel('User ID :'), self.id)
 
-        self.primaryGroup=self.userDetails[2].split('(')[1].split(')')[0]
-        self.priGroup=QLineEdit(self.primaryGroup)
-        self.form.addRow(QLabel('Primary Group :'),self.priGroup)
+        self.primaryGroup = self.userDetails[2].split('(')[1].split(')')[0]
+        self.priGroup = QLineEdit(self.primaryGroup)
+        self.form.addRow(QLabel('Primary Group :'), self.priGroup)
 
-        self.comment=QLineEdit(self.userDetails[4])
-        self.form.addRow(QLabel('Comment :'),self.comment)
-        self.homeDir=QLineEdit(self.userDetails[5])
-        self.form.addRow(QLabel('Home Directory :'),self.homeDir)
-        self.shell=QLineEdit(self.userDetails[6])
-        self.form.addRow(QLabel('Shell :'),self.shell)
+        self.comment = QLineEdit(self.userDetails[4])
+        self.form.addRow(QLabel('Comment :'), self.comment)
+        self.homeDir = QLineEdit(self.userDetails[5])
+        self.form.addRow(QLabel('Home Directory :'), self.homeDir)
+        self.shell = QLineEdit(self.userDetails[6])
+        self.form.addRow(QLabel('Shell :'), self.shell)
 
-        if self.userDetails[7]=='never':
-            self.expirationDate=QLineEdit()
+        if self.userDetails[7] == 'never':
+            self.expirationDate = QLineEdit()
         else:
             import dateutil.parser as parser
             self.expirationDate_adapted = datetime.strptime(self.userDetails[7], '%b %d, %Y').strftime('%Y-%m-%d')
             date = parser.parse(self.expirationDate_adapted)
-            self.expirationDate=QLineEdit(date.isoformat().split('T')[0])
-        self.form.addRow(QLabel('Expiration Date :'),self.expirationDate)
+            self.expirationDate = QLineEdit(date.isoformat().split('T')[0])
+        self.form.addRow(QLabel('Expiration Date :'), self.expirationDate)
 
-        self.groupsBtns=QVBoxLayout()
-        self.lineEditAddGroup=QLineEdit()
+        self.groupsBtns = QVBoxLayout()
+        self.lineEditAddGroup = QLineEdit()
         self.lineEditAddGroup.setPlaceholderText('enter group name')
-        self.addGroupBtn=QPushButton('Add')
+        self.addGroupBtn = QPushButton('Add')
         self.addGroupBtn.clicked.connect(self.addGroup)
-        self.deleteGroupBtn=QPushButton('Delete')
+        self.deleteGroupBtn = QPushButton('Delete')
         self.deleteGroupBtn.clicked.connect(self.deleteGroup)
-        self.deleteAllGroupsBtn=QPushButton('Delete All')
+        self.deleteAllGroupsBtn = QPushButton('Delete All')
         self.deleteAllGroupsBtn.clicked.connect(self.deleteAllGroups)
         self.groupsBtns.addWidget(self.lineEditAddGroup)
         self.groupsBtns.addWidget(self.addGroupBtn)
         self.groupsBtns.addWidget(self.deleteGroupBtn)
         self.groupsBtns.addWidget(self.deleteAllGroupsBtn)
         self.groupsBtns.addStretch()
-        self.listGroups=QListWidget()
+        self.listGroups = QListWidget()
 
-        self.form.addRow(QLabel('Groups :'),self.middleLayout)
+        self.form.addRow(QLabel('Groups :'), self.middleLayout)
 
         groups = self.userDetails[3].split(',')
         for group in groups:
@@ -256,8 +261,8 @@ class EditUsersWindow(QWidget):
             self.progeesBar.setMaximum(1)
             self.progeesBar.setValue(0)
             self.edituser()
-        except subprocess.CalledProcessError :
-            QMessageBox.warning(self,'warning',f"error occured during editing this user\n")
+        except subprocess.CalledProcessError:
+            QMessageBox.warning(self, 'warning', f"error occured during editing this user\n")
         else:
             self.setCursor(Qt.ArrowCursor)
             self.submitBtn.setHidden(True)
@@ -268,13 +273,13 @@ class EditUsersWindow(QWidget):
         self.close()
 
     def edituser(self):
-        usernamee=self.username.text()
-        idd=self.id.text()
-        priGroupp=self.priGroup.text()
-        commentt=self.comment.text()
-        homeDirr=self.homeDir.text()
-        shelll=self.shell.text()
-        expirationDatee=self.expirationDate.text()
+        usernamee = self.username.text()
+        idd = self.id.text()
+        priGroupp = self.priGroup.text()
+        commentt = self.comment.text()
+        homeDirr = self.homeDir.text()
+        shelll = self.shell.text()
+        expirationDatee = self.expirationDate.text()
         txt = ''
 
         groupsitems = []
@@ -283,13 +288,14 @@ class EditUsersWindow(QWidget):
         groupsitemsstring = ",".join(groupsitems)
         print(groupsitemsstring)
         if expirationDatee == "never":
-            QMessageBox.warning(self,'expiration field error',"expiration field can't be 'never' ")
+            QMessageBox.warning(self, 'expiration field error', "expiration field can't be 'never' ")
             return 0
         elif expirationDatee == '':
             pass
         else:
             try:
-                subprocess.run(f'usermod -e {expirationDatee} {self.userDetails[0]}',stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL, check=True,shell=True)
+                subprocess.run(f'usermod -e {expirationDatee} {self.userDetails[0]}', stdout=subprocess.DEVNULL,
+                               stderr=subprocess.DEVNULL, check=True, shell=True)
             except subprocess.CalledProcessError:
                 txt = txt + "error occured during editing expiration date for this user\n"
                 self.text.setText(txt)
@@ -297,7 +303,8 @@ class EditUsersWindow(QWidget):
                 txt = txt + "expiration date edited succesfully\n"
                 self.text.setText(txt)
         try:
-            subprocess.run(f'usermod -g {priGroupp} {self.userDetails[0]}',stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL, check=True,shell=True)
+            subprocess.run(f'usermod -g {priGroupp} {self.userDetails[0]}', stdout=subprocess.DEVNULL,
+                           stderr=subprocess.DEVNULL, check=True, shell=True)
         except subprocess.CalledProcessError:
             txt = txt + "error occured during editing primary group for this user\n"
             self.text.setText(txt)
@@ -306,7 +313,8 @@ class EditUsersWindow(QWidget):
             self.text.setText(txt)
 
         try:
-            subprocess.run(f'usermod -G {groupsitemsstring} {self.userDetails[0]}', stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL, check=True, shell=True)
+            subprocess.run(f'usermod -G {groupsitemsstring} {self.userDetails[0]}', stdout=subprocess.DEVNULL,
+                           stderr=subprocess.DEVNULL, check=True, shell=True)
         except subprocess.CalledProcessError:
             txt = txt + "error occured during editing supplementary groups for this user\n"
             self.text.setText(txt)
@@ -315,7 +323,8 @@ class EditUsersWindow(QWidget):
             self.text.setText(txt)
 
         try:
-            subprocess.run(f'usermod -s {shelll} {self.userDetails[0]}', stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True, shell=True)
+            subprocess.run(f'usermod -s {shelll} {self.userDetails[0]}', stdout=subprocess.DEVNULL,
+                           stderr=subprocess.DEVNULL, check=True, shell=True)
         except subprocess.CalledProcessError:
             txt = txt + "error occured during editing shell for this user\n"
             self.text.setText(txt)
@@ -324,7 +333,8 @@ class EditUsersWindow(QWidget):
             self.text.setText(txt)
 
         try:
-            subprocess.run(f'usermod -d {homeDirr} {self.userDetails[0]}', stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True, shell=True)
+            subprocess.run(f'usermod -d {homeDirr} {self.userDetails[0]}', stdout=subprocess.DEVNULL,
+                           stderr=subprocess.DEVNULL, check=True, shell=True)
         except subprocess.CalledProcessError:
             txt = txt + "error occured during editing home directory for this user\n"
             self.text.setText(txt)
@@ -333,7 +343,8 @@ class EditUsersWindow(QWidget):
             self.text.setText(txt)
 
         try:
-            subprocess.run(f"usermod -c '{commentt}' {self.userDetails[0]}", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True, shell=True)
+            subprocess.run(f"usermod -c '{commentt}' {self.userDetails[0]}", stdout=subprocess.DEVNULL,
+                           stderr=subprocess.DEVNULL, check=True, shell=True)
         except subprocess.CalledProcessError:
             txt = txt + "error occured during editing comment for this user\n"
             self.text.setText(txt)
@@ -342,7 +353,8 @@ class EditUsersWindow(QWidget):
             self.text.setText(txt)
 
         try:
-            subprocess.run(f"usermod -u {idd} {self.userDetails[0]}", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True, shell=True)
+            subprocess.run(f"usermod -u {idd} {self.userDetails[0]}", stdout=subprocess.DEVNULL,
+                           stderr=subprocess.DEVNULL, check=True, shell=True)
         except subprocess.CalledProcessError:
             txt = txt + "error occured during editing user id for this user\n"
             self.text.setText(txt)
@@ -351,7 +363,8 @@ class EditUsersWindow(QWidget):
             self.text.setText(txt)
 
         try:
-            subprocess.run(f'usermod -l {usernamee} {self.userDetails[0]}', stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL, check=True, shell=True)
+            subprocess.run(f'usermod -l {usernamee} {self.userDetails[0]}', stdout=subprocess.DEVNULL,
+                           stderr=subprocess.DEVNULL, check=True, shell=True)
         except subprocess.CalledProcessError:
             txt = txt + "error occured during editing username for this user\n"
             self.text.setText(txt)
@@ -366,9 +379,9 @@ class EditUsersWindow(QWidget):
 
 
 class DeleteUsersWindow(QWidget):
-    def __init__(self,d):
+    def __init__(self, d):
         super().__init__()
-        self.setGeometry(200,50,300,300)
+        self.setGeometry(200, 50, 300, 300)
         self.setWindowTitle("Delete Users")
         self.listUsersToDelete = d
         self.layouts()
@@ -377,23 +390,23 @@ class DeleteUsersWindow(QWidget):
     def layouts(self):
         self.mainLayout = QVBoxLayout()
         self.topLayout = QVBoxLayout()
-        self.topLayout.setContentsMargins(20,20,20,20)
-        self.bottomLayout=QHBoxLayout()
+        self.topLayout.setContentsMargins(20, 20, 20, 20)
+        self.bottomLayout = QHBoxLayout()
 
         self.progeesBar = QProgressBar()
         self.progeesBar.setHidden(True)
-        self.submitBtn=QPushButton("Submit")
+        self.submitBtn = QPushButton("Submit")
         self.submitBtn.clicked.connect(self.submitAction)
-        self.cancelBtn=QPushButton("Cancel")
+        self.cancelBtn = QPushButton("Cancel")
         self.cancelBtn.clicked.connect(self.cancelAction)
-        self.okBtn=QPushButton("Ok")
+        self.okBtn = QPushButton("Ok")
         self.okBtn.clicked.connect(self.okAction)
         self.okBtn.setHidden(True)
         self.submitBtn.setFixedHeight(30)
         self.cancelBtn.setFixedHeight(30)
         self.okBtn.setFixedHeight(30)
-        self.submitBtn.setStyleSheet("color: #ecf0f1; background-color: #27ae60 ; border: 0px" )
-        self.okBtn.setStyleSheet("color: #ecf0f1; background-color: #27ae60 ; border: 0px" )
+        self.submitBtn.setStyleSheet("color: #ecf0f1; background-color: #27ae60 ; border: 0px")
+        self.okBtn.setStyleSheet("color: #ecf0f1; background-color: #27ae60 ; border: 0px")
         self.cancelBtn.setStyleSheet("color: #ecf0f1; background-color: #e74c3c; border: 0px")
 
         self.bottomLayout.addWidget(self.submitBtn)
@@ -419,8 +432,8 @@ class DeleteUsersWindow(QWidget):
             self.progeesBar.setMaximum(len(self.listUsersToDelete))
             self.progeesBar.setValue(0)
             self.deleteuser()
-        except subprocess.CalledProcessError :
-            QMessageBox.warning(self,'warning',f"error occured during setting this hostname\n")
+        except subprocess.CalledProcessError:
+            QMessageBox.warning(self, 'warning', f"error occured during setting this hostname\n")
         else:
             self.setCursor(Qt.ArrowCursor)
             self.submitBtn.setHidden(True)
@@ -430,9 +443,10 @@ class DeleteUsersWindow(QWidget):
     def okAction(self):
         self.close()
 
-    def deleteuserThreading(self,username):
+    def deleteuserThreading(self, username):
         try:
-            subprocess.run(f'userdel -r {username}',stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL, check=True,shell=True)
+            subprocess.run(f'userdel -r {username}', stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True,
+                           shell=True)
         except subprocess.CalledProcessError:
             return f"error occured during deleting {username}"
         else:
@@ -445,7 +459,7 @@ class DeleteUsersWindow(QWidget):
             r = ''
             for result in results:
                 i = i + 1
-                r = r +"\n"+result
+                r = r + "\n" + result
                 self.progeesBar.setValue(i)
                 self.text2.setText(r)
 
@@ -454,9 +468,9 @@ class DeleteUsersWindow(QWidget):
 
 
 class MoreUsersWindow(QWidget):
-    def __init__(self,text,username):
+    def __init__(self, text, username):
         super().__init__()
-        self.setGeometry(200,50,300,300)
+        self.setGeometry(200, 50, 300, 300)
         self.setWindowTitle(username)
         self.text = text
         self.layouts()
@@ -464,14 +478,14 @@ class MoreUsersWindow(QWidget):
     def layouts(self):
         self.mainLayout = QVBoxLayout()
         self.topLayout = QVBoxLayout()
-        self.topLayout.setContentsMargins(20,20,20,20)
-        self.bottomLayout=QHBoxLayout()
+        self.topLayout.setContentsMargins(20, 20, 20, 20)
+        self.bottomLayout = QHBoxLayout()
 
         self.label = QLabel(self.text)
-        self.okBtn=QPushButton("Ok")
+        self.okBtn = QPushButton("Ok")
         self.okBtn.clicked.connect(self.okAction)
         self.okBtn.setFixedHeight(30)
-        self.okBtn.setStyleSheet("color: #ecf0f1; background-color: #27ae60 ; border: 0px" )
+        self.okBtn.setStyleSheet("color: #ecf0f1; background-color: #27ae60 ; border: 0px")
 
         self.topLayout.addWidget(self.label)
         self.bottomLayout.addWidget(self.okBtn)

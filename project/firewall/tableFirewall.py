@@ -1,12 +1,10 @@
-import os,subprocess
+import subprocess
+
 
 def listZones():
-
     command = 'firewall-cmd --get-zones > /tmp/firewallZones 2> /tmp/firewallZonesError'
-
     try:
         subprocess.run(command, check=True, shell=True)
-
     except subprocess.CalledProcessError:
         print("listZones() ")
 
@@ -18,12 +16,11 @@ def listZones():
     list.pop()
     return list
 
-def listports(zone):
-    command =f'firewall-cmd --zone={zone} --list-ports > /tmp/listports'
 
+def listports(zone):
+    command = f'firewall-cmd --zone={zone} --list-ports > /tmp/listports'
     try:
         subprocess.run(command, check=True, shell=True)
-
     except subprocess.CalledProcessError:
         print("listZones() ")
 
@@ -36,12 +33,11 @@ def listports(zone):
 
     return list
 
-def listservices(zone):
-    command =f'firewall-cmd --zone={zone} --list-services > /tmp/listservices'
 
+def listservices(zone):
+    command = f'firewall-cmd --zone={zone} --list-services > /tmp/listservices'
     try:
         subprocess.run(command, check=True, shell=True)
-
     except subprocess.CalledProcessError:
         print("listZones() ")
 
@@ -53,12 +49,13 @@ def listservices(zone):
     list.pop()
 
     return list
+
+
 def listinterfaces(zone):
-    command =f'firewall-cmd --zone={zone} --list-interface > /tmp/listinter'
+    command = f'firewall-cmd --zone={zone} --list-interface > /tmp/listinter'
 
     try:
         subprocess.run(command, check=True, shell=True)
-
     except subprocess.CalledProcessError:
         print("listinterfaces() ")
 
@@ -70,16 +67,14 @@ def listinterfaces(zone):
     list.pop()
 
     return list
+
+
 def listZoneModified():
-    output=listZones()
-    listB=[]
-    listC=[]
+    output = listZones()
+    listB = []
+
     for i in output:
         listA = []
         listA.append(i)
         listB.append(listA)
-        #listA.clear()
     return listB
-
-
-

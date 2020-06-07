@@ -1,4 +1,3 @@
-
 # PyAdminDash | GUI-admin-tool
 PyAdminDash is a GUI Linux System Administration Tool Based on Fedora/Centos/Redhat
 the tool was designed and developped to provide an easy interaction with the operating system and its compenents,

@@ -3,7 +3,8 @@ try:
         QHBoxLayout
     from PyQt5.QtCore import QTimer
 except ImportError as e:
-    print(f'package PyQt5 Not Found\n{e}\ntry :\npip3 install --user pyqt5\nOR\ndnf install python3-pyqt5, yum install python3-pyqt5\n')
+    print(
+        f'package PyQt5 Not Found\n{e}\ntry :\npip3 install --user pyqt5\nOR\ndnf install python3-pyqt5, yum install python3-pyqt5\n')
 
 try:
     import qtmodern.styles
@@ -27,7 +28,6 @@ except ImportError as e:
     print(f'package not found\n{e}\n')
 
 
-
 def getContentSystem(self):
     self.gridSystem = QGridLayout()
 
@@ -47,7 +47,7 @@ def getContentSystem(self):
     systemInformation(self)
 
     self.groupBox = QGroupBox()
-    self.containerSystem=QVBoxLayout()
+    self.containerSystem = QVBoxLayout()
     self.containerSystem.addLayout(self.form)
     self.containerSystem.addStretch()
     self.groupBox.setLayout(self.containerSystem)
@@ -65,6 +65,7 @@ def getContentSystem(self):
     updateMemoryLabels(self)
     updateLabels(self)
 
+
 def updateHostnameUpTimeAndLoadAvgLabel(self):
     with open("/proc/uptime", "r") as f:
         uptime = f.read().split(" ")[0].strip()
@@ -72,7 +73,9 @@ def updateHostnameUpTimeAndLoadAvgLabel(self):
     uptime_hours = uptime // 3600
     uptime_minutes = (uptime % 3600) // 60
     hst = subprocess.Popen("hostname", shell=True, stdout=subprocess.PIPE).communicate()[0].decode('utf-8')
-    loadavg = subprocess.Popen("cat /proc/loadavg | awk {'print $1, $2, $3'}",shell=True,stdout=subprocess.PIPE).communicate()[0].decode('utf-8')
+    loadavg = \
+    subprocess.Popen("cat /proc/loadavg | awk {'print $1, $2, $3'}", shell=True, stdout=subprocess.PIPE).communicate()[
+        0].decode('utf-8')
     loadavgg = loadavg.split(" ")
     try:
         self.la.setText(f"last one minute:{loadavgg[0]},   5 minutes:{loadavgg[1]},   15 minutes:{loadavgg[2]}")
@@ -125,7 +128,7 @@ def updateLabels(self):
         except PermissionError:
             partitionn = partitionn + "\n"
             continue
-        partitionn=partitionn+f"Total Size: {get_size(partition_usage.total)}\nUsed: {get_size(partition_usage.used)}\nFree: {get_size(partition_usage.free)}\nPercentage: {partition_usage.percent}%\n\n"
+        partitionn = partitionn + f"Total Size: {get_size(partition_usage.total)}\nUsed: {get_size(partition_usage.used)}\nFree: {get_size(partition_usage.free)}\nPercentage: {partition_usage.percent}%\n\n"
 
     disksIO = ''
     for disk in disks:
@@ -156,7 +159,9 @@ def systemInformation(self):
     boot_time_timestamp = psutil.boot_time()
     bt = datetime.fromtimestamp(boot_time_timestamp)
 
-    loadavg = subprocess.Popen("cat /proc/loadavg | awk {'print $1, $2, $3'}",shell=True,stdout=subprocess.PIPE).communicate()[0].decode('utf-8')
+    loadavg = \
+    subprocess.Popen("cat /proc/loadavg | awk {'print $1, $2, $3'}", shell=True, stdout=subprocess.PIPE).communicate()[
+        0].decode('utf-8')
     loadavgg = loadavg.split(" ")
 
     a = QLabel('General Informations :')
@@ -164,14 +169,14 @@ def systemInformation(self):
     formleft.append(a)
     formright.append(QLabel(''))
 
-    hst = subprocess.Popen("hostname",shell=True,stdout=subprocess.PIPE).communicate()[0].decode('utf-8')
-    self.hbox=QHBoxLayout()
-    self.chngHstBtn=QPushButton('Edit hostname')
+    hst = subprocess.Popen("hostname", shell=True, stdout=subprocess.PIPE).communicate()[0].decode('utf-8')
+    self.hbox = QHBoxLayout()
+    self.chngHstBtn = QPushButton('Edit hostname')
     self.chngHstBtn.setFixedHeight(30)
     self.chngHstBtn.setFixedWidth(120)
     self.chngHstBtn.clicked.connect(lambda: configureSystemInformationWindow(self))
     self.chngHstBtn.setStyleSheet("color: #95a5a6; background-color: #303a46 ; border: 0px solid #303a46")
-    self.hs=QLabel(str(hst))
+    self.hs = QLabel(str(hst))
     self.hbox.addWidget(self.hs)
     self.hbox.addStretch()
     self.hbox.addWidget(self.chngHstBtn)
@@ -235,9 +240,9 @@ def systemInformation(self):
     with open("/proc/cpuinfo", "r")  as f:
         info = f.readlines()
     cpuinfo = [x.strip().split(":")[1] for x in info if "model name" in x]
-    processors=''
+    processors = ''
     for index, item in enumerate(cpuinfo):
-        processors+="CPU "+str(index) + ": " + item+"\n"
+        processors += "CPU " + str(index) + ": " + item + "\n"
 
     formleft.append(QLabel('CPUs :'))
     formright.append(QLabel(processors))
@@ -300,7 +305,6 @@ def systemInformation(self):
     formleft.append(QLabel('Used Swap :'))
     formright.append(self.us)
 
-
     formleft.append(QLabel(''))
     formright.append(QLabel(''))
     d = QLabel('Disk Informations :')
@@ -316,9 +320,9 @@ def systemInformation(self):
         except PermissionError:
             partitionn = partitionn + "\n"
             continue
-        partitionn=partitionn+f"Total Size: {get_size(partition_usage.total)}\nUsed: {get_size(partition_usage.used)}\nFree: {get_size(partition_usage.free)}\nPercentage: {partition_usage.percent}%\n\n"
+        partitionn = partitionn + f"Total Size: {get_size(partition_usage.total)}\nUsed: {get_size(partition_usage.used)}\nFree: {get_size(partition_usage.free)}\nPercentage: {partition_usage.percent}%\n\n"
 
-    self.prts=QLabel(partitionn)
+    self.prts = QLabel(partitionn)
     formleft.append(QLabel('Partitions :'))
     formright.append(self.prts)
 
@@ -350,10 +354,12 @@ def systemInformation(self):
 
     self.form.setContentsMargins(50, 50, 30, 30)  # left ,#top ,#right , #bottom
 
+
 def configureSystemInformationWindow(self):
     self.secondwindow = ConfigureSystemWindow()
     self.sw = qtmodern.windows.ModernWindow(self.secondwindow)
     self.sw.show()
+
 
 def get_size(bytes, suffix="B"):
     factor = 1024

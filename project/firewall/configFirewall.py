@@ -5,9 +5,9 @@ from project.firewall.tableFirewall import *
 
 
 class CreateFwWindow(QWidget):
-    def __init__(self,par):
+    def __init__(self, par):
         super().__init__()
-        self.parZone=par[0]
+        self.parZone = par[0]
         self.setGeometry(200, 50, 300, 400)
         self.setWindowTitle("Add on Run Time ")
         self.layouts()
@@ -38,7 +38,6 @@ class CreateFwWindow(QWidget):
         self.mainLayout.addLayout(self.topLayout)
         self.mainLayout.addStretch()
 
-
         self.mainLayout.addLayout(self.middelLayout)
         self.mainLayout.addStretch()
         self.mainLayout.addLayout(self.bottomLayout)
@@ -64,33 +63,29 @@ class CreateFwWindow(QWidget):
 
         self.topLayout.addRow(self.operation, QLabel())
         self.middelLayout.addRow(QLabel(""), QLabel(""))
-        # after click Widget
 
     def addOperationsClick(self):
         self.createNewZone = QLineEdit()
         self.createNewZone.setPlaceholderText('Enter name from New Zone ')
         self.clearMiddel()
         self.task = self.operation.currentItem().text()
-        #itemsA = listZones()
         itemsB = listAllServices()
         self.zones = QComboBox(self)
-        #self.zones.addItems(itemsA)
         self.zones.addItem(self.parZone)
         self.servies = QComboBox(self)
         self.servies.addItems(itemsB)
         zone = defaultZone()
         zone = zone[0]
-        self.interfaces=QComboBox(self)
+        self.interfaces = QComboBox(self)
         self.interfaces.addItems(displayNetworkInterface())
 
-        self.port=QComboBox(self)
-        self.selectProtocol=QComboBox()
+        self.port = QComboBox(self)
+        self.selectProtocol = QComboBox()
         self.selectProtocol.addItem('tcp')
         self.selectProtocol.addItem('udp')
-        self.selectPort=QLineEdit()
+        self.selectPort = QLineEdit()
 
         if self.task in 'Add Service To A Specific Zone':
-
             self.middelLayout.addRow(QLabel('Select a Service :'), self.servies)
             self.middelLayout.addRow(QLabel('Selected Zone :'), self.zones)
             self.middelLayout.addRow(QLabel(""), QLabel(""))
@@ -100,7 +95,6 @@ class CreateFwWindow(QWidget):
             self.middelLayout.addRow(QLabel('Selected Zone :'), self.zones)
 
         elif self.task in 'Add Service To Default Zone':
-
             self.middelLayout.addRow(QLabel('Select a Service :'), self.servies)
             self.middelLayout.addRow(QLabel('Default Zone Is:'), QLabel(f'{zone}'))
 
@@ -113,22 +107,18 @@ class CreateFwWindow(QWidget):
             self.middelLayout.addRow(QLabel(""), QLabel(""))
             self.middelLayout.addRow(QLabel(''), self.createNewZone)
 
-
         self.middelLayout.addRow(QLabel(""), QLabel(""))
         self.middelLayout.addRow(QLabel(""), QLabel(""))
 
     def clearMiddel(self):
-
         for i in reversed(range(self.middelLayout.count())):
-                self.middelLayout.itemAt(i).widget().setParent(None)
+            self.middelLayout.itemAt(i).widget().setParent(None)
 
     def submitAction(self):
-
-        self.mbox = QMessageBox.question(self, "Warningg!", f"Are you sure to Apply :\n {self.task} ?",QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        self.mbox = QMessageBox.question(self, "Warningg!", f"Are you sure to Apply :\n {self.task} ?",
+                                         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if self.mbox == QMessageBox.Yes:
-
             try:
-
                 par1 = Par2 = ''
                 if self.task == 'Add Service To A Specific Zone':
                     par1 = self.servies.currentText()
@@ -144,7 +134,6 @@ class CreateFwWindow(QWidget):
                     addServiceToDefaultZone(par1)
 
                 elif self.task in 'Add Protocol and Port':
-
                     try:
                         par1 = self.selectProtocol.currentText()
                         par2 = self.selectPort.text()
@@ -154,23 +143,18 @@ class CreateFwWindow(QWidget):
                         return
                     else:
                         addPort(par2, par1)
-
                 elif self.task in 'Add a New Zone':
                     par1 = self.createNewZone.text()
-
-                    if par1=='':
-
+                    if par1 == '':
                         QMessageBox.warning(self, 'error', f'\n You must enter a name ')
                         return
                     else:
                         addPermanentNewZone(par1)
-
-            except :
+            except:
                 QMessageBox.critical(self, 'error', f'error occured during Applaying this \n {self.task} ')
                 self.clearMiddel()
-
             else:
-                QMessageBox.information(self, 'success',f'Task Done Succesfully')
+                QMessageBox.information(self, 'success', f'Task Done Succesfully')
                 self.clearMiddel()
         elif self.mbox == QMessageBox.No:
             self.clearMiddel()
@@ -184,19 +168,19 @@ class CreateFwWindow(QWidget):
     def clearMiddel(self):
 
         for i in reversed(range(self.middelLayout.count())):
-                self.middelLayout.itemAt(i).widget().setParent(None)
+            self.middelLayout.itemAt(i).widget().setParent(None)
 
 
-############################################################################################################################
 class EditFwWindow(QWidget):
     def __init__(self):
         super().__init__()
-        self.setGeometry(200,50,300,400)
+        self.setGeometry(200, 50, 300, 400)
         self.setWindowTitle("Cancel configuration - Permanent Mode configuration ")
         self.layouts()
         self.widgets()
-        self.zone=''
+        self.zone = ''
         print(self.zone)
+
     def layouts(self):
         self.mainLayout = QVBoxLayout()
 
@@ -235,19 +219,16 @@ class EditFwWindow(QWidget):
         self.cancelNewCh = QRadioButton("Cancel The New Changes")
 
         self.topLayout.addRow(QLabel(""), QLabel(""))
-        self.topLayout.addRow(self.cancelNewCh,QLabel(""))
+        self.topLayout.addRow(self.cancelNewCh, QLabel(""))
         self.topLayout.addRow(QLabel(""), QLabel(""))
-        self.topLayout.addRow(self.applayNewCh,QLabel(""))
-
+        self.topLayout.addRow(self.applayNewCh, QLabel(""))
 
     def clearMiddel(self):
         for i in reversed(range(self.middelLayout.count())):
             self.middelLayout.itemAt(i).widget().setParent(None)
 
-
     def submitAction(self):
-
-        if self.cancelNewCh.isChecked() :
+        if self.cancelNewCh.isChecked():
             self.mbox = QMessageBox.question(self, "Warningg!", "\n Are You Shure To Cancel The New Configurations ?",
                                              QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
             if self.mbox == QMessageBox.Yes:
@@ -265,7 +246,8 @@ class EditFwWindow(QWidget):
                 return
 
         elif self.applayNewCh.isChecked():
-            self.mbox = QMessageBox.question(self, "Warningg!", "\n Are You Shure To Save The New Configurations Permanently ?",
+            self.mbox = QMessageBox.question(self, "Warningg!",
+                                             "\n Are You Shure To Save The New Configurations Permanently ?",
                                              QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
             if self.mbox == QMessageBox.Yes:
                 try:
@@ -280,8 +262,6 @@ class EditFwWindow(QWidget):
             else:
                 return
 
-
-
     def clearAction(self):
         pass
 
@@ -293,12 +273,11 @@ class EditFwWindow(QWidget):
             self.middelLayout.itemAt(i).widget().setParent(None)
 
 
-##################################################################################################""
 class DeleteFwWindow(QWidget):
-    def __init__(self,par):
+    def __init__(self, par):
         super().__init__()
-        self.parZone=par[0]
-        self.setGeometry(200,50,300,400)
+        self.parZone = par[0]
+        self.setGeometry(200, 50, 300, 400)
         self.setWindowTitle("Delete Run Time")
         self.layouts()
         self.widgets()
@@ -355,20 +334,13 @@ class DeleteFwWindow(QWidget):
         self.topLayout.addRow(self.operation, QLabel())
         self.middelLayout.addRow(QLabel(""), QLabel(""))
 
-        # after click Widget
-
     def addOperationsClick(self):
-
         self.clearMiddel()
         self.task = self.operation.currentItem().text()
-
         itemsA = listZones()
         itemsB = listservices(self.parZone)
         self.zones = QComboBox(self)
         self.zones.addItem(self.parZone)
-
-        #add new code
-
 
         self.servies = QComboBox(self)
         self.servies.addItems(itemsB)
@@ -384,29 +356,20 @@ class DeleteFwWindow(QWidget):
         self.selectProtocol.addItem('udp')
         self.selectPort = QLineEdit()
 
-
         if self.task in 'Remove Interface To Zone':
-
             self.middelLayout.addRow(QLabel('Select an Interface :'), self.interfaces)
             self.middelLayout.addRow(QLabel('Selected Zone :'), self.zones)
-
 
         elif self.task in 'Remove a Zone':
             self.middelLayout.addRow(QLabel('Selected Zone :'), self.zones)
 
-
-
         elif self.task in 'Remove Service To Default Zone':
-
             self.middelLayout.addRow(QLabel('Select a Service :'), self.servies)
             self.middelLayout.addRow(QLabel('Default Zone Is:'), QLabel(f'{zone}'))
 
-
         elif self.task in 'Remove a Service From A Specific Zone':
-
             self.middelLayout.addRow(QLabel('Select a Service :'), self.servies)
             self.middelLayout.addRow(QLabel('Selected Zone :'), self.zones)
-
 
         elif self.task in 'Remove a protocol and Port':
             self.middelLayout.addRow(QLabel('Selected Zone :'), self.zones)
@@ -417,27 +380,19 @@ class DeleteFwWindow(QWidget):
         self.middelLayout.addRow(QLabel(""), QLabel(""))
 
     def clearMiddel(self):
-
         for i in reversed(range(self.middelLayout.count())):
             self.middelLayout.itemAt(i).widget().setParent(None)
 
-
     def submitAction(self):
-
         self.mbox = QMessageBox.question(self, "Warningg!", f"Are you sure to Apply :\n {self.task} ?",
                                          QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if self.mbox == QMessageBox.Yes:
-
             try:
-
                 par1 = par2 = None
-
                 if self.task in 'Remove Interface To Zone':
-
                     par1 = self.interfaces.currentText()
                     par2 = self.zones.currentText()
                     RemoveInterfaceFromZone(par1, par2)
-
                 elif self.task in 'Remove a Specific Zone':
                     par1 = self.zones.currentText()
                     RemoveZone(par1)
@@ -448,9 +403,7 @@ class DeleteFwWindow(QWidget):
                     par1 = self.servies.currentText()
                     par2 = self.zones.currentText()
                     RemoveServiceToZone(par1, par2)
-
                 elif self.task in 'Remove a protocol and Port':
-
                     try:
                         par1 = self.selectProtocol.currentText()
                         par2 = self.selectPort.text()
@@ -460,13 +413,11 @@ class DeleteFwWindow(QWidget):
                         QMessageBox.warning(self, 'error', f'Port numnber must be an Integer')
                         return
                     else:
-                        RemoveProtocolPort(par2, par1,par3)
-
+                        RemoveProtocolPort(par2, par1, par3)
 
             except:
                 QMessageBox.critical(self, 'error', f'error occured during Applaying this \n {self.task} ')
                 self.clearMiddel()
-
             else:
                 QMessageBox.information(self, 'success', f'Task Done Succesfully')
                 self.clearMiddel()
@@ -476,6 +427,3 @@ class DeleteFwWindow(QWidget):
 
     def cancelAction(self):
         self.close()
-
-
-

@@ -1,56 +1,47 @@
-'''/*
-part services
-
-ALL FUNCTIONS ARE WORKING CORRECTLY
-THERE INS NOT INPUT VALIDATION
-author:jawed
-
-
-*/'''
-
-import os,subprocess
+import os, subprocess
 
 
 def isEnable(name):
-    name=str(name)
-    command=f'systemctl is-enabled {name} >/tmp/isEnabled '
+    name = str(name)
+    command = f'systemctl is-enabled {name} >/tmp/isEnabled '
     os.system(command)
-    File= open('/tmp/isEnabled', 'rt')
+    File = open('/tmp/isEnabled', 'rt')
     txt = File.read()
-    isEnable= txt.rstrip()
-    if(isEnable=='enabled'):
+    isEnable = txt.rstrip()
+    if (isEnable == 'enabled'):
         return True
 
     else:
-         return False
+        return False
+
 
 def isStart(name):
-
-    name=str(name)
-    command=f'systemctl is-active {name} >/tmp/isActived'
+    name = str(name)
+    command = f'systemctl is-active {name} >/tmp/isActived'
     os.system(command)
-    File= open('/tmp/isActived', 'rt')
+    File = open('/tmp/isActived', 'rt')
     txt = File.read()
-    isActive= txt.rstrip()
-    if(isActive=='active'):
+    isActive = txt.rstrip()
+    if (isActive == 'active'):
         return True
 
     else:
-         return False
+        return False
+
 
 def checkService(name):
-    name+='d'
-    command=f'sudo systemctl is-active {name} >/tmp/isActive '
+    name += 'd'
+    command = f'sudo systemctl is-active {name} >/tmp/isActive '
 
     try:
         subprocess.run(command, check=True, shell=True)
     except subprocess.CalledProcessError:
         print("Error While fetching Data ")
 
-    File= open('/tmp/isActive', 'rt')
+    File = open('/tmp/isActive', 'rt')
     txt = File.read()
     isActive = txt.rstrip()
-    if(isActive=='active'):
+    if (isActive == 'active'):
 
         print(isActive)
         print("service is running ")
@@ -79,8 +70,8 @@ def disableServices(name):
 
 
 def startServices(name):
-    name=str(name)
-    command=f'systemctl start {name} 2>/dev/null  '
+    name = str(name)
+    command = f'systemctl start {name} 2>/dev/null  '
     try:
         subprocess.run(command, check=True, shell=True)
     except subprocess.CalledProcessError:
@@ -95,6 +86,7 @@ def stopServices(name):
     except subprocess.CalledProcessError:
         print("Error While fetching Data ")
 
+
 def reloadConfig(name):
     name += 'd.service'
     command = f'sudo systemctl reload {name} 2>/dev/null  '
@@ -102,6 +94,7 @@ def reloadConfig(name):
         subprocess.run(command, check=True, shell=True)
     except subprocess.CalledProcessError:
         print("Error While fetching Data ")
+
 
 def listfailedServices():
     command = "sudo systemctl --failed --type=service |grep -vF LOAD| grep -vF SUB | grep -vF To | grep -vF Pass | awk '{print$1}' >/tmp/failedServices"
@@ -113,7 +106,7 @@ def listfailedServices():
     txt = File.read()
     isfaild = str(txt.rstrip())
 
-    if(isfaild=='0'):
+    if (isfaild == '0'):
 
         print('\n\nthere are not failed services are loaded\n\n')
     else:
@@ -153,6 +146,3 @@ def listAllServices():
     units.pop()
 
     return units
-
-
-
