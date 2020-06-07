@@ -1,3 +1,8 @@
+![alt text](https://github.com/flyflyinit/GUI-admin-tool/blob/master/1%20(1).png)
+![alt text](https://github.com/flyflyinit/GUI-admin-tool/blob/master/1.png)
+![alt text](https://github.com/flyflyinit/GUI-admin-tool/blob/master/5.png)
+
+
 # PyAdminDash | GUI-admin-tool
 PyAdminDash is a GUI Linux System Administration Tool Based on Fedora/Centos/Redhat
 the tool was designed and developped to provide an easy interaction with the operating system and its compenents,
