@@ -87,6 +87,7 @@ def createGrid(self):
 
 
 def selectclicked(self):
+    self.setCursor(Qt.WaitCursor)
     current = self.listnet.currentIndex()
     currenttext = self.listnet.currentText()
     clearLayoutt(self,self.gridNetwork)
@@ -99,6 +100,7 @@ def selectclicked(self):
 
     self.netRec = NetRecCanvas(self,interface=currenttext,width=4.5, height=3, dpi=80)
     self.gridNetwork.addWidget(self.netRec, 1, 1)
+    self.setCursor(Qt.ArrowCursor)
 
 
 def clearLayoutt(self,layout):

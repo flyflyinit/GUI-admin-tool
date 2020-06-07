@@ -1,3 +1,5 @@
+from PyQt5.QtCore import Qt
+
 try:
     from PyQt5.QtWidgets import QWidget, QVBoxLayout, QFrame, QHBoxLayout, QLabel, QProgressBar, QPushButton, \
         QFormLayout, \
@@ -136,6 +138,7 @@ class CreateFullBackupWindow(QWidget):
         self.listExclude.clear()
 
     def submitAction(self):
+        self.setCursor(Qt.WaitCursor)
         try:
             global cur
             global con
@@ -157,6 +160,7 @@ class CreateFullBackupWindow(QWidget):
         except Exception :
             QMessageBox.warning(self,'warning',f"error occured during creating this backup\n")
         else:
+            self.setCursor(Qt.ArrowCursor)
             self.submitBtn.setHidden(True)
             self.cancelBtn.setHidden(True)
             self.okBtn.setHidden(False)
@@ -357,6 +361,7 @@ class CreateIncBackupWindow(QWidget):
         self.listExclude.clear()
 
     def submitAction(self):
+        self.setCursor(Qt.WaitCursor)
         try:
             self.progeesBar.setHidden(False)
             self.progeesBar.setValue(0)
@@ -364,6 +369,7 @@ class CreateIncBackupWindow(QWidget):
         except Exception :
             QMessageBox.warning(self,'warning',f"error occured during creating this backup\n")
         else:
+            self.setCursor(Qt.ArrowCursor)
             self.submitBtn.setHidden(True)
             self.cancelBtn.setHidden(True)
             self.okBtn.setHidden(False)
@@ -504,6 +510,7 @@ class DeleteFullBackupWindow(QWidget):
         self.topLayout.addWidget(self.progeesBar)
 
     def submitAction(self):
+        self.setCursor(Qt.WaitCursor)
         try:
             self.progeesBar.setHidden(False)
             self.progeesBar.setMaximum(len(self.listFullBackupsToDelete))
@@ -512,6 +519,7 @@ class DeleteFullBackupWindow(QWidget):
         except Exception :
             QMessageBox.warning(self,'warning',f"error occured during deleteting this full backup\n")
         else:
+            self.setCursor(Qt.ArrowCursor)
             self.submitBtn.setHidden(True)
             self.cancelBtn.setHidden(True)
             self.okBtn.setHidden(False)
@@ -594,6 +602,7 @@ class DeleteIncBackupWindow(QWidget):
         self.topLayout.addWidget(self.progeesBar)
 
     def submitAction(self):
+        self.setCursor(Qt.WaitCursor)
         try:
             self.progeesBar.setHidden(False)
             self.progeesBar.setMaximum(len(self.listIncBackupsToDelete))
@@ -602,6 +611,7 @@ class DeleteIncBackupWindow(QWidget):
         except Exception :
             QMessageBox.warning(self,'warning',f"error occured during deleteting this incremental backup\n")
         else:
+            self.setCursor(Qt.ArrowCursor)
             self.submitBtn.setHidden(True)
             self.cancelBtn.setHidden(True)
             self.okBtn.setHidden(False)
@@ -685,6 +695,7 @@ class RestoreFullBackupWindow(QWidget):
         self.topLayout.addWidget(self.progeesBar)
 
     def submitAction(self):
+        self.setCursor(Qt.WaitCursor)
         try:
             self.progeesBar.setHidden(False)
             self.progeesBar.setMaximum(1)
@@ -693,6 +704,7 @@ class RestoreFullBackupWindow(QWidget):
         except Exception :
             QMessageBox.warning(self,'warning',f"error occured during restoring this full backup\n")
         else:
+            self.setCursor(Qt.ArrowCursor)
             self.submitBtn.setHidden(True)
             self.cancelBtn.setHidden(True)
             self.okBtn.setHidden(False)
@@ -824,6 +836,7 @@ class RestoreIncBackupWindow(QWidget):
                 self.comboend.addItem(str(item[0]))
 
     def submitAction(self):
+        self.setCursor(Qt.WaitCursor)
         global cur
         try:
             self.progeesBar.setHidden(False)
@@ -833,6 +846,7 @@ class RestoreIncBackupWindow(QWidget):
         except Exception :
             QMessageBox.warning(self,'warning',f"error occured during restoring these incremental backups\n")
         else:
+            self.setCursor(Qt.ArrowCursor)
             self.submitBtn.setHidden(True)
             self.cancelBtn.setHidden(True)
             self.okBtn.setHidden(False)

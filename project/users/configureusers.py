@@ -1,3 +1,5 @@
+from PyQt5.QtCore import Qt
+
 try:
     from PyQt5.QtWidgets import QWidget, QVBoxLayout, QProgressBar, QPushButton, QSpinBox, QLabel, QLineEdit, QFormLayout, \
         QHBoxLayout, QListWidget, QMessageBox, QCheckBox
@@ -80,6 +82,7 @@ class CreateUsersWindow(QWidget):
         self.topLayout.addWidget(self.note)
 
     def submitAction(self):
+        self.setCursor(Qt.WaitCursor)
         self.progeesBar.setHidden(False)
         self.progeesBar.setMaximum(self.usersNbr.value())
         self.progeesBar.setValue(0)
@@ -93,6 +96,7 @@ class CreateUsersWindow(QWidget):
                 self.progeesBar.setValue(nbr)
                 txt = txt + result + "\n"
                 self.note.setText(txt)
+        self.setCursor(Qt.ArrowCursor)
         self.okBtn.setHidden(False)
         self.submitBtn.setHidden(True)
         self.cancelBtn.setHidden(True)
@@ -247,6 +251,7 @@ class EditUsersWindow(QWidget):
 
     def submitAction(self):
         try:
+            self.setCursor(Qt.WaitCursor)
             self.progeesBar.setHidden(False)
             self.progeesBar.setMaximum(1)
             self.progeesBar.setValue(0)
@@ -254,6 +259,7 @@ class EditUsersWindow(QWidget):
         except subprocess.CalledProcessError :
             QMessageBox.warning(self,'warning',f"error occured during editing this user\n")
         else:
+            self.setCursor(Qt.ArrowCursor)
             self.submitBtn.setHidden(True)
             self.cancelBtn.setHidden(True)
             self.okBtn.setHidden(False)
@@ -408,6 +414,7 @@ class DeleteUsersWindow(QWidget):
 
     def submitAction(self):
         try:
+            self.setCursor(Qt.WaitCursor)
             self.progeesBar.setHidden(False)
             self.progeesBar.setMaximum(len(self.listUsersToDelete))
             self.progeesBar.setValue(0)
@@ -415,6 +422,7 @@ class DeleteUsersWindow(QWidget):
         except subprocess.CalledProcessError :
             QMessageBox.warning(self,'warning',f"error occured during setting this hostname\n")
         else:
+            self.setCursor(Qt.ArrowCursor)
             self.submitBtn.setHidden(True)
             self.cancelBtn.setHidden(True)
             self.okBtn.setHidden(False)

@@ -1,3 +1,5 @@
+from PyQt5.QtCore import Qt
+
 try:
     from PyQt5 import QtCore
     from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel, QDockWidget, QVBoxLayout, QListWidget, QAbstractItemView, \
@@ -184,9 +186,11 @@ class moreCellInTableFullBackup(QWidget):
         self.setLayout(self.hbox)
 
     def showmoreBtnClicked(self):
+        self.setCursor(Qt.WaitCursor)
         self.secondwindow = MoreFullBackupWindow(self.id)
         self.sw = qtmodern.windows.ModernWindow(self.secondwindow)
         self.sw.show()
+        self.setCursor(Qt.ArrowCursor)
 
 def showmyfullbackuplist(self):
     self.fullBackupList = retrievedatafromdbfullbackup()
@@ -340,9 +344,11 @@ class moreCellInTableIncBackup(QWidget):
         self.setLayout(self.hbox)
 
     def showmoreBtnClicked(self):
+        self.setCursor(Qt.WaitCursor)
         self.secondwindow = MoreIncBackupWindow(self.id)
         self.sw = qtmodern.windows.ModernWindow(self.secondwindow)
         self.sw.show()
+        self.setCursor(Qt.ArrowCursor)
 
 def showmyincbackuplist(self):
     global cur

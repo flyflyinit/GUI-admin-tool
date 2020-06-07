@@ -254,10 +254,12 @@ class AdministratorCellInTableUsers(QWidget):
         self.setLayout(self.hbox)
 
     def changed(self):
+        self.setCursor(Qt.WaitCursor)
         if self.slider.value() == 1:
             self.setAdmin()
         elif self.slider.value() == 0:
             self.setNormalUser()
+        self.setCursor(Qt.ArrowCursor)
 
     def setAdmin(self):
         try:
@@ -314,6 +316,7 @@ class LockCellInTableUsers(QWidget):
         self.setLayout(self.hbox)
 
     def changed(self):
+        self.setCursor(Qt.WaitCursor)
         if self.slider.value() == 1:
             if self.doesntHavePassword == True :
                 QMessageBox.warning(self, 'error', "you can't unlock a user doesn't have a password")
@@ -322,6 +325,7 @@ class LockCellInTableUsers(QWidget):
                 self.setLocked()
         elif self.slider.value() == 0:
             self.setUnlocked()
+        self.setCursor(Qt.ArrowCursor)
 
     def setLocked(self):
         try:
