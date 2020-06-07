@@ -209,9 +209,6 @@ class EditFwWindow(QWidget):
         self.mainLayout.addLayout(self.middelLayout)
         self.mainLayout.addStretch()
         self.mainLayout.addLayout(self.bottomLayout)
-        self.mainLayout.addStretch()
-        self.mainLayout.addStretch()
-
         self.setLayout(self.mainLayout)
 
     def widgets(self):
