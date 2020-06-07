@@ -3,6 +3,7 @@ import subprocess
 import sys
 import qtmodern.styles
 import qtmodern.windows
+from PyQt5.QtCore import Qt
 
 from project import about
 from project.about import *
@@ -175,32 +176,51 @@ class mainWindow(QWidget):
     def getContentTrigger(self):
         si = self.listWidget.selectedItems()[0]
         if si==self.item0:
+            self.setCursor(Qt.WaitCursor)
             self.clearLayout(self.bottomRightLayout)
             mainDashboard.getContentDashboard(self)
+            self.setCursor(Qt.ArrowCursor)
         elif si==self.item1:
+            self.setCursor(Qt.WaitCursor)
             self.clearLayout(self.bottomRightLayout)
             mainsystem.getContentSystem(self)
+            self.setCursor(Qt.ArrowCursor)
         elif si==self.item2:
+            self.setCursor(Qt.WaitCursor)
             self.clearLayout(self.bottomRightLayout)
             mainusers.getContentUsers(self)
+            self.setCursor(Qt.ArrowCursor)
         elif si==self.item3:
+            self.setCursor(Qt.WaitCursor)
             self.clearLayout(self.bottomRightLayout)
             mainbackup.getContentBackup(self)
+            self.setCursor(Qt.ArrowCursor)
         elif si==self.item4:
+            self.setCursor(Qt.WaitCursor)
             self.clearLayout(self.bottomRightLayout)
             mainnetworking.getContentNetwork(self)
+            self.setCursor(Qt.ArrowCursor)
         elif si==self.item5:
+            self.setCursor(Qt.WaitCursor)
             self.clearLayout(self.bottomRightLayout)
             mainFirewall.getContentFirewall(self)
+            self.setCursor(Qt.ArrowCursor)
         elif si==self.item6:
+            self.setCursor(Qt.WaitCursor)
             self.clearLayout(self.bottomRightLayout)
             mainServices.getContentServices(self)
+            self.setCursor(Qt.ArrowCursor)
         elif si==self.item7:
+            self.setCursor(Qt.WaitCursor)
             self.clearLayout(self.bottomRightLayout)
             mainLogs.getContentLogs(self)
+            self.setCursor(Qt.ArrowCursor)
         elif si==self.item8:
+            self.setCursor(Qt.WaitCursor)
             self.clearLayout(self.bottomRightLayout)
             mainterminal.main(self)
+            self.setCursor(Qt.ArrowCursor)
+
         else:
             QMessageBox.warning(self,"warning","no section selected, please selecet a section")
 

@@ -133,7 +133,7 @@ def getContentLogs(self):
     self.bottomRightLayout.addLayout(self.containerLogs)
 
 def selectclicked(self):
-
+    self.setCursor(Qt.WaitCursor)
     currentSince = '--since='+self.since.date().toString(Qt.ISODate)
     currentUntil = '--until='+self.until.date().toString(Qt.ISODate)
     currentPID = self.pid.text()
@@ -170,6 +170,7 @@ def selectclicked(self):
 
     showmylogslist(self,since=currentSince,until=currentUntil,priority=currentPrio,pid=currentPID,gid=currentGID,uid=currentUID,unit=currentUnit)
     self.containerLogs.addWidget(self.tableLogs)
+    self.setCursor(Qt.ArrowCursor)
 
 
 def createTableLogs(self):
