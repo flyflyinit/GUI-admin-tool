@@ -118,11 +118,11 @@ class mainWindow(QWidget):
         self.item0.setSizeHint(QtCore.QSize(50, 50))
         self.listWidget.addItem(self.item0)
 
-        self.item1 = QtWidgets.QListWidgetItem("   ️🌐  System Information")
+        self.item1 = QtWidgets.QListWidgetItem("   ️🌐  System Informations")
         self.item1.setSizeHint(QtCore.QSize(50, 50))
         self.listWidget.addItem(self.item1)
 
-        self.item2 = QtWidgets.QListWidgetItem("  🚹 ‍ Users Statistics")
+        self.item2 = QtWidgets.QListWidgetItem("  🚹 ‍ Users ")
         self.item2.setSizeHint(QtCore.QSize(50, 50))
 
         self.listWidget.addItem(self.item2)
