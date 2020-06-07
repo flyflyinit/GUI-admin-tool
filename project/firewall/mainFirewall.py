@@ -42,6 +42,7 @@ def createFwButtons(self):
     except IndexError:
         QMessageBox.critical(self, 'error', f'Please install Firewalld or start the service ')
         self.defaultZone = QLabel("FIREWALLD SERVICE IS NOT RUNNING")
+        self.firewallIsrunnig=False
 
     self.defaultZone.setStyleSheet("color: #303a46;font: bold 14px;")
     self.addBtn = QPushButton('Add')
@@ -64,12 +65,15 @@ def createFwButtons(self):
     self.hboxbtn.addStretch()
     self.hboxbtn.addStretch()
     self.hboxbtn.addStretch()
-    self.hboxbtn.addWidget(self.addBtn)
-    self.hboxbtn.addWidget(self.editBtn)
-    self.hboxbtn.addWidget(self.deleteBtn)
+    if self.firewallIsrunnig !=False:
+
+        self.hboxbtn.addWidget(self.addBtn)
+        self.hboxbtn.addWidget(self.editBtn)
+        self.hboxbtn.addWidget(self.deleteBtn)
 
 
 def createTableFw(self):
+
     self.tableFw = QTableWidget()
     self.tableFw.setRowCount(0)
     self.tableFw.setColumnCount(6)
