@@ -8,13 +8,13 @@ from PyQt5 import QtCore
 from PyQt5.QtWidgets import *
 from project.firewall.tableFirewall import listservices, listZoneModified, listports
 
-
+firewallIsrunnig=True
 def getContentFirewall(self):
     self.gridFw = QGridLayout()
 
     createTableFw(self)
 
-    createFwButtons(self)
+    createFwButtons(self,firewallIsrunnig)
 
     self.groupBox = QGroupBox()
 
@@ -32,7 +32,7 @@ def getContentFirewall(self):
     self.bottomRightLayout.addWidget(self.scroll)
 
 
-def createFwButtons(self):
+def createFwButtons(self,firewallIsrunnig):
     self.hboxbtn = QHBoxLayout()
     try:
         defaultzone = defaultZone()[0]
@@ -42,7 +42,7 @@ def createFwButtons(self):
     except IndexError:
         QMessageBox.critical(self, 'error', f'Please install Firewalld or start the service ')
         self.defaultZone = QLabel("FIREWALLD SERVICE IS NOT RUNNING")
-        self.firewallIsrunnig=False
+        firewallIsrunnig=False
 
     self.defaultZone.setStyleSheet("color: #303a46;font: bold 14px;")
     self.addBtn = QPushButton('Add')
@@ -65,7 +65,8 @@ def createFwButtons(self):
     self.hboxbtn.addStretch()
     self.hboxbtn.addStretch()
     self.hboxbtn.addStretch()
-    if self.firewallIsrunnig !=False:
+
+    if firewallIsrunnig :
 
         self.hboxbtn.addWidget(self.addBtn)
         self.hboxbtn.addWidget(self.editBtn)
