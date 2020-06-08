@@ -12,7 +12,7 @@ firewallIsrunnig=True
 def getContentFirewall(self):
     self.gridFw = QGridLayout()
 
-    createTableFw(self)
+    createTableFw(self,firewallIsrunnig)
 
     createFwButtons(self,firewallIsrunnig)
 
@@ -73,25 +73,27 @@ def createFwButtons(self,firewallIsrunnig):
         self.hboxbtn.addWidget(self.deleteBtn)
 
 
-def createTableFw(self):
+def createTableFw(self,firewallIsrunnig):
+    if firewallIsrunnig:
 
-    self.tableFw = QTableWidget()
-    self.tableFw.setRowCount(0)
-    self.tableFw.setColumnCount(6)
 
-    self.tableFw.setFixedHeight(570)
-    self.tableFw.setFixedWidth(1130)
+        self.tableFw = QTableWidget()
+        self.tableFw.setRowCount(0)
+        self.tableFw.setColumnCount(6)
 
-    self.tableFw.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-    self.tableFw.setHorizontalHeaderItem(0, QTableWidgetItem("zone"))
-    self.tableFw.setHorizontalHeaderItem(1, QTableWidgetItem("interface"))
-    self.tableFw.setHorizontalHeaderItem(2, QTableWidgetItem("Services"))
-    self.tableFw.setHorizontalHeaderItem(3, QTableWidgetItem("Ports"))
-    self.tableFw.setHorizontalHeaderItem(4, QTableWidgetItem("set-Default"))
-    self.tableFw.setHorizontalHeaderItem(5, QTableWidgetItem("select"))
+        self.tableFw.setFixedHeight(570)
+        self.tableFw.setFixedWidth(1130)
 
-    self.tableFw.setEditTriggers(QAbstractItemView.NoEditTriggers)
-    showmyfwlist(self)
+        self.tableFw.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.tableFw.setHorizontalHeaderItem(0, QTableWidgetItem("zone"))
+        self.tableFw.setHorizontalHeaderItem(1, QTableWidgetItem("interface"))
+        self.tableFw.setHorizontalHeaderItem(2, QTableWidgetItem("Services"))
+        self.tableFw.setHorizontalHeaderItem(3, QTableWidgetItem("Ports"))
+        self.tableFw.setHorizontalHeaderItem(4, QTableWidgetItem("set-Default"))
+        self.tableFw.setHorizontalHeaderItem(5, QTableWidgetItem("select"))
+
+        self.tableFw.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        showmyfwlist(self)
 
 
 class SelectCellInTableNet(QWidget):
