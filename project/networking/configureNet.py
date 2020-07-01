@@ -215,12 +215,23 @@ class EditNetworkWindow(QWidget):
         self.widgets()
 
     def layouts(self):
+        groupBox = QGroupBox("")
         self.mainLayout = QVBoxLayout()
         self.topLayout = QFormLayout()
         self.middelLayout = QFormLayout()
         self.middelLayout.setContentsMargins(20, 20, 20, 20)
         self.topLayout.setContentsMargins(20, 20, 20, 20)
         self.bottomLayout = QHBoxLayout()
+        self.upperLayout=QVBoxLayout()
+        groupBox.setLayout(self.mainLayout)
+
+        scroll = QScrollArea()
+        scroll.setWidget(groupBox)
+        scroll.setWidgetResizable(True)
+        scroll.setFixedHeight(600)
+        scroll.setFixedWidth(500)
+        layout = QVBoxLayout(self)
+        layout.addWidget(scroll)
 
         self.submitBtn = QPushButton("Submit")
         self.cancelBtn = QPushButton("Cancel")
@@ -236,19 +247,19 @@ class EditNetworkWindow(QWidget):
         if self.index[2] != 'auto':
             self.bottomLayout.addWidget(self.submitBtn)
             self.bottomLayout.addWidget(self.cancelBtn)
-            self.mainLayout.addLayout(self.topLayout)
-            self.mainLayout.addLayout(self.middelLayout)
-            self.mainLayout.addStretch()
+            self.upperLayout.addLayout(self.topLayout)
+            self.upperLayout.addLayout(self.middelLayout)
+            self.mainLayout.addLayout(self.upperLayout)
             self.mainLayout.addLayout(self.bottomLayout)
-            self.setLayout(self.mainLayout)
 
         else:
             self.bottomLayout.addWidget(self.submitBtn)
             self.bottomLayout.addWidget(self.cancelBtn)
-            self.mainLayout.addLayout(self.topLayout)
-            self.mainLayout.addStretch()
+            self.upperLayout.addLayout(self.topLayout)
+            self.mainLayout.addLayout(self.upperLayout)
             self.mainLayout.addLayout(self.bottomLayout)
-            self.setLayout(self.mainLayout)
+
+        self.setLayout(self.mainLayout)
 
     def widgets(self):
         self.consName = QComboBox(self)
